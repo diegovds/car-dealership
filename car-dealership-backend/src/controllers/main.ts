@@ -1,6 +1,6 @@
 import { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import z from 'zod'
-import { env } from '../env'
+import { env } from '../config/env'
 
 export const main: FastifyPluginAsyncZod = async (app) => {
   app.get(
