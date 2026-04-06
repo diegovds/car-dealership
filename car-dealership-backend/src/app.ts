@@ -35,9 +35,9 @@ app.register(fastifyJwt, {
 app.register(fastifySwagger, {
   openapi: {
     info: {
-      title: 'Budgetly Backend',
+      title: 'Car Dealership Backend',
       version: '0.0.1',
-      description: 'API para o Budgetly',
+      description: 'API para a Car Dealership',
     },
     components: {
       securitySchemes: {
