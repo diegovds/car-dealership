@@ -1,6 +1,8 @@
 import { FastifyInstance } from 'fastify'
 import z from 'zod'
 import { env } from '../config/env'
+import { carsRoutes } from '../modules/cars/cars.routes'
+import { usersRoutes } from '../modules/users/users.routes'
 
 export async function routes(app: FastifyInstance) {
   app.get(
@@ -25,4 +27,6 @@ export async function routes(app: FastifyInstance) {
       })
     },
   )
+  app.register(usersRoutes)
+  app.register(carsRoutes)
 }

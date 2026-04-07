@@ -12,7 +12,6 @@ import {
 } from 'fastify-type-provider-zod'
 import { env } from './config/env'
 import { routes } from './routes'
-import { usersRoutes } from './modules/users/users.routes'
 
 const app = fastify().withTypeProvider<ZodTypeProvider>()
 
@@ -63,6 +62,5 @@ app.register(fastifySwaggerUi, {
 })
 
 app.register(routes)
-app.register(usersRoutes)
 
 export { app }
