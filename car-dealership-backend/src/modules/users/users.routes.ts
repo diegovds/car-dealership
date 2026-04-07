@@ -1,47 +1,19 @@
 import type { FastifyInstance } from 'fastify'
+import type { ZodTypeProvider } from 'fastify-type-provider-zod'
 import z from 'zod'
 import {
   createUserSchema,
+  loginSchema,
   updateUserSchema,
   userIdParamSchema,
   userResponseSchema,
-  userListResponseSchema,
+  tokenResponseSchema,
 } from './users.schema'
 import * as controller from './users.controller'
+import { authenticate } from '../../middlewares/authenticate'
 
-export async function usersRoutes(app: FastifyInstance) {
-  app.get(
-    '/users',
-    {
-      schema: {
-        tags: ['Users'],
-        summary: 'Listar todos os usuários',
-        description: 'Retorna uma lista com todos os usuários cadastrados.',
-        response: {
-          200: userListResponseSchema,
-        },
-      },
-    },
-    controller.listUsers,
-  )
-
-  app.get(
-    '/users/:id',
-    {
-      schema: {
-        tags: ['Users'],
-        summary: 'Buscar usuário por ID',
-        description: 'Retorna os dados de um usuário específico.',
-        params: userIdParamSchema,
-        response: {
-          200: userResponseSchema,
-          404: z.object({ message: z.string() }),
-        },
-      },
-    },
-    controller.getUserById,
-  )
-
+export async function usersRoutes(instance: FastifyInstance) {
+  const app = instance.withTypeProvider<ZodTypeProvider>()
   app.post(
     '/users',
     {
@@ -60,17 +32,58 @@ export async function usersRoutes(app: FastifyInstance) {
     controller.createUser,
   )
 
-  app.patch(
-    '/users/:id',
+  app.post(
+    '/users/login',
     {
       schema: {
         tags: ['Users'],
+        security: [],
+        summary: 'Autenticar usuário',
+        description: 'Retorna um token JWT para uso nos endpoints protegidos.',
+        body: loginSchema,
+        response: {
+          200: tokenResponseSchema,
+          401: z.object({ message: z.string() }),
+        },
+      },
+    },
+    controller.login,
+  )
+
+  app.get(
+    '/users/:id',
+    {
+      onRequest: [authenticate],
+      schema: {
+        tags: ['Users'],
+        summary: 'Buscar usuário por ID',
+        description:
+          'Retorna os dados do usuário autenticado. O ID deve ser o mesmo do token.',
+        params: userIdParamSchema,
+        response: {
+          200: userResponseSchema,
+          403: z.object({ message: z.string() }),
+          404: z.object({ message: z.string() }),
+        },
+      },
+    },
+    controller.getUserById,
+  )
+
+  app.patch(
+    '/users/:id',
+    {
+      onRequest: [authenticate],
+      schema: {
+        tags: ['Users'],
         summary: 'Atualizar um usuário',
-        description: 'Atualiza os dados de um usuário existente.',
+        description:
+          'Atualiza os dados do usuário autenticado. O ID deve ser o mesmo do token.',
         params: userIdParamSchema,
         body: updateUserSchema,
         response: {
           200: userResponseSchema,
+          403: z.object({ message: z.string() }),
           404: z.object({ message: z.string() }),
           409: z.object({ message: z.string() }),
         },
@@ -82,13 +95,16 @@ export async function usersRoutes(app: FastifyInstance) {
   app.delete(
     '/users/:id',
     {
+      onRequest: [authenticate],
       schema: {
         tags: ['Users'],
         summary: 'Deletar um usuário',
-        description: 'Remove um usuário e todos os seus carros associados.',
+        description:
+          'Remove o usuário autenticado e todos os seus carros. O ID deve ser o mesmo do token.',
         params: userIdParamSchema,
         response: {
           204: z.null().describe('Usuário deletado com sucesso'),
+          403: z.object({ message: z.string() }),
           404: z.object({ message: z.string() }),
         },
       },

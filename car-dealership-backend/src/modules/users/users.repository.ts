@@ -3,10 +3,6 @@ import { db } from '../../db/client'
 import { users } from '../../db/schema'
 import type { CreateUserInput, UpdateUserInput } from './users.schema'
 
-export async function findAllUsers() {
-  return db.select().from(users)
-}
-
 export async function findUserById(id: string) {
   const result = await db.select().from(users).where(eq(users.id, id))
   return result[0] ?? null

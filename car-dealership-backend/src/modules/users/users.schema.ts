@@ -6,6 +6,11 @@ export const createUserSchema = z.object({
   password: z.string().min(6),
 })
 
+export const loginSchema = z.object({
+  email: z.email(),
+  password: z.string().min(6),
+})
+
 export const updateUserSchema = z.object({
   name: z.string().min(2).optional(),
   email: z.email().optional(),
@@ -24,7 +29,10 @@ export const userResponseSchema = z.object({
   updatedAt: z.date(),
 })
 
-export const userListResponseSchema = z.array(userResponseSchema)
+export const tokenResponseSchema = z.object({
+  token: z.string(),
+})
 
 export type CreateUserInput = z.infer<typeof createUserSchema>
 export type UpdateUserInput = z.infer<typeof updateUserSchema>
+export type LoginInput = z.infer<typeof loginSchema>

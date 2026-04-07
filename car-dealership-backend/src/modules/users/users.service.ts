@@ -1,6 +1,10 @@
 import type { FastifyInstance } from 'fastify'
 import * as repository from './users.repository'
-import type { CreateUserInput, UpdateUserInput } from './users.schema'
+import type {
+  CreateUserInput,
+  LoginInput,
+  UpdateUserInput,
+} from './users.schema'
 
 class AppError extends Error {
   statusCode: number
@@ -11,11 +15,26 @@ class AppError extends Error {
   }
 }
 
-export async function listUsers() {
-  return repository.findAllUsers()
+export async function login(app: FastifyInstance, data: LoginInput) {
+  const user = await repository.findUserByEmail(data.email)
+  if (!user) {
+    throw new AppError(401, 'Email ou senha inválidos')
+  }
+
+  const validPassword = await app.bcrypt.compare(data.password, user.password)
+  if (!validPassword) {
+    throw new AppError(401, 'Email ou senha inválidos')
+  }
+
+  const token = app.jwt.sign({ sub: user.id }, { expiresIn: '7d' })
+  return { token }
 }
 
-export async function getUserById(id: string) {
+export async function getUserById(requesterId: string, id: string) {
+  if (requesterId !== id) {
+    throw new AppError(403, 'Acesso negado')
+  }
+
   const user = await repository.findUserById(id)
   if (!user) {
     throw new AppError(404, 'Usuário não encontrado')
@@ -35,9 +54,14 @@ export async function createUser(app: FastifyInstance, data: CreateUserInput) {
 
 export async function updateUser(
   app: FastifyInstance,
+  requesterId: string,
   id: string,
   data: UpdateUserInput,
 ) {
+  if (requesterId !== id) {
+    throw new AppError(403, 'Acesso negado')
+  }
+
   if (data.email) {
     const existing = await repository.findUserByEmail(data.email)
     if (existing && existing.id !== id) {
@@ -57,7 +81,11 @@ export async function updateUser(
   return user
 }
 
-export async function deleteUser(id: string) {
+export async function deleteUser(requesterId: string, id: string) {
+  if (requesterId !== id) {
+    throw new AppError(403, 'Acesso negado')
+  }
+
   const user = await repository.deleteUser(id)
   if (!user) {
     throw new AppError(404, 'Usuário não encontrado')
