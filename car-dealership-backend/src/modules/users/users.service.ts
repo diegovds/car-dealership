@@ -60,9 +60,25 @@ export async function updateUser(
     }
   }
 
-  const updateData = { ...data }
-  if (data.password) {
-    updateData.password = await app.bcrypt.hash(data.password)
+  const updateData: Record<string, unknown> = {}
+  if (data.name) updateData.name = data.name
+  if (data.email) updateData.email = data.email
+
+  if (data.currentPassword && data.newPassword) {
+    const current = await repository.findUserById(id)
+    if (!current) {
+      throw new AppError(404, 'Usuário não encontrado')
+    }
+
+    const validPassword = await app.bcrypt.compare(
+      data.currentPassword,
+      current.password,
+    )
+    if (!validPassword) {
+      throw new AppError(401, 'Senha atual incorreta')
+    }
+
+    updateData.password = await app.bcrypt.hash(data.newPassword)
   }
 
   const user = await repository.updateUser(id, updateData)

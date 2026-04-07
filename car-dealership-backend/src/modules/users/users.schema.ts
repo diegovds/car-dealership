@@ -11,11 +11,23 @@ export const loginSchema = z.object({
   password: z.string().min(6),
 })
 
-export const updateUserSchema = z.object({
-  name: z.string().min(2).optional(),
-  email: z.email().optional(),
-  password: z.string().min(6).optional(),
-})
+export const updateUserSchema = z
+  .object({
+    name: z.string().min(2).optional(),
+    email: z.email().optional(),
+    currentPassword: z.string().min(6).optional(),
+    newPassword: z.string().min(6).optional(),
+  })
+  .refine(
+    (data) => {
+      if (data.newPassword && !data.currentPassword) return false
+      if (data.currentPassword && !data.newPassword) return false
+      return true
+    },
+    {
+      message: 'currentPassword e newPassword devem ser informados juntos',
+    },
+  )
 
 export const userResponseSchema = z.object({
   id: z.uuid(),
