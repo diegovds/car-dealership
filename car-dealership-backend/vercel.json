@@ -1,4 +1,3 @@
 {
-  "buildCommand": "npm run db:migrate:prod",
   "rewrites": [{ "source": "/(.*)", "destination": "/api/index" }]
 }
