@@ -9,7 +9,7 @@ export const createCarSchema = z.object({
   fuel: z.string().optional(),
   transmission: z.string().optional(),
   mileage: z.number().int().optional(),
-  imageUrl: z.string().url().optional(),
+  imageUrl: z.url().optional(),
 })
 
 export const updateCarSchema = z.object({
@@ -21,7 +21,7 @@ export const updateCarSchema = z.object({
   fuel: z.string().optional(),
   transmission: z.string().optional(),
   mileage: z.number().int().optional(),
-  imageUrl: z.string().url().optional(),
+  imageUrl: z.url().optional(),
 })
 
 export const carIdParamSchema = z.object({
@@ -30,7 +30,7 @@ export const carIdParamSchema = z.object({
 
 export const carResponseSchema = z.object({
   id: z.uuid(),
-  userId: z.string().uuid().nullable(),
+  userId: z.uuid().nullable(),
   brand: z.string(),
   model: z.string(),
   version: z.string().nullable(),
