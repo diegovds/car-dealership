@@ -30,11 +30,7 @@ export async function login(app: FastifyInstance, data: LoginInput) {
   return { token }
 }
 
-export async function getUserById(requesterId: string, id: string) {
-  if (requesterId !== id) {
-    throw new AppError(403, 'Acesso negado')
-  }
-
+export async function getUserById(id: string) {
   const user = await repository.findUserById(id)
   if (!user) {
     throw new AppError(404, 'Usuário não encontrado')
@@ -54,14 +50,9 @@ export async function createUser(app: FastifyInstance, data: CreateUserInput) {
 
 export async function updateUser(
   app: FastifyInstance,
-  requesterId: string,
   id: string,
   data: UpdateUserInput,
 ) {
-  if (requesterId !== id) {
-    throw new AppError(403, 'Acesso negado')
-  }
-
   if (data.email) {
     const existing = await repository.findUserByEmail(data.email)
     if (existing && existing.id !== id) {
@@ -81,11 +72,7 @@ export async function updateUser(
   return user
 }
 
-export async function deleteUser(requesterId: string, id: string) {
-  if (requesterId !== id) {
-    throw new AppError(403, 'Acesso negado')
-  }
-
+export async function deleteUser(id: string) {
   const user = await repository.deleteUser(id)
   if (!user) {
     throw new AppError(404, 'Usuário não encontrado')

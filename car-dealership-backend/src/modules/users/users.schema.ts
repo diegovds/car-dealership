@@ -17,10 +17,6 @@ export const updateUserSchema = z.object({
   password: z.string().min(6).optional(),
 })
 
-export const userIdParamSchema = z.object({
-  id: z.uuid(),
-})
-
 export const userResponseSchema = z.object({
   id: z.uuid(),
   name: z.string(),

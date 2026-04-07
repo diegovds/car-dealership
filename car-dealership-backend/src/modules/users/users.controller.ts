@@ -25,31 +25,23 @@ export async function createUser(
 }
 
 export async function getUserById(
-  request: FastifyRequest<{ Params: { id: string } }>,
+  request: FastifyRequest,
   reply: FastifyReply,
 ) {
-  const user = await service.getUserById(request.user.sub, request.params.id)
+  const user = await service.getUserById(request.user.sub)
   return reply.send(user)
 }
 
 export async function updateUser(
   this: FastifyInstance,
-  request: FastifyRequest<{ Params: { id: string }; Body: UpdateUserInput }>,
+  request: FastifyRequest<{ Body: UpdateUserInput }>,
   reply: FastifyReply,
 ) {
-  const user = await service.updateUser(
-    this,
-    request.user.sub,
-    request.params.id,
-    request.body,
-  )
+  const user = await service.updateUser(this, request.user.sub, request.body)
   return reply.send(user)
 }
 
-export async function deleteUser(
-  request: FastifyRequest<{ Params: { id: string } }>,
-  reply: FastifyReply,
-) {
-  await service.deleteUser(request.user.sub, request.params.id)
+export async function deleteUser(request: FastifyRequest, reply: FastifyReply) {
+  await service.deleteUser(request.user.sub)
   return reply.status(204).send()
 }

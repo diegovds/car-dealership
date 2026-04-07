@@ -5,7 +5,6 @@ import {
   createUserSchema,
   loginSchema,
   updateUserSchema,
-  userIdParamSchema,
   userResponseSchema,
   tokenResponseSchema,
 } from './users.schema'
@@ -14,6 +13,7 @@ import { authenticate } from '../../middlewares/authenticate'
 
 export async function usersRoutes(instance: FastifyInstance) {
   const app = instance.withTypeProvider<ZodTypeProvider>()
+
   app.post(
     '/users',
     {
@@ -51,18 +51,15 @@ export async function usersRoutes(instance: FastifyInstance) {
   )
 
   app.get(
-    '/users/:id',
+    '/users',
     {
       onRequest: [authenticate],
       schema: {
         tags: ['Users'],
-        summary: 'Buscar usuário por ID',
-        description:
-          'Retorna os dados do usuário autenticado. O ID deve ser o mesmo do token.',
-        params: userIdParamSchema,
+        summary: 'Buscar perfil do usuário',
+        description: 'Retorna os dados do usuário autenticado.',
         response: {
           200: userResponseSchema,
-          403: z.object({ message: z.string() }),
           404: z.object({ message: z.string() }),
         },
       },
@@ -71,19 +68,16 @@ export async function usersRoutes(instance: FastifyInstance) {
   )
 
   app.patch(
-    '/users/:id',
+    '/users',
     {
       onRequest: [authenticate],
       schema: {
         tags: ['Users'],
-        summary: 'Atualizar um usuário',
-        description:
-          'Atualiza os dados do usuário autenticado. O ID deve ser o mesmo do token.',
-        params: userIdParamSchema,
+        summary: 'Atualizar usuário',
+        description: 'Atualiza os dados do usuário autenticado.',
         body: updateUserSchema,
         response: {
           200: userResponseSchema,
-          403: z.object({ message: z.string() }),
           404: z.object({ message: z.string() }),
           409: z.object({ message: z.string() }),
         },
@@ -93,18 +87,15 @@ export async function usersRoutes(instance: FastifyInstance) {
   )
 
   app.delete(
-    '/users/:id',
+    '/users',
     {
       onRequest: [authenticate],
       schema: {
         tags: ['Users'],
-        summary: 'Deletar um usuário',
-        description:
-          'Remove o usuário autenticado e todos os seus carros. O ID deve ser o mesmo do token.',
-        params: userIdParamSchema,
+        summary: 'Deletar usuário',
+        description: 'Remove o usuário autenticado e todos os seus carros.',
         response: {
           204: z.null().describe('Usuário deletado com sucesso'),
-          403: z.object({ message: z.string() }),
           404: z.object({ message: z.string() }),
         },
       },
