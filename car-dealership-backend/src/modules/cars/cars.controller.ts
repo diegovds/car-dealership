@@ -3,7 +3,7 @@ import type { CreateCarInput, UpdateCarInput } from './cars.schema'
 import * as service from './cars.service'
 
 function getUserId(request: FastifyRequest): string {
-  return (request.user as { sub: string }).sub
+  return request.user.sub
 }
 
 export async function listCars(request: FastifyRequest, reply: FastifyReply) {

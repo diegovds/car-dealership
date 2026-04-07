@@ -28,8 +28,7 @@ export async function getUserById(
   request: FastifyRequest<{ Params: { id: string } }>,
   reply: FastifyReply,
 ) {
-  const requesterId = (request.user as { sub: string }).sub
-  const user = await service.getUserById(requesterId, request.params.id)
+  const user = await service.getUserById(request.user.sub, request.params.id)
   return reply.send(user)
 }
 
@@ -38,10 +37,9 @@ export async function updateUser(
   request: FastifyRequest<{ Params: { id: string }; Body: UpdateUserInput }>,
   reply: FastifyReply,
 ) {
-  const requesterId = (request.user as { sub: string }).sub
   const user = await service.updateUser(
     this,
-    requesterId,
+    request.user.sub,
     request.params.id,
     request.body,
   )
@@ -52,7 +50,6 @@ export async function deleteUser(
   request: FastifyRequest<{ Params: { id: string } }>,
   reply: FastifyReply,
 ) {
-  const requesterId = (request.user as { sub: string }).sub
-  await service.deleteUser(requesterId, request.params.id)
+  await service.deleteUser(request.user.sub, request.params.id)
   return reply.status(204).send()
 }
