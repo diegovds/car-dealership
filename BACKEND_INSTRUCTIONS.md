@@ -100,13 +100,68 @@ docker compose down -v
 
 ---
 
+## `package.json`
+
+```json
+{
+  "scripts": {
+    "dev": "tsx watch --env-file=.env src/server.ts"
+  },
+  "dependencies": {
+    "@fastify/cors": "^11.2.0",
+    "@fastify/jwt": "^10.0.0",
+    "@fastify/swagger": "^9.7.0",
+    "@fastify/swagger-ui": "^5.2.5",
+    "drizzle-orm": "^0.45.2",
+    "fastify": "^5.8.4",
+    "fastify-bcrypt": "^1.0.1",
+    "fastify-type-provider-zod": "^6.1.0",
+    "pg": "^8.20.0",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@types/node": "^25.5.2",
+    "@types/pg": "^8.20.0",
+    "drizzle-kit": "^0.31.10",
+    "tsx": "^4.21.0",
+    "typescript": "^6.0.2"
+  }
+}
+```
+
+- `npm run dev` — inicia o servidor em modo watch com carregamento automático do `.env`
+
+---
+
+## `tsconfig.json`
+
+```json
+{
+  "$schema": "https://www.schemastore.org/tsconfig",
+  "compilerOptions": {
+    "lib": ["es2024", "ESNext.Array", "ESNext.Collection", "ESNext.Iterator"],
+    "module": "nodenext",
+    "target": "es2022",
+    "types": ["node"],
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "moduleResolution": "node16"
+  }
+}
+```
+
+---
+
 ## Arquivos Base (não mudam entre projetos)
 
 ### `.env`
 
+Credenciais devem bater com o `docker-compose.yml`.
+
 ```env
 PORT=3333
-DATABASE_URL="postgresql://usuario:senha@localhost:5432/nome-do-banco"
+DATABASE_URL="postgresql://docker:docker@localhost:5432/nome-do-banco"
 JWT_SECRET_KEY="chave-secreta"
 BASE_URL="http://localhost:3333"
 ```
@@ -333,6 +388,339 @@ export const users = pgTable('users', {
 export const usersRelations = relations(users, ({ many }) => ({
   // entidadesFilhas: many(entidadesFilhas),
 }))
+```
+
+### `users.schema.ts`
+
+```ts
+import z from 'zod'
+
+export const createUserSchema = z.object({
+  name: z.string().min(2),
+  email: z.email(),
+  password: z.string().min(6),
+})
+
+export const loginSchema = z.object({
+  email: z.email(),
+  password: z.string().min(6),
+})
+
+export const updateUserSchema = z
+  .object({
+    name: z.string().min(2).optional(),
+    email: z.email().optional(),
+    currentPassword: z.string().min(6).optional(),
+    newPassword: z.string().min(6).optional(),
+  })
+  .refine(
+    (data) => {
+      if (data.newPassword && !data.currentPassword) return false
+      if (data.currentPassword && !data.newPassword) return false
+      return true
+    },
+    {
+      message: 'currentPassword e newPassword devem ser informados juntos',
+    },
+  )
+
+export const userResponseSchema = z.object({
+  id: z.uuid(),
+  name: z.string(),
+  email: z.string(),
+  createdAt: z.date(),
+  updatedAt: z.date(),
+})
+
+export const tokenResponseSchema = z.object({
+  token: z.string(),
+})
+
+export type CreateUserInput = z.infer<typeof createUserSchema>
+export type UpdateUserInput = z.infer<typeof updateUserSchema>
+export type LoginInput = z.infer<typeof loginSchema>
+```
+
+### `users.repository.ts`
+
+```ts
+import { eq } from 'drizzle-orm'
+import { db } from '../../db/client'
+import { users } from '../../db/schema'
+import type { CreateUserInput, UpdateUserInput } from './users.schema'
+
+export async function findUserById(id: string) {
+  const result = await db.select().from(users).where(eq(users.id, id))
+  return result[0] ?? null
+}
+
+export async function findUserByEmail(email: string) {
+  const result = await db.select().from(users).where(eq(users.email, email))
+  return result[0] ?? null
+}
+
+export async function createUser(data: CreateUserInput & { password: string }) {
+  const result = await db.insert(users).values(data).returning()
+  return result[0]
+}
+
+export async function updateUser(id: string, data: UpdateUserInput) {
+  const result = await db
+    .update(users)
+    .set({ ...data, updatedAt: new Date() })
+    .where(eq(users.id, id))
+    .returning()
+  return result[0] ?? null
+}
+
+export async function deleteUser(id: string) {
+  const result = await db.delete(users).where(eq(users.id, id)).returning()
+  return result[0] ?? null
+}
+```
+
+### `users.service.ts`
+
+```ts
+import type { FastifyInstance } from 'fastify'
+import * as repository from './users.repository'
+import type {
+  CreateUserInput,
+  LoginInput,
+  UpdateUserInput,
+} from './users.schema'
+
+class AppError extends Error {
+  statusCode: number
+
+  constructor(statusCode: number, message: string) {
+    super(message)
+    this.statusCode = statusCode
+  }
+}
+
+export async function login(app: FastifyInstance, data: LoginInput) {
+  const user = await repository.findUserByEmail(data.email)
+  if (!user) {
+    throw new AppError(401, 'Email ou senha inválidos')
+  }
+
+  const validPassword = await app.bcrypt.compare(data.password, user.password)
+  if (!validPassword) {
+    throw new AppError(401, 'Email ou senha inválidos')
+  }
+
+  const token = app.jwt.sign({ sub: user.id }, { expiresIn: '7d' })
+  return { token }
+}
+
+export async function getUserById(id: string) {
+  const user = await repository.findUserById(id)
+  if (!user) {
+    throw new AppError(404, 'Usuário não encontrado')
+  }
+  return user
+}
+
+export async function createUser(app: FastifyInstance, data: CreateUserInput) {
+  const existing = await repository.findUserByEmail(data.email)
+  if (existing) {
+    throw new AppError(409, 'Email já cadastrado')
+  }
+
+  const hashedPassword = await app.bcrypt.hash(data.password)
+  return repository.createUser({ ...data, password: hashedPassword })
+}
+
+export async function updateUser(
+  app: FastifyInstance,
+  id: string,
+  data: UpdateUserInput,
+) {
+  if (data.email) {
+    const existing = await repository.findUserByEmail(data.email)
+    if (existing && existing.id !== id) {
+      throw new AppError(409, 'Email já cadastrado')
+    }
+  }
+
+  const updateData: Record<string, unknown> = {}
+  if (data.name) updateData.name = data.name
+  if (data.email) updateData.email = data.email
+
+  if (data.currentPassword && data.newPassword) {
+    const current = await repository.findUserById(id)
+    if (!current) {
+      throw new AppError(404, 'Usuário não encontrado')
+    }
+
+    const validPassword = await app.bcrypt.compare(
+      data.currentPassword,
+      current.password,
+    )
+    if (!validPassword) {
+      throw new AppError(401, 'Senha atual incorreta')
+    }
+
+    updateData.password = await app.bcrypt.hash(data.newPassword)
+  }
+
+  const user = await repository.updateUser(id, updateData)
+  if (!user) {
+    throw new AppError(404, 'Usuário não encontrado')
+  }
+  return user
+}
+
+export async function deleteUser(id: string) {
+  const user = await repository.deleteUser(id)
+  if (!user) {
+    throw new AppError(404, 'Usuário não encontrado')
+  }
+  return user
+}
+```
+
+### `users.controller.ts`
+
+```ts
+import type { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify'
+import type {
+  CreateUserInput,
+  LoginInput,
+  UpdateUserInput,
+} from './users.schema'
+import * as service from './users.service'
+
+export async function login(
+  this: FastifyInstance,
+  request: FastifyRequest<{ Body: LoginInput }>,
+  reply: FastifyReply,
+) {
+  const result = await service.login(this, request.body)
+  return reply.send(result)
+}
+
+export async function createUser(
+  this: FastifyInstance,
+  request: FastifyRequest<{ Body: CreateUserInput }>,
+  reply: FastifyReply,
+) {
+  const user = await service.createUser(this, request.body)
+  return reply.status(201).send(user)
+}
+
+export async function getUserById(
+  request: FastifyRequest,
+  reply: FastifyReply,
+) {
+  const user = await service.getUserById(request.user.sub)
+  return reply.send(user)
+}
+
+export async function updateUser(
+  this: FastifyInstance,
+  request: FastifyRequest<{ Body: UpdateUserInput }>,
+  reply: FastifyReply,
+) {
+  const user = await service.updateUser(this, request.user.sub, request.body)
+  return reply.send(user)
+}
+
+export async function deleteUser(request: FastifyRequest, reply: FastifyReply) {
+  await service.deleteUser(request.user.sub)
+  return reply.status(204).send()
+}
+```
+
+### `users.routes.ts`
+
+```ts
+import type { FastifyInstance } from 'fastify'
+import type { ZodTypeProvider } from 'fastify-type-provider-zod'
+import z from 'zod'
+import {
+  createUserSchema,
+  loginSchema,
+  updateUserSchema,
+  userResponseSchema,
+  tokenResponseSchema,
+} from './users.schema'
+import * as controller from './users.controller'
+import { authenticate } from '../../middlewares/authenticate'
+
+export async function usersRoutes(instance: FastifyInstance) {
+  const app = instance.withTypeProvider<ZodTypeProvider>()
+
+  app.post('/users', {
+    schema: {
+      tags: ['Users'],
+      security: [],
+      summary: 'Criar um novo usuário',
+      description: 'Cria um novo usuário com nome, email e senha.',
+      body: createUserSchema,
+      response: {
+        201: userResponseSchema,
+        409: z.object({ message: z.string() }),
+      },
+    },
+  }, controller.createUser)
+
+  app.post('/users/login', {
+    schema: {
+      tags: ['Users'],
+      security: [],
+      summary: 'Autenticar usuário',
+      description: 'Retorna um token JWT para uso nos endpoints protegidos.',
+      body: loginSchema,
+      response: {
+        200: tokenResponseSchema,
+        401: z.object({ message: z.string() }),
+      },
+    },
+  }, controller.login)
+
+  app.get('/users', {
+    onRequest: [authenticate],
+    schema: {
+      tags: ['Users'],
+      summary: 'Buscar perfil do usuário',
+      description: 'Retorna os dados do usuário autenticado.',
+      response: {
+        200: userResponseSchema,
+        404: z.object({ message: z.string() }),
+      },
+    },
+  }, controller.getUserById)
+
+  app.patch('/users', {
+    onRequest: [authenticate],
+    schema: {
+      tags: ['Users'],
+      summary: 'Atualizar usuário',
+      description: 'Atualiza os dados do usuário autenticado.',
+      body: updateUserSchema,
+      response: {
+        200: userResponseSchema,
+        404: z.object({ message: z.string() }),
+        409: z.object({ message: z.string() }),
+      },
+    },
+  }, controller.updateUser)
+
+  app.delete('/users', {
+    onRequest: [authenticate],
+    schema: {
+      tags: ['Users'],
+      summary: 'Deletar usuário',
+      description: 'Remove o usuário autenticado e todos os seus carros.',
+      response: {
+        204: z.null().describe('Usuário deletado com sucesso'),
+        404: z.object({ message: z.string() }),
+      },
+    },
+  }, controller.deleteUser)
+}
 ```
 
 ---
