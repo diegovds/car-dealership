@@ -69,5 +69,3 @@ app.register(fastifySwaggerUi, {
 app.register(routes)
 
 export { app }
-
-// 48:37
