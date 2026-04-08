@@ -1,6 +1,6 @@
 export default function RegisterPage() {
   return (
-    <div >
+    <div className="flex-1">
       RegisterPage
     </div>
   );
