@@ -107,16 +107,19 @@ const BUSCAR_CARROS_TOOL = {
   },
 } satisfies OpenAI.ChatCompletionTool
 
-function naturalReply(itemCount: number): string {
+function naturalReply(itemCount: number, filterCount: number): string {
+  const char =
+    filterCount === 1 ? 'essa característica' : 'essas características'
+
   if (itemCount === 0) {
     return 'Não encontrei nenhum veículo no nosso catálogo.'
   }
 
   if (itemCount === 1) {
-    return 'Encontrei 1 veículo com essas características.'
+    return `Encontrei 1 veículo com ${char}.`
   }
 
-  return `Encontrei ${itemCount} veículos no catálogo pra você.`
+  return `Encontrei ${itemCount} veículos com ${char}.`
 }
 
 function toolJsonToFilters(raw: string): SearchFilters {
@@ -198,7 +201,7 @@ export function createAiSearchAgent() {
 
     return {
       items,
-      reply: naturalReply(items.length),
+      reply: naturalReply(items.length, Object.keys(filters).length),
     }
   }
 }
