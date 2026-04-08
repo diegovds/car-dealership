@@ -6,6 +6,8 @@
   "scripts": {
     "dev": "tsx watch --env-file=.env src/server.ts",
     "migrate": "tsx src/scripts/migrate.ts",
+    "seed": "tsx --env-file=.env src/scripts/seed.ts",
+    "db:reset": "tsx --env-file=.env src/scripts/reset.ts",
     "vercel-build": "npm run migrate"
   },
   "keywords": [],
