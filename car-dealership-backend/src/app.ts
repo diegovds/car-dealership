@@ -13,12 +13,7 @@ import {
 import { env } from './config/env'
 import { routes } from './routes'
 
-const app = fastify({
-  logger:
-    env.NODE_ENV === 'development'
-      ? { transport: { target: 'pino-pretty' } }
-      : false,
-}).withTypeProvider<ZodTypeProvider>()
+const app = fastify({}).withTypeProvider<ZodTypeProvider>()
 
 app.setSerializerCompiler(serializerCompiler)
 app.setValidatorCompiler(validatorCompiler)
