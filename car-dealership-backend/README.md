@@ -57,10 +57,11 @@ OPENAI_MODEL=gpt-4o-mini
 | `OPENAI_API_KEY` | Chave da API da OpenAI |
 | `OPENAI_MODEL` | Modelo da OpenAI (padrao: gpt-4o-mini) |
 
-### 4. Executar migrations
+### 4. Gerar e executar migrations
 
 ```bash
-npm run migrate
+npx drizzle-kit generate
+npx drizzle-kit migrate
 ```
 
 ### 5. Iniciar em desenvolvimento
