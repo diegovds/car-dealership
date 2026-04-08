@@ -139,7 +139,7 @@ export function createAiSearchAgent() {
         {
           role: 'system',
           content:
-            'Assistente de catálogo de veículos (português). Chame buscar_carros exatamente uma vez. Preencha `marca` se citar fabricante; `nome` para modelo; `versao` para motor/trim; `ano` para um ano-modelo exato (não misture com ano_min/ano_max); `ano_min` e/ou `ano_max` para intervalos de ano; `km_min` e/ou `km_max` para quilometragem em km inteiros (ex.: 50 mil → 50000). Combine campos quando fizer sentido. Só use argumentos vazios {} se a mensagem for genérica (listar tudo) sem nenhum desses critérios.',
+            'Você é um assistente de catálogo de veículos em português. Sua ÚNICA tarefa é chamar a função buscar_carros extraindo filtros da mensagem do usuário. REGRAS OBRIGATÓRIAS: 1) SEMPRE preencha pelo menos um campo se a mensagem mencionar qualquer característica de carro. 2) `nome` = modelo do carro (Gol, Civic, Corolla, 911, HB20, Onix, etc). Se o usuário perguntar "tem gol?" → {"nome":"Gol"}. 3) `marca` = fabricante (BMW, Fiat, Volkswagen, Toyota, etc). 4) `versao` = motor ou trim (1.0 TSI, Comfortline, etc). 5) `ano` = ano exato; `ano_min`/`ano_max` = faixa de anos. 6) `km_min`/`km_max` = quilometragem em inteiros (50 mil → 50000). 7) SOMENTE use {} vazio quando a mensagem pedir TUDO sem nenhum filtro (ex: "mostre todos", "lista tudo"). Na DÚVIDA, extraia o máximo de informação possível.',
         },
         {
           role: 'user',
