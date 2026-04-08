@@ -13,7 +13,12 @@ import {
 import { env } from './config/env'
 import { routes } from './routes'
 
-const app = fastify().withTypeProvider<ZodTypeProvider>()
+const app = fastify({
+  logger:
+    env.NODE_ENV === 'development'
+      ? { transport: { target: 'pino-pretty' } }
+      : false,
+}).withTypeProvider<ZodTypeProvider>()
 
 app.setSerializerCompiler(serializerCompiler)
 app.setValidatorCompiler(validatorCompiler)
@@ -64,3 +69,5 @@ app.register(fastifySwaggerUi, {
 app.register(routes)
 
 export { app }
+
+// 48:37
