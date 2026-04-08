@@ -1,7 +1,7 @@
 import OpenAI from 'openai'
 import { z } from 'zod'
 import { env } from '../../../config/env.js'
-import type { CarsRepository } from '../cars.repository.js'
+import { searchFilterCars } from '../cars.repository.js'
 import type { SearchFilters } from '../cars.schema.js'
 
 const TOOL_NAME = 'buscar_carros'
@@ -94,7 +94,7 @@ function naturalReply(itemCount: number): string {
   return `Encontrei ${itemCount} veiculos no catalogo pra você.`
 }
 
-function toolJsonTofilters(raw: string): SearchFilters {
+function toolJsonToFilters(raw: string): SearchFilters {
   try {
     const parsed = toolArgsSchema.safeParse(JSON.parse(raw) as unknown)
 
@@ -112,6 +112,7 @@ function toolJsonTofilters(raw: string): SearchFilters {
       km_min: kmMin,
       km_max: kmMax,
     } = parsed.data
+
     return {
       ...(marca ? { brand: marca } : {}),
       ...(versao ? { version: versao } : {}),
@@ -127,18 +128,12 @@ function toolJsonTofilters(raw: string): SearchFilters {
   }
 }
 
-export class AiSearchAgentService {
-  private readonly client = new OpenAI({
-    apiKey: env.OPENAI_API_KEY,
-  })
+export function createAiSearchAgent() {
+  const client = new OpenAI({ apiKey: env.OPENAI_API_KEY })
 
-  constructor(private readonly repository: CarsRepository) {}
-
-  async run(userMessage: string) {
-    console.log('MENSAGEM: ', userMessage)
-
-    const completion = await this.client.chat.completions.create({
-      model: env.OPENAI_MODEL as string,
+  return async function run(userMessage: string) {
+    const completion = await client.chat.completions.create({
+      model: env.OPENAI_MODEL,
       temperature: 0,
       messages: [
         {
@@ -163,10 +158,10 @@ export class AiSearchAgentService {
     )
 
     const filters = call
-      ? toolJsonTofilters(call.function.arguments ?? '{}')
+      ? toolJsonToFilters(call.function.arguments ?? '{}')
       : {}
 
-    const { items } = await this.repository.searchfilterCars({ filters })
+    const { items } = await searchFilterCars(filters)
 
     return {
       items,
