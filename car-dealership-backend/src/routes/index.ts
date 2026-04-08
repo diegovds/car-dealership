@@ -11,9 +11,8 @@ export async function routes(app: FastifyInstance) {
       schema: {
         tags: ['Default'],
         security: [],
-        summary: 'Página inicial da API',
-        description:
-          'Retorna uma mensagem de boas-vindas e um link para a documentação da API.',
+        summary: 'Rota padrão',
+        description: 'Retorna um link para a documentação da API.',
         response: {
           200: z.object({
             Car_Dealership_API: z.string(),

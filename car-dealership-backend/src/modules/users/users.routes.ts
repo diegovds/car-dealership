@@ -22,8 +22,8 @@ export async function usersRoutes(instance: FastifyInstance) {
       schema: {
         tags: ['Users'],
         security: [],
-        summary: 'Criar um novo usuário',
-        description: 'Cria um novo usuário com nome, email e senha.',
+        summary: 'Cadastrar usuário',
+        description: 'Cria uma nova conta com nome, email e senha.',
         body: createUserSchema,
         response: {
           201: userResponseSchema,
@@ -40,8 +40,8 @@ export async function usersRoutes(instance: FastifyInstance) {
       schema: {
         tags: ['Users'],
         security: [],
-        summary: 'Autenticar usuário',
-        description: 'Retorna um token JWT para uso nos endpoints protegidos.',
+        summary: 'Login',
+        description: 'Autentica o usuário e retorna um token JWT.',
         body: loginSchema,
         response: {
           200: tokenResponseSchema,
@@ -58,9 +58,9 @@ export async function usersRoutes(instance: FastifyInstance) {
       onRequest: [authenticate],
       schema: {
         tags: ['Users'],
-        summary: 'Buscar perfil do usuário',
+        summary: 'Obter perfil',
         description:
-          'Retorna os dados do usuário autenticado com seus carros paginados.',
+          'Retorna o perfil do usuário autenticado e seus carros paginados.',
         querystring: paginationQuerySchema,
         response: {
           200: userWithCarsResponseSchema,
@@ -77,8 +77,8 @@ export async function usersRoutes(instance: FastifyInstance) {
       onRequest: [authenticate],
       schema: {
         tags: ['Users'],
-        summary: 'Atualizar usuário',
-        description: 'Atualiza os dados do usuário autenticado.',
+        summary: 'Atualizar perfil',
+        description: 'Atualiza nome, email ou senha do usuário autenticado.',
         body: updateUserSchema,
         response: {
           200: userResponseSchema,
@@ -96,8 +96,8 @@ export async function usersRoutes(instance: FastifyInstance) {
       onRequest: [authenticate],
       schema: {
         tags: ['Users'],
-        summary: 'Deletar usuário',
-        description: 'Remove o usuário autenticado e todos os seus carros.',
+        summary: 'Excluir conta',
+        description: 'Remove a conta do usuário autenticado e seus carros.',
         response: {
           204: z.null().describe('Usuário deletado com sucesso'),
           404: z.object({ message: z.string() }),

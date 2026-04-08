@@ -22,8 +22,8 @@ export async function carsRoutes(instance: FastifyInstance) {
     {
       schema: {
         tags: ['Cars'],
-        summary: 'Buscar carros por texto',
-        description: 'Retorna carros filtrados pelo termo de busca.',
+        summary: 'Buscar carros por texto (IA)',
+        description: 'Interpreta a busca com IA e retorna carros relevantes.',
         security: [],
         querystring: searchRequestSchema,
         response: {
@@ -40,8 +40,8 @@ export async function carsRoutes(instance: FastifyInstance) {
       schema: {
         tags: ['Cars'],
         security: [],
-        summary: 'Listar todos os carros',
-        description: 'Retorna todos os carros cadastrados com paginação.',
+        summary: 'Listar carros',
+        description: 'Retorna todos os carros com paginação.',
         querystring: paginationQuerySchema,
         response: {
           200: carListPaginatedResponseSchema,
@@ -57,8 +57,8 @@ export async function carsRoutes(instance: FastifyInstance) {
       schema: {
         tags: ['Cars'],
         security: [],
-        summary: 'Buscar carro por ID',
-        description: 'Retorna um carro específico.',
+        summary: 'Obter carro por ID',
+        description: 'Retorna os detalhes de um carro específico.',
         params: carIdParamSchema,
         response: {
           200: carResponseSchema,
@@ -79,8 +79,8 @@ export async function carsRoutes(instance: FastifyInstance) {
       {
         schema: {
           tags: ['Cars'],
-          summary: 'Cadastrar um carro',
-          description: 'Cria um novo carro vinculado ao usuário autenticado.',
+          summary: 'Cadastrar carro',
+          description: 'Cadastra um novo carro para o usuário autenticado.',
           body: createCarSchema,
           response: {
             201: carResponseSchema,
@@ -95,7 +95,7 @@ export async function carsRoutes(instance: FastifyInstance) {
       {
         schema: {
           tags: ['Cars'],
-          summary: 'Atualizar um carro',
+          summary: 'Atualizar carro',
           description: 'Atualiza os dados de um carro do usuário autenticado.',
           params: carIdParamSchema,
           body: updateCarSchema,
@@ -113,7 +113,7 @@ export async function carsRoutes(instance: FastifyInstance) {
       {
         schema: {
           tags: ['Cars'],
-          summary: 'Deletar um carro',
+          summary: 'Excluir carro',
           description: 'Remove um carro do usuário autenticado.',
           params: carIdParamSchema,
           response: {
