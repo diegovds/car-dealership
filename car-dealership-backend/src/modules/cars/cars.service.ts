@@ -1,5 +1,12 @@
 import * as repository from './cars.repository'
-import type { CreateCarInput, UpdateCarInput } from './cars.schema'
+import type {
+  CreateCarInput,
+  SearchCarsRequestInput,
+  UpdateCarInput,
+} from './cars.schema'
+import { createAiSearchAgent } from './search/ai-search-agent.service'
+
+const searchAgent = createAiSearchAgent()
 
 class AppError extends Error {
   statusCode: number
@@ -44,4 +51,9 @@ export async function deleteCar(userId: string, id: string) {
     throw new AppError(404, 'Carro não encontrado')
   }
   return car
+}
+
+export async function searchCars({ search }: SearchCarsRequestInput) {
+  const resul = await searchAgent(search)
+  return resul
 }

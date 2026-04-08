@@ -46,5 +46,33 @@ export const carResponseSchema = z.object({
 
 export const carListResponseSchema = z.array(carResponseSchema)
 
+export const searchRequestSchema = z.object({
+  search: z.string().min(1),
+})
+
+const yearMaxFilter = new Date().getFullYear() + 1
+
+const optionalFilterYear = z.coerce
+  .number()
+  .int()
+  .min(1950)
+  .max(yearMaxFilter)
+  .optional()
+
+const optionalFilterMileage = z.coerce.number().int().min(0).optional()
+
+export const filtersSchema = z.object({
+  brand: z.string().trim().min(1).optional(),
+  model: z.string().trim().min(1).optional(),
+  version: z.string().trim().min(1).max(120).optional(),
+  year: optionalFilterYear,
+  yearMin: optionalFilterYear,
+  yearMax: optionalFilterYear,
+  mileageMin: optionalFilterMileage,
+  mileageMax: optionalFilterMileage,
+})
+
+export type SearchCarsRequestInput = z.infer<typeof searchRequestSchema>
+export type SearchFilters = z.infer<typeof filtersSchema>
 export type CreateCarInput = z.infer<typeof createCarSchema>
 export type UpdateCarInput = z.infer<typeof updateCarSchema>

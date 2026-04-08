@@ -1,7 +1,12 @@
-import { and, eq } from 'drizzle-orm'
+import { and, desc, eq } from 'drizzle-orm'
 import { db } from '../../db/client'
 import { cars } from '../../db/schema'
-import type { CreateCarInput, UpdateCarInput } from './cars.schema'
+import type {
+  CreateCarInput,
+  SearchFilters,
+  UpdateCarInput,
+} from './cars.schema'
+import { buildSearchQueryParts } from './search/search-query-builder.js'
 
 export async function findCarsByUserId(userId: string) {
   return db.select().from(cars).where(eq(cars.userId, userId))
@@ -42,4 +47,18 @@ export async function deleteCar(id: string, userId: string) {
     .where(and(eq(cars.id, id), eq(cars.userId, userId)))
     .returning()
   return result[0] ?? null
+}
+
+export async function searchFilterCars(filters: SearchFilters) {
+  const { where } = buildSearchQueryParts(filters)
+
+  let query = db.select().from(cars).$dynamic()
+
+  if (where) {
+    query = query.where(where)
+  }
+
+  const items = await query.orderBy(desc(cars.createdAt))
+
+  return { items }
 }

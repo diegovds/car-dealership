@@ -1,5 +1,9 @@
 import type { FastifyReply, FastifyRequest } from 'fastify'
-import type { CreateCarInput, UpdateCarInput } from './cars.schema'
+import type {
+  CreateCarInput,
+  SearchCarsRequestInput,
+  UpdateCarInput,
+} from './cars.schema'
 import * as service from './cars.service'
 
 function getUserId(request: FastifyRequest): string {
@@ -45,4 +49,12 @@ export async function deleteCar(
 ) {
   await service.deleteCar(getUserId(request), request.params.id)
   return reply.status(204).send()
+}
+
+export async function searchCars(
+  request: FastifyRequest<{ Querystring: SearchCarsRequestInput }>,
+  reply: FastifyReply,
+) {
+  const cars = await service.searchCars(request.query)
+  return reply.send(cars)
 }

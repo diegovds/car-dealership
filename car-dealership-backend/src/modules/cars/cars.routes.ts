@@ -8,6 +8,7 @@ import {
   carListResponseSchema,
   carResponseSchema,
   createCarSchema,
+  searchRequestSchema,
   updateCarSchema,
 } from './cars.schema'
 
@@ -80,6 +81,23 @@ export async function carsRoutes(instance: FastifyInstance) {
       },
     },
     controller.updateCar,
+  )
+
+  app.get(
+    '/cars/search',
+    {
+      schema: {
+        tags: ['Cars'],
+        summary: 'Buscar carros por texto',
+        description:
+          'Retorna carros do usuário autenticado filtrados pelo termo de busca.',
+        querystring: searchRequestSchema,
+        response: {
+          200: carListResponseSchema,
+        },
+      },
+    },
+    controller.searchCars,
   )
 
   app.delete(
