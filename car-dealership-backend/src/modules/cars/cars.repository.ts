@@ -79,5 +79,5 @@ export async function searchFilterCars(filters: SearchFilters) {
 
   const items = await query.orderBy(desc(cars.createdAt))
 
-  return { items }
+  return { cars: items }
 }

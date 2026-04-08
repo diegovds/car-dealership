@@ -69,7 +69,7 @@ export const searchCarItemSchema = carResponseSchema
 export const searchCarListSchema = z.array(searchCarItemSchema)
 
 export const searchResponseSchema = z.object({
-  items: searchCarListSchema,
+  cars: searchCarListSchema,
   reply: z.string(),
 })
 

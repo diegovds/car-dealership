@@ -197,11 +197,11 @@ export function createAiSearchAgent() {
       ? toolJsonToFilters(call.function.arguments ?? '{}')
       : {}
 
-    const { items } = await searchFilterCars(filters)
+    const { cars } = await searchFilterCars(filters)
 
     return {
-      items,
-      reply: naturalReply(items.length, Object.keys(filters).length),
+      cars,
+      reply: naturalReply(cars.length, Object.keys(filters).length),
     }
   }
 }
