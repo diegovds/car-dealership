@@ -50,6 +50,11 @@ export const searchRequestSchema = z.object({
   search: z.string().min(1),
 })
 
+export const searchResponseSchema = z.object({
+  items: carListResponseSchema,
+  reply: z.string(),
+})
+
 const yearMaxFilter = new Date().getFullYear() + 1
 
 const optionalFilterYear = z.coerce

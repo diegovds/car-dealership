@@ -9,6 +9,7 @@ import {
   carResponseSchema,
   createCarSchema,
   searchRequestSchema,
+  searchResponseSchema,
   updateCarSchema,
 } from './cars.schema'
 
@@ -23,7 +24,7 @@ export async function carsRoutes(instance: FastifyInstance) {
         security: [],
         querystring: searchRequestSchema,
         response: {
-          200: carListResponseSchema,
+          200: searchResponseSchema,
         },
       },
     },
