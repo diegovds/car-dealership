@@ -109,14 +109,14 @@ const BUSCAR_CARROS_TOOL = {
 
 function naturalReply(itemCount: number): string {
   if (itemCount === 0) {
-    return 'Não encontrei nenhum veiculo no nosso catalogo.'
+    return 'Não encontrei nenhum veículo no nosso catálogo.'
   }
 
   if (itemCount === 1) {
-    return 'Encontrei 1 veiculo com essas caracteristicas.'
+    return 'Encontrei 1 veículo com essas características.'
   }
 
-  return `Encontrei ${itemCount} veiculos no catalogo pra você.`
+  return `Encontrei ${itemCount} veículos no catálogo pra você.`
 }
 
 function toolJsonToFilters(raw: string): SearchFilters {
