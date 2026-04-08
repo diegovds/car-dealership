@@ -50,8 +50,11 @@ export const searchRequestSchema = z.object({
   search: z.string().min(1),
 })
 
+export const searchCarItemSchema = carResponseSchema.omit({ userId: true })
+export const searchCarListSchema = z.array(searchCarItemSchema)
+
 export const searchResponseSchema = z.object({
-  items: carListResponseSchema,
+  items: searchCarListSchema,
   reply: z.string(),
 })
 

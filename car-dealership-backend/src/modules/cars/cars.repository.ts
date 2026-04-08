@@ -1,4 +1,4 @@
-import { and, desc, eq } from 'drizzle-orm'
+import { and, desc, eq, getTableColumns } from 'drizzle-orm'
 import { db } from '../../db/client'
 import { cars } from '../../db/schema'
 import type {
@@ -52,7 +52,9 @@ export async function deleteCar(id: string, userId: string) {
 export async function searchFilterCars(filters: SearchFilters) {
   const { where } = buildSearchQueryParts(filters)
 
-  let query = db.select().from(cars).$dynamic()
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { userId, ...columns } = getTableColumns(cars)
+  let query = db.select(columns).from(cars).$dynamic()
 
   if (where) {
     query = query.where(where)
