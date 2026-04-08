@@ -46,6 +46,22 @@ export const carResponseSchema = z.object({
 
 export const carListResponseSchema = z.array(carResponseSchema)
 
+export const paginationQuerySchema = z.object({
+  page: z.coerce.number().int().min(1).default(1),
+})
+
+export const paginationMetaSchema = z.object({
+  page: z.number(),
+  perPage: z.number(),
+  total: z.number(),
+  totalPages: z.number(),
+})
+
+export const carListPaginatedResponseSchema = z.object({
+  cars: carListResponseSchema,
+  meta: paginationMetaSchema,
+})
+
 export const searchRequestSchema = z.object({
   search: z.string().min(1),
 })

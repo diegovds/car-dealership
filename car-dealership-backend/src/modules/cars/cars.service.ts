@@ -17,12 +17,26 @@ class AppError extends Error {
   }
 }
 
-export async function listCars(userId: string) {
-  return repository.findCarsByUserId(userId)
+export async function listCars(page: number) {
+  const perPage = 10
+  const [cars, total] = await Promise.all([
+    repository.findAllCars(page, perPage),
+    repository.countAllCars(),
+  ])
+
+  return {
+    cars,
+    meta: {
+      page,
+      perPage,
+      total,
+      totalPages: Math.ceil(total / perPage),
+    },
+  }
 }
 
-export async function getCarById(userId: string, id: string) {
-  const car = await repository.findCarByIdAndUserId(id, userId)
+export async function getCarById(id: string) {
+  const car = await repository.findCarById(id)
   if (!car) {
     throw new AppError(404, 'Carro não encontrado')
   }

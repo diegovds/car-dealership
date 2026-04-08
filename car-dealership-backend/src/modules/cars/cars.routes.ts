@@ -5,16 +5,19 @@ import { authenticate } from '../../middlewares/authenticate'
 import * as controller from './cars.controller'
 import {
   carIdParamSchema,
-  carListResponseSchema,
+  carListPaginatedResponseSchema,
   carResponseSchema,
   createCarSchema,
+  paginationQuerySchema,
   searchRequestSchema,
   searchResponseSchema,
   updateCarSchema,
 } from './cars.schema'
 
 export async function carsRoutes(instance: FastifyInstance) {
-  instance.withTypeProvider<ZodTypeProvider>().get(
+  const pub = instance.withTypeProvider<ZodTypeProvider>()
+
+  pub.get(
     '/cars/search',
     {
       schema: {
@@ -31,42 +34,45 @@ export async function carsRoutes(instance: FastifyInstance) {
     controller.searchCars,
   )
 
+  pub.get(
+    '/cars',
+    {
+      schema: {
+        tags: ['Cars'],
+        security: [],
+        summary: 'Listar todos os carros',
+        description: 'Retorna todos os carros cadastrados com paginação.',
+        querystring: paginationQuerySchema,
+        response: {
+          200: carListPaginatedResponseSchema,
+        },
+      },
+    },
+    controller.listCars,
+  )
+
+  pub.get(
+    '/cars/:id',
+    {
+      schema: {
+        tags: ['Cars'],
+        security: [],
+        summary: 'Buscar carro por ID',
+        description: 'Retorna um carro específico.',
+        params: carIdParamSchema,
+        response: {
+          200: carResponseSchema,
+          404: z.object({ message: z.string() }),
+        },
+      },
+    },
+    controller.getCarById,
+  )
+
   instance.register(async (scope) => {
     const app = scope.withTypeProvider<ZodTypeProvider>()
 
     app.addHook('onRequest', authenticate)
-
-    app.get(
-      '/cars',
-      {
-        schema: {
-          tags: ['Cars'],
-          summary: 'Listar carros do usuário',
-          description: 'Retorna todos os carros do usuário autenticado.',
-          response: {
-            200: carListResponseSchema,
-          },
-        },
-      },
-      controller.listCars,
-    )
-
-    app.get(
-      '/cars/:id',
-      {
-        schema: {
-          tags: ['Cars'],
-          summary: 'Buscar carro por ID',
-          description: 'Retorna um carro específico do usuário autenticado.',
-          params: carIdParamSchema,
-          response: {
-            200: carResponseSchema,
-            404: z.object({ message: z.string() }),
-          },
-        },
-      },
-      controller.getCarById,
-    )
 
     app.post(
       '/cars',

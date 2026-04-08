@@ -1,4 +1,4 @@
-import { and, desc, eq, getTableColumns } from 'drizzle-orm'
+import { and, count, desc, eq, getTableColumns } from 'drizzle-orm'
 import { db } from '../../db/client'
 import { cars } from '../../db/schema'
 import type {
@@ -17,6 +17,25 @@ export async function findCarByIdAndUserId(id: string, userId: string) {
     .select()
     .from(cars)
     .where(and(eq(cars.id, id), eq(cars.userId, userId)))
+  return result[0] ?? null
+}
+
+export async function findAllCars(page: number, perPage: number) {
+  return db
+    .select()
+    .from(cars)
+    .orderBy(desc(cars.createdAt))
+    .limit(perPage)
+    .offset((page - 1) * perPage)
+}
+
+export async function countAllCars() {
+  const result = await db.select({ total: count() }).from(cars)
+  return result[0].total
+}
+
+export async function findCarById(id: string) {
+  const result = await db.select().from(cars).where(eq(cars.id, id))
   return result[0] ?? null
 }
 

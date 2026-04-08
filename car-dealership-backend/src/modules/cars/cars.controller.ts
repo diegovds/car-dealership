@@ -10,16 +10,20 @@ function getUserId(request: FastifyRequest): string {
   return request.user.sub
 }
 
-export async function listCars(request: FastifyRequest, reply: FastifyReply) {
-  const cars = await service.listCars(getUserId(request))
-  return reply.send(cars)
+export async function listCars(
+  request: FastifyRequest<{ Querystring: { page?: number } }>,
+  reply: FastifyReply,
+) {
+  const page = request.query.page ?? 1
+  const result = await service.listCars(page)
+  return reply.send(result)
 }
 
 export async function getCarById(
   request: FastifyRequest<{ Params: { id: string } }>,
   reply: FastifyReply,
 ) {
-  const car = await service.getCarById(getUserId(request), request.params.id)
+  const car = await service.getCarById(request.params.id)
   return reply.send(car)
 }
 
