@@ -208,12 +208,3 @@ src/
 api/
   serverless.ts       # Entrada para deploy na Vercel
 ```
-
-## Deploy (Vercel)
-
-O projeto está configurado para deploy serverless na Vercel:
-
-1. Conecte o repositório no painel da Vercel
-2. Defina o **Root Directory** como `car-dealership-backend`
-3. Adicione as variáveis de ambiente: `DATABASE_URL`, `JWT_SECRET_KEY`, `BASE_URL`, `OPENAI_API_KEY`, `OPENAI_MODEL`
-4. As migrations rodam automaticamente a cada deploy via script `vercel-build`
