@@ -1,0 +1,176 @@
+import OpenAI from 'openai'
+import { z } from 'zod'
+import { env } from '../../../config/env.js'
+import type { CarsRepository } from '../cars.repository.js'
+import type { SearchFilters } from '../cars.schema.js'
+
+const TOOL_NAME = 'buscar_carros'
+
+const toolYearMax = new Date().getFullYear() + 1
+
+const toolOptionalAno = z.coerce
+  .number()
+  .int()
+  .min(1950)
+  .max(toolYearMax)
+  .optional()
+
+const toolOptionalKm = z.coerce.number().int().min(0).optional()
+
+const toolArgsSchema = z.object({
+  marca: z.string().trim().min(1).optional(),
+  nome: z.string().trim().min(1).optional(),
+  versao: z.string().trim().min(1).optional(),
+  ano: toolOptionalAno,
+  ano_min: toolOptionalAno,
+  ano_max: toolOptionalAno,
+  km_min: toolOptionalKm,
+  km_max: toolOptionalKm,
+})
+
+const BUSCAR_CARROS_TOOL = {
+  type: 'function' as const,
+  function: {
+    name: TOOL_NAME,
+    description:
+      'Consulta o catálogo por critérios. Preencha tudo o que a pergunta deixar claro. `marca` = fabricante (BMW, Fiat). `nome` = modelo (Gol, T-Cross). `versao` = motor/trim (1.4, Comfortline). `ano` = ano-modelo exato (use só um: `ano` OU `ano_min`/`ano_max`, não misture). `ano_min`/`ano_max` = faixa ("de 2018 a 2020", "a partir de 2019"). `km_min`/`km_max` = quilometragem em km inteiros ("50 mil km" → km_max: 50000; "acima de 100 mil" → km_min: 100000). Ex.: {"marca":"BMW"}; {"nome":"Gol","versao":"1.4"}; {"ano":2020}; {"ano_min":2018,"ano_max":2020}; {"km_max":50000}. Use {} só para pedidos genéricos sem marca, modelo, versão, ano nem km (ex.: "mostre tudo").',
+    parameters: {
+      type: 'object',
+      additionalProperties: false,
+      properties: {
+        marca: {
+          type: 'string',
+          description:
+            "Fabricante quanto citado, inclusive sozinho, (ex: 'tem bmw?' -> BMW)",
+        },
+        nome: {
+          type: 'string',
+          description: 'Modelo (ex.: Gol, T-Cross, 320i)',
+        },
+        versao: {
+          type: 'string',
+          description:
+            'Versão ou motor quando citado (ex.: 1.4, 1.0 TSI, Comfortline)',
+        },
+        ano: {
+          type: 'integer',
+          description:
+            'Ano-modelo exato quando citado um só ano (ex.: 2020). Não use junto com ano_min/ano_max.',
+        },
+        ano_min: {
+          type: 'integer',
+          description:
+            "Limite inferior do ano (inclusive), ex.: 'a partir de 2019' → 2019",
+        },
+        ano_max: {
+          type: 'integer',
+          description:
+            "Limite superior do ano (inclusive), ex.: 'até 2021' → 2021",
+        },
+        km_min: {
+          type: 'integer',
+          description:
+            "Km mínimos em número inteiro (ex.: 'mais de 80 mil km' → 80000)",
+        },
+        km_max: {
+          type: 'integer',
+          description:
+            "Km máximos em número inteiro (ex.: 'até 50 mil km' → 50000)",
+        },
+      },
+    },
+  },
+} satisfies OpenAI.ChatCompletionTool
+
+function naturalReply(itemCount: number): string {
+  if (itemCount === 0) {
+    return 'Não encontrei nenhum veiculo no nosso catalogo.'
+  }
+
+  if (itemCount === 1) {
+    return 'Encontrei 1 veiculo com essas caracteristicas.'
+  }
+
+  return `Encontrei ${itemCount} veiculos no catalogo pra você.`
+}
+
+function toolJsonTofilters(raw: string): SearchFilters {
+  try {
+    const parsed = toolArgsSchema.safeParse(JSON.parse(raw) as unknown)
+
+    if (!parsed.success) {
+      return {}
+    }
+
+    const {
+      marca,
+      versao,
+      nome,
+      ano,
+      ano_min: anoMin,
+      ano_max: anoMax,
+      km_min: kmMin,
+      km_max: kmMax,
+    } = parsed.data
+    return {
+      ...(marca ? { brand: marca } : {}),
+      ...(versao ? { version: versao } : {}),
+      ...(nome ? { model: nome } : {}),
+      ...(ano !== undefined ? { year: ano } : {}),
+      ...(anoMin !== undefined ? { yearMin: anoMin } : {}),
+      ...(anoMax !== undefined ? { yearMax: anoMax } : {}),
+      ...(kmMin !== undefined ? { mileageMin: kmMin } : {}),
+      ...(kmMax !== undefined ? { mileageMax: kmMax } : {}),
+    }
+  } catch {
+    return {}
+  }
+}
+
+export class AiSearchAgentService {
+  private readonly client = new OpenAI({
+    apiKey: env.OPENAI_API_KEY,
+  })
+
+  constructor(private readonly repository: CarsRepository) {}
+
+  async run(userMessage: string) {
+    console.log('MENSAGEM: ', userMessage)
+
+    const completion = await this.client.chat.completions.create({
+      model: env.OPENAI_MODEL as string,
+      temperature: 0,
+      messages: [
+        {
+          role: 'system',
+          content:
+            'Assistente de catálogo de veículos (português). Chame buscar_carros exatamente uma vez. Preencha `marca` se citar fabricante; `nome` para modelo; `versao` para motor/trim; `ano` para um ano-modelo exato (não misture com ano_min/ano_max); `ano_min` e/ou `ano_max` para intervalos de ano; `km_min` e/ou `km_max` para quilometragem em km inteiros (ex.: 50 mil → 50000). Combine campos quando fizer sentido. Só use argumentos vazios {} se a mensagem for genérica (listar tudo) sem nenhum desses critérios.',
+        },
+        {
+          role: 'user',
+          content: userMessage,
+        },
+      ],
+      tools: [BUSCAR_CARROS_TOOL],
+      tool_choice: 'required',
+    })
+
+    const toolCalls = completion.choices[0]?.message.tool_calls ?? []
+
+    const call = toolCalls.find(
+      (c): c is Extract<(typeof toolCalls)[number], { type: 'function' }> =>
+        c.type === 'function' && c.function.name === TOOL_NAME,
+    )
+
+    const filters = call
+      ? toolJsonTofilters(call.function.arguments ?? '{}')
+      : {}
+
+    const { items } = await this.repository.searchfilterCars({ filters })
+
+    return {
+      items,
+      reply: naturalReply(items.length),
+    }
+  }
+}
