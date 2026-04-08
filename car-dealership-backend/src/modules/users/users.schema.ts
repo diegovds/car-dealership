@@ -41,6 +41,38 @@ export const tokenResponseSchema = z.object({
   token: z.string(),
 })
 
+export const paginationQuerySchema = z.object({
+  page: z.coerce.number().int().min(1).default(1),
+})
+
+export const paginationMetaSchema = z.object({
+  page: z.number(),
+  perPage: z.number(),
+  total: z.number(),
+  totalPages: z.number(),
+})
+
+export const userWithCarsResponseSchema = z.object({
+  user: userResponseSchema,
+  cars: z.array(
+    z.object({
+      id: z.uuid(),
+      brand: z.string(),
+      model: z.string(),
+      version: z.string().nullable(),
+      year: z.number(),
+      price: z.string(),
+      fuel: z.string().nullable(),
+      transmission: z.string().nullable(),
+      mileage: z.number().nullable(),
+      imageUrl: z.string().nullable(),
+      createdAt: z.date(),
+      updatedAt: z.date(),
+    }),
+  ),
+  meta: paginationMetaSchema,
+})
+
 export type CreateUserInput = z.infer<typeof createUserSchema>
 export type UpdateUserInput = z.infer<typeof updateUserSchema>
 export type LoginInput = z.infer<typeof loginSchema>

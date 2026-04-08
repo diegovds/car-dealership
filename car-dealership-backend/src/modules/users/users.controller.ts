@@ -25,11 +25,12 @@ export async function createUser(
 }
 
 export async function getUserById(
-  request: FastifyRequest,
+  request: FastifyRequest<{ Querystring: { page?: number } }>,
   reply: FastifyReply,
 ) {
-  const user = await service.getUserById(request.user.sub)
-  return reply.send(user)
+  const page = request.query.page ?? 1
+  const result = await service.getUserById(request.user.sub, page)
+  return reply.send(result)
 }
 
 export async function updateUser(

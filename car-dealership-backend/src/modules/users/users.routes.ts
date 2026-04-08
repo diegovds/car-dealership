@@ -4,8 +4,10 @@ import z from 'zod'
 import {
   createUserSchema,
   loginSchema,
+  paginationQuerySchema,
   updateUserSchema,
   userResponseSchema,
+  userWithCarsResponseSchema,
   tokenResponseSchema,
 } from './users.schema'
 import * as controller from './users.controller'
@@ -57,9 +59,11 @@ export async function usersRoutes(instance: FastifyInstance) {
       schema: {
         tags: ['Users'],
         summary: 'Buscar perfil do usuário',
-        description: 'Retorna os dados do usuário autenticado.',
+        description:
+          'Retorna os dados do usuário autenticado com seus carros paginados.',
+        querystring: paginationQuerySchema,
         response: {
-          200: userResponseSchema,
+          200: userWithCarsResponseSchema,
           404: z.object({ message: z.string() }),
         },
       },

@@ -30,12 +30,28 @@ export async function login(app: FastifyInstance, data: LoginInput) {
   return { token }
 }
 
-export async function getUserById(id: string) {
+export async function getUserById(id: string, page: number) {
   const user = await repository.findUserById(id)
   if (!user) {
     throw new AppError(404, 'Usuário não encontrado')
   }
-  return user
+
+  const perPage = 10
+  const [carsList, total] = await Promise.all([
+    repository.findUserCars(id, page, perPage),
+    repository.countUserCars(id),
+  ])
+
+  return {
+    user,
+    cars: carsList,
+    meta: {
+      page,
+      perPage,
+      total,
+      totalPages: Math.ceil(total / perPage),
+    },
+  }
 }
 
 export async function createUser(app: FastifyInstance, data: CreateUserInput) {
