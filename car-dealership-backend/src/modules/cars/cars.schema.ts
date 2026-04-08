@@ -30,7 +30,6 @@ export const carIdParamSchema = z.object({
 
 export const carResponseSchema = z.object({
   id: z.uuid(),
-  userId: z.uuid().nullable(),
   brand: z.string(),
   model: z.string(),
   version: z.string().nullable(),
@@ -66,7 +65,7 @@ export const searchRequestSchema = z.object({
   search: z.string().min(1),
 })
 
-export const searchCarItemSchema = carResponseSchema.omit({ userId: true })
+export const searchCarItemSchema = carResponseSchema
 export const searchCarListSchema = z.array(searchCarItemSchema)
 
 export const searchResponseSchema = z.object({
