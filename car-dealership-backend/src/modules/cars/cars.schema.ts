@@ -75,6 +75,10 @@ export const filtersSchema = z.object({
   yearMax: optionalFilterYear,
   mileageMin: optionalFilterMileage,
   mileageMax: optionalFilterMileage,
+  fuel: z.string().trim().min(1).optional(),
+  transmission: z.string().trim().min(1).optional(),
+  priceMin: z.coerce.number().min(0).optional(),
+  priceMax: z.coerce.number().min(0).optional(),
 })
 
 export type SearchCarsRequestInput = z.infer<typeof searchRequestSchema>

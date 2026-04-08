@@ -1,4 +1,4 @@
-import { and, eq, gte, ilike, lte } from 'drizzle-orm'
+import { and, eq, gte, ilike, lte, sql } from 'drizzle-orm'
 import { cars } from '../../../db/schema/cars.js'
 import type { SearchFilters } from '../cars.schema.js'
 
@@ -15,6 +15,16 @@ export function buildSearchQueryParts(filters: SearchFilters) {
       : undefined,
     filters.mileageMax !== undefined
       ? lte(cars.mileage, filters.mileageMax)
+      : undefined,
+    filters.fuel ? ilike(cars.fuel, `%${filters.fuel}%`) : undefined,
+    filters.transmission
+      ? ilike(cars.transmission, `%${filters.transmission}%`)
+      : undefined,
+    filters.priceMin !== undefined
+      ? gte(sql`${cars.price}::numeric`, filters.priceMin)
+      : undefined,
+    filters.priceMax !== undefined
+      ? lte(sql`${cars.price}::numeric`, filters.priceMax)
       : undefined,
   )
 

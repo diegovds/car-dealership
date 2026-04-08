@@ -17,6 +17,8 @@ const toolOptionalAno = z.coerce
 
 const toolOptionalKm = z.coerce.number().int().min(0).optional()
 
+const toolOptionalPrice = z.coerce.number().min(0).optional()
+
 const toolArgsSchema = z.object({
   marca: z.string().trim().min(1).optional(),
   nome: z.string().trim().min(1).optional(),
@@ -26,6 +28,10 @@ const toolArgsSchema = z.object({
   ano_max: toolOptionalAno,
   km_min: toolOptionalKm,
   km_max: toolOptionalKm,
+  combustivel: z.string().trim().min(1).optional(),
+  cambio: z.string().trim().min(1).optional(),
+  preco_min: toolOptionalPrice,
+  preco_max: toolOptionalPrice,
 })
 
 const BUSCAR_CARROS_TOOL = {
@@ -33,7 +39,7 @@ const BUSCAR_CARROS_TOOL = {
   function: {
     name: TOOL_NAME,
     description:
-      'Consulta o catálogo por critérios. Preencha tudo o que a pergunta deixar claro. `marca` = fabricante (BMW, Fiat). `nome` = modelo (Gol, T-Cross). `versao` = motor/trim (1.4, Comfortline). `ano` = ano-modelo exato (use só um: `ano` OU `ano_min`/`ano_max`, não misture). `ano_min`/`ano_max` = faixa ("de 2018 a 2020", "a partir de 2019"). `km_min`/`km_max` = quilometragem em km inteiros ("50 mil km" → km_max: 50000; "acima de 100 mil" → km_min: 100000). Ex.: {"marca":"BMW"}; {"nome":"Gol","versao":"1.4"}; {"ano":2020}; {"ano_min":2018,"ano_max":2020}; {"km_max":50000}. Use {} só para pedidos genéricos sem marca, modelo, versão, ano nem km (ex.: "mostre tudo").',
+      'Consulta o catálogo por critérios. Preencha tudo o que a pergunta deixar claro. `marca` = fabricante (BMW, Fiat). `nome` = modelo (Gol, T-Cross). `versao` = motor/trim (1.4, Comfortline). `ano` = ano-modelo exato (use só um: `ano` OU `ano_min`/`ano_max`, não misture). `ano_min`/`ano_max` = faixa de anos. `km_min`/`km_max` = quilometragem em km inteiros ("50 mil" → 50000). `combustivel` = tipo de combustível (Flex, Gasolina, Diesel, Híbrido). `cambio` = tipo de câmbio (Automático, Manual). `preco_min`/`preco_max` = faixa de preço em reais (ex.: "até 100 mil" → preco_max: 100000). Use {} só para pedidos genéricos (ex.: "mostre tudo").',
     parameters: {
       type: 'object',
       additionalProperties: false,
@@ -77,6 +83,25 @@ const BUSCAR_CARROS_TOOL = {
           description:
             "Km máximos em número inteiro (ex.: 'até 50 mil km' → 50000)",
         },
+        combustivel: {
+          type: 'string',
+          description:
+            "Tipo de combustível quando citado (ex.: 'flex', 'gasolina', 'diesel', 'híbrido')",
+        },
+        cambio: {
+          type: 'string',
+          description:
+            "Tipo de câmbio/transmissão quando citado (ex.: 'automático', 'manual')",
+        },
+        preco_min: {
+          type: 'number',
+          description:
+            "Preço mínimo em reais (ex.: 'acima de 100 mil' → 100000)",
+        },
+        preco_max: {
+          type: 'number',
+          description: "Preço máximo em reais (ex.: 'até 80 mil' → 80000)",
+        },
       },
     },
   },
@@ -111,6 +136,10 @@ function toolJsonToFilters(raw: string): SearchFilters {
       ano_max: anoMax,
       km_min: kmMin,
       km_max: kmMax,
+      combustivel,
+      cambio,
+      preco_min: precoMin,
+      preco_max: precoMax,
     } = parsed.data
 
     return {
@@ -122,6 +151,10 @@ function toolJsonToFilters(raw: string): SearchFilters {
       ...(anoMax !== undefined ? { yearMax: anoMax } : {}),
       ...(kmMin !== undefined ? { mileageMin: kmMin } : {}),
       ...(kmMax !== undefined ? { mileageMax: kmMax } : {}),
+      ...(combustivel ? { fuel: combustivel } : {}),
+      ...(cambio ? { transmission: cambio } : {}),
+      ...(precoMin !== undefined ? { priceMin: precoMin } : {}),
+      ...(precoMax !== undefined ? { priceMax: precoMax } : {}),
     }
   } catch {
     return {}
@@ -139,7 +172,7 @@ export function createAiSearchAgent() {
         {
           role: 'system',
           content:
-            'Você é um assistente de catálogo de veículos em português. Sua ÚNICA tarefa é chamar a função buscar_carros extraindo filtros da mensagem do usuário. REGRAS OBRIGATÓRIAS: 1) SEMPRE preencha pelo menos um campo se a mensagem mencionar qualquer característica de carro. 2) `nome` = modelo do carro (Gol, Civic, Corolla, 911, HB20, Onix, etc). Se o usuário perguntar "tem gol?" → {"nome":"Gol"}. 3) `marca` = fabricante (BMW, Fiat, Volkswagen, Toyota, etc). 4) `versao` = motor ou trim (1.0 TSI, Comfortline, etc). 5) `ano` = ano exato; `ano_min`/`ano_max` = faixa de anos. 6) `km_min`/`km_max` = quilometragem em inteiros (50 mil → 50000). 7) SOMENTE use {} vazio quando a mensagem pedir TUDO sem nenhum filtro (ex: "mostre todos", "lista tudo"). Na DÚVIDA, extraia o máximo de informação possível.',
+            'Você é um assistente de catálogo de veículos em português. Sua ÚNICA tarefa é chamar a função buscar_carros extraindo filtros da mensagem do usuário. REGRAS OBRIGATÓRIAS: 1) SEMPRE preencha pelo menos um campo se a mensagem mencionar qualquer característica de carro. 2) `nome` = modelo do carro (Gol, Civic, Corolla, 911, HB20, Onix, etc). Se o usuário perguntar "tem gol?" → {"nome":"Gol"}. 3) `marca` = fabricante (BMW, Fiat, Volkswagen, Toyota, etc). 4) `versao` = motor ou trim (1.0 TSI, Comfortline, etc). 5) `ano` = ano exato; `ano_min`/`ano_max` = faixa de anos. 6) `km_min`/`km_max` = quilometragem em inteiros (50 mil → 50000). 7) `combustivel` = tipo de combustível (Flex, Gasolina, Diesel, Híbrido). 8) `cambio` = tipo de câmbio (Automático, Manual). 9) `preco_min`/`preco_max` = faixa de preço em reais (100 mil → 100000). 10) SOMENTE use {} vazio quando a mensagem pedir TUDO sem nenhum filtro (ex: "mostre todos", "lista tudo"). Na DÚVIDA, extraia o máximo de informação possível.',
         },
         {
           role: 'user',
