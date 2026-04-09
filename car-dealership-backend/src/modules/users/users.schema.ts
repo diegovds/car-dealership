@@ -4,6 +4,7 @@ export const createUserSchema = z.object({
   name: z.string().min(2),
   email: z.email(),
   password: z.string().min(6),
+  phone: z.string().min(10).max(20).optional(),
 })
 
 export const loginSchema = z.object({
@@ -15,6 +16,7 @@ export const updateUserSchema = z
   .object({
     name: z.string().min(2).optional(),
     email: z.email().optional(),
+    phone: z.string().min(10).max(20).optional(),
     currentPassword: z.string().min(6).optional(),
     newPassword: z.string().min(6).optional(),
   })
@@ -33,6 +35,7 @@ export const userResponseSchema = z.object({
   id: z.uuid(),
   name: z.string(),
   email: z.string(),
+  phone: z.string().nullable(),
   createdAt: z.date(),
   updatedAt: z.date(),
 })

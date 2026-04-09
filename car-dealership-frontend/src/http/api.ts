@@ -17,6 +17,11 @@ export type PostUsersBody = {
   email: string
   /** @minLength 6 */
   password: string
+  /**
+   * @minLength 10
+   * @maxLength 20
+   */
+  phone?: string
 }
 
 export type PostUsers201 = {
@@ -24,6 +29,8 @@ export type PostUsers201 = {
   id: string
   name: string
   email: string
+  /** @nullable */
+  phone: string | null
   createdAt: string
   updatedAt: string
 }
@@ -45,6 +52,8 @@ export type GetUsers200User = {
   id: string
   name: string
   email: string
+  /** @nullable */
+  phone: string | null
   createdAt: string
   updatedAt: string
 }
@@ -92,6 +101,11 @@ export type PatchUsersBody = {
   name?: string
   /** @pattern ^(?!\.)(?!.*\.\.)([A-Za-z0-9_'+\-\.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9\-]*\.)+[A-Za-z]{2,}$ */
   email?: string
+  /**
+   * @minLength 10
+   * @maxLength 20
+   */
+  phone?: string
   /** @minLength 6 */
   currentPassword?: string
   /** @minLength 6 */
@@ -103,6 +117,8 @@ export type PatchUsers200 = {
   id: string
   name: string
   email: string
+  /** @nullable */
+  phone: string | null
   createdAt: string
   updatedAt: string
 }

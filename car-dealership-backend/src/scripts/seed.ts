@@ -12,6 +12,7 @@ const SEED_USER = {
   name: 'John Doe',
   email: 'john@email.com',
   password: '123456',
+  phone: '(11) 91234-5678',
 }
 
 const SEED_CARS = [
@@ -339,6 +340,7 @@ async function main() {
       name: SEED_USER.name,
       email: SEED_USER.email,
       password: hashedPassword,
+      phone: SEED_USER.phone,
     })
     .returning({ id: users.id })
 

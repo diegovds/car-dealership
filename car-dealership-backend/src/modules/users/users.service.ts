@@ -79,6 +79,7 @@ export async function updateUser(
   const updateData: Record<string, unknown> = {}
   if (data.name) updateData.name = data.name
   if (data.email) updateData.email = data.email
+  if (data.phone !== undefined) updateData.phone = data.phone
 
   if (data.currentPassword && data.newPassword) {
     const current = await repository.findUserById(id)

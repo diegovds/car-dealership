@@ -15,6 +15,13 @@
       "when": 1775575896683,
       "tag": "0001_adorable_cammi",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1775764763592,
+      "tag": "0002_naive_goliath",
+      "breakpoints": true
     }
   ]
 }
