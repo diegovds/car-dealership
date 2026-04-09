@@ -55,8 +55,9 @@ export function CarItem({ car }: CarItemProps) {
             className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
           />
         ) : (
-          <div className="flex h-full items-center justify-center">
-            <span className="text-2xl opacity-10">🚗</span>
+          <div className="flex h-full flex-col items-center justify-center gap-1 text-muted-foreground/30">
+            <span className="text-xl">🚗</span>
+            <p className="text-[8px] tracking-widest uppercase">Sem imagem</p>
           </div>
         )}
       </Link>
