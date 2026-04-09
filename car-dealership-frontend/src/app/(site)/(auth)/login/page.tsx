@@ -1,3 +1,13 @@
+import { LoginForm } from './_components/login-form'
+
 export default function LoginPage() {
-  return <div className="flex-1">LoginPage</div>
+  return (
+    <div className="w-full max-w-sm">
+      <div className="mb-8 flex flex-col gap-1">
+        <p className="text-xs tracking-[0.3em] text-amber-400 uppercase">Bem-vindo de volta</p>
+        <h1 className="text-2xl font-bold tracking-tight">Entrar na sua conta</h1>
+      </div>
+      <LoginForm />
+    </div>
+  )
 }

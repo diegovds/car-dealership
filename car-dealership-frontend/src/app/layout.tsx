@@ -11,8 +11,8 @@ const jetbrainsMono = JetBrains_Mono({
 })
 
 export const metadata: Metadata = {
-  title: 'Cars Dealership',
-  description: '----',
+  title: 'AutoMercado',
+  description: 'Compre e venda carros com facilidade',
 }
 
 export default function RootLayout({
@@ -23,23 +23,10 @@ export default function RootLayout({
   return (
     <html
       lang="pt-BR"
-      className={cn(
-        'flex',
-        'min-h-dvh',
-        'dark',
-        'flex-col',
-        'antialiased',
-        jetbrainsMono.className,
-        'font-sans',
-        geist.variable,
-      )}
+      className={cn('dark', 'antialiased', jetbrainsMono.variable, geist.variable)}
     >
-      <body className="flex min-h-dvh flex-col">
-        <nav className="bg-white p-4 text-black">navbar</nav>
-        <main className="container mx-auto my-5 flex flex-1 px-4">
-          {children}
-        </main>
-        <footer className="bg-white p-4 text-black">footer</footer>
+      <body className="flex min-h-dvh flex-col bg-background font-mono text-foreground">
+        {children}
       </body>
     </html>
   )

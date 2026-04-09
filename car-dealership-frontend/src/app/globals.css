@@ -52,6 +52,19 @@ body {
   font-family: var(--font-jetbrains-mono), monospace;
 }
 
+/* Amber accent for automotive feel */
+.text-amber-400 { color: oklch(0.78 0.16 68); }
+.text-amber-300 { color: oklch(0.84 0.14 68); }
+.bg-amber-400 { background-color: oklch(0.78 0.16 68); }
+.hover\:bg-amber-300:hover { background-color: oklch(0.84 0.14 68); }
+.border-amber-400\/40 { border-color: oklch(0.78 0.16 68 / 0.4); }
+.border-amber-400\/60 { border-color: oklch(0.78 0.16 68 / 0.6); }
+.focus-visible\:border-amber-400\/60:focus-visible { border-color: oklch(0.78 0.16 68 / 0.6); }
+.focus-visible\:ring-amber-400\/10:focus-visible { --tw-ring-color: oklch(0.78 0.16 68 / 0.1); }
+.shadow-\[0_0_20px_rgba\(251\,191\,36\,0\.06\)\] {
+  box-shadow: 0 0 20px oklch(0.78 0.16 68 / 0.06);
+}
+
 :root {
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
