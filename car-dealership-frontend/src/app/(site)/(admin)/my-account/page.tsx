@@ -33,16 +33,34 @@ export default async function MyAccountPage({
       {/* Header */}
       <div className="flex items-start justify-between gap-4">
         <div className="flex flex-col gap-1">
-          <p className="text-xs tracking-[0.3em] text-amber-400 uppercase">
+          <p
+            style={{ '--enter-delay': '0ms' } as React.CSSProperties}
+            className="enter-hero text-xs tracking-[0.3em] text-amber-400 uppercase"
+          >
             Área do vendedor
           </p>
           <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-bold tracking-tight">{user.name}</h1>
+            <h1
+              style={{ '--enter-delay': '80ms' } as React.CSSProperties}
+              className="enter-hero text-2xl font-bold tracking-tight"
+            >
+              {user.name}
+            </h1>
             <EditProfileDialog user={user} />
           </div>
-          <p className="text-muted-foreground text-sm">{user.email}</p>
+          <p
+            style={{ '--enter-delay': '140ms' } as React.CSSProperties}
+            className="enter-hero text-muted-foreground text-sm"
+          >
+            {user.email}
+          </p>
         </div>
-        <AddCarDialog />
+        <div
+          style={{ '--enter-delay': '100ms' } as React.CSSProperties}
+          className="enter-right"
+        >
+          <AddCarDialog />
+        </div>
       </div>
 
       {/* Divider */}
@@ -58,7 +76,7 @@ export default async function MyAccountPage({
         </div>
 
         {cars.length === 0 ? (
-          <div className="border-border/50 flex flex-col items-center gap-3 rounded-xl border border-dashed py-16 text-center">
+          <div className="enter-card border-border/50 flex flex-col items-center gap-3 rounded-xl border border-dashed py-16 text-center">
             <p className="text-muted-foreground text-sm">
               Você ainda não tem anúncios.
             </p>
@@ -66,8 +84,18 @@ export default async function MyAccountPage({
           </div>
         ) : (
           <div className="flex flex-col gap-3">
-            {cars.map((car) => (
-              <CarItem key={car.id} car={car} />
+            {cars.map((car, index) => (
+              <div
+                key={car.id}
+                style={
+                  {
+                    '--enter-delay': `${index * 55 + 200}ms`,
+                  } as React.CSSProperties
+                }
+                className="enter-card"
+              >
+                <CarItem car={car} />
+              </div>
             ))}
           </div>
         )}

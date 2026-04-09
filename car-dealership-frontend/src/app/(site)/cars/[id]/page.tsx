@@ -73,8 +73,8 @@ export default async function CarDetailPage({ params }: CarDetailPageProps) {
 
       <div className="grid gap-8 lg:grid-cols-[1fr_380px] lg:items-start">
         {/* Left — image */}
-        <div className="flex flex-col gap-4">
-          <div className="border-border/50 bg-muted relative aspect-video w-full overflow-hidden rounded-2xl border">
+        <div className="enter-hero flex flex-col gap-4">
+          <div className="enter-zoom border-border/50 bg-muted relative aspect-video w-full overflow-hidden rounded-2xl border">
             {car.imageUrl ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img
@@ -84,7 +84,7 @@ export default async function CarDetailPage({ params }: CarDetailPageProps) {
               />
             ) : (
               <div className="text-muted-foreground/30 flex h-full flex-col items-center justify-center gap-3">
-                <span>
+                <span className="animate-float">
                   <Car
                     size={72}
                     strokeWidth={0}
@@ -99,10 +99,15 @@ export default async function CarDetailPage({ params }: CarDetailPageProps) {
           {/* Specs grid — shown below image on desktop */}
           {specs.length > 0 && (
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-2 xl:grid-cols-4">
-              {specs.map(({ icon: Icon, label, value }) => (
+              {specs.map(({ icon: Icon, label, value }, specIndex) => (
                 <div
                   key={label}
-                  className="border-border/50 bg-card flex flex-col gap-1 rounded-xl border p-4"
+                  style={
+                    {
+                      '--enter-delay': `${specIndex * 80 + 250}ms`,
+                    } as React.CSSProperties
+                  }
+                  className="enter-card border-border/50 bg-card flex flex-col gap-1 rounded-xl border p-4"
                 >
                   <div className="text-muted-foreground flex items-center gap-1.5">
                     <Icon className="size-3.5" />
@@ -118,7 +123,10 @@ export default async function CarDetailPage({ params }: CarDetailPageProps) {
         </div>
 
         {/* Right — details */}
-        <aside className="flex flex-col gap-6 lg:sticky lg:top-24">
+        <aside
+          style={{ '--enter-delay': '150ms' } as React.CSSProperties}
+          className="enter-right flex flex-col gap-6 lg:sticky lg:top-24"
+        >
           {/* Brand + Model */}
           <div className="flex flex-col gap-2">
             <div className="flex items-center gap-2">
@@ -146,7 +154,7 @@ export default async function CarDetailPage({ params }: CarDetailPageProps) {
           </div>
 
           {/* Price */}
-          <div className="flex flex-col gap-1 rounded-2xl border border-amber-400/20 bg-amber-400/5 p-5">
+          <div className="animate-glow-pulse flex flex-col gap-1 rounded-2xl border border-amber-400/20 bg-amber-400/5 p-5">
             <p className="text-[10px] tracking-widest text-amber-400/70 uppercase">
               Preço
             </p>

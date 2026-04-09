@@ -34,7 +34,7 @@ export function CarItem({ car }: CarItemProps) {
   }
 
   return (
-    <div className="group border-border/50 bg-card hover:border-border flex gap-4 rounded-xl border p-4 transition-colors">
+    <div className="group border-border/50 bg-card hover:border-border flex gap-4 rounded-xl border p-4 transition-all duration-300 hover:shadow-sm hover:-translate-y-px">
       {/* Thumbnail — clicável */}
       <Link
         href={`/cars/${car.id}`}

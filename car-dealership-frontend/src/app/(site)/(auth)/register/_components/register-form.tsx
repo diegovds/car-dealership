@@ -7,6 +7,7 @@ import Link from 'next/link'
 import { registerAction } from '@/actions/auth'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { Loader2 } from 'lucide-react'
 import {
   Form,
   FormControl,
@@ -41,7 +42,7 @@ export function RegisterForm() {
         className="flex w-full flex-col gap-5"
       >
         {form.formState.errors.root && (
-          <div className="border-destructive/30 bg-destructive/10 text-destructive rounded-lg border px-4 py-3 text-sm">
+          <div className="enter-hero border-destructive/30 bg-destructive/10 text-destructive rounded-lg border px-4 py-3 text-sm">
             {form.formState.errors.root.message}
           </div>
         )}
@@ -106,9 +107,16 @@ export function RegisterForm() {
         <Button
           type="submit"
           disabled={isPending}
-          className="mt-1 h-10 bg-amber-400 font-semibold text-black hover:bg-amber-300"
+          className="mt-1 h-10 bg-amber-400 font-semibold text-black transition-all duration-200 hover:bg-amber-300 hover:shadow-[0_0_16px_rgba(251,191,36,0.3)] active:scale-95"
         >
-          {isPending ? 'Criando conta...' : 'Criar conta'}
+          {isPending ? (
+            <>
+              <Loader2 className="size-3.5 animate-spin" />
+              <span>Criando conta</span>
+            </>
+          ) : (
+            'Criar conta'
+          )}
         </Button>
 
         <p className="text-muted-foreground text-center text-xs">

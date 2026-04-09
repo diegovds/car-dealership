@@ -12,13 +12,13 @@ export default async function SiteLayout({
 
   return (
     <div className="flex min-h-dvh flex-col">
-      <header className="border-border/40 bg-background/80 sticky top-0 z-50 border-b backdrop-blur-md">
+      <header className="enter-header border-border/40 bg-background/80 sticky top-0 z-50 border-b backdrop-blur-md">
         <div className="container mx-auto flex h-14 items-center justify-between px-4">
           <Link
             href="/"
-            className="flex items-center transition-opacity hover:opacity-80"
+            className="group flex items-center transition-opacity hover:opacity-80"
           >
-            <span className="text-lg font-bold tracking-wider text-amber-400">
+            <span className="text-lg font-bold tracking-wider text-amber-400 transition-all duration-300 group-hover:tracking-widest">
               Auto
             </span>
             <span className="text-foreground text-lg font-bold tracking-wider">
@@ -26,7 +26,10 @@ export default async function SiteLayout({
             </span>
           </Link>
 
-          <nav className="flex items-center gap-2">
+          <nav
+            style={{ '--enter-delay': '150ms' } as React.CSSProperties}
+            className="enter-header flex items-center gap-2"
+          >
             {authenticated ? (
               <>
                 <Button variant="ghost" size="sm" asChild>

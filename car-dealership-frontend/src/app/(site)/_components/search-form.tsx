@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation'
 import { useTransition } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { Loader2 } from 'lucide-react'
 
 interface SearchFormProps {
   defaultValue?: string
@@ -37,9 +38,16 @@ export function SearchForm({ defaultValue }: SearchFormProps) {
       <Button
         type="submit"
         disabled={isPending}
-        className="bg-amber-400 font-semibold text-black hover:bg-amber-300"
+        className="bg-amber-400 font-semibold text-black transition-all duration-200 hover:bg-amber-300 hover:shadow-[0_0_16px_rgba(251,191,36,0.3)] active:scale-95"
       >
-        {isPending ? '...' : 'Buscar'}
+        {isPending ? (
+          <>
+            <Loader2 className="size-3.5 animate-spin" />
+            <span>Buscando</span>
+          </>
+        ) : (
+          'Buscar'
+        )}
       </Button>
     </form>
   )

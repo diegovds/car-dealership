@@ -44,25 +44,39 @@ export default async function HomePage({ searchParams }: HomePageProps) {
       {/* Hero */}
       <section className="flex flex-col gap-4">
         <div className="flex flex-col gap-1">
-          <p className="text-xs tracking-[0.3em] text-amber-400 uppercase">
+          <p
+            style={{ '--enter-delay': '0ms' } as React.CSSProperties}
+            className="enter-hero text-xs tracking-[0.3em] text-amber-400 uppercase"
+          >
             Marketplace de Veículos
           </p>
-          <h1 className="text-foreground text-4xl font-bold tracking-tight md:text-5xl">
+          <h1
+            style={{ '--enter-delay': '100ms' } as React.CSSProperties}
+            className="enter-hero text-foreground text-4xl font-bold tracking-tight md:text-5xl"
+          >
             Encontre seu
             <br />
-            <span className="text-amber-400">próximo carro</span>
+            <span className="animate-shimmer-text">próximo carro</span>
           </h1>
         </div>
-        <p className="text-muted-foreground max-w-md text-sm">
+        <p
+          style={{ '--enter-delay': '200ms' } as React.CSSProperties}
+          className="enter-hero text-muted-foreground max-w-md text-sm"
+        >
           Busca inteligente com IA — descreva o carro que você quer em linguagem
           natural.
         </p>
-        <SearchForm defaultValue={search} />
+        <div
+          style={{ '--enter-delay': '300ms' } as React.CSSProperties}
+          className="enter-hero"
+        >
+          <SearchForm defaultValue={search} />
+        </div>
       </section>
 
       {/* AI reply */}
       {aiReply && (
-        <div className="text-muted-foreground border-l-2 border-amber-400 pl-4 text-sm italic">
+        <div className="enter-left text-muted-foreground border-l-2 border-amber-400 pl-4 text-sm italic">
           {aiReply}
         </div>
       )}
@@ -91,11 +105,16 @@ export default async function HomePage({ searchParams }: HomePageProps) {
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {cars.map((car) => (
+            {cars.map((car, index) => (
               <Link
                 key={car.id}
                 href={`/cars/${car.id}`}
-                className="group border-border/50 bg-card relative flex flex-col overflow-hidden rounded-xl border transition-all duration-300 hover:border-amber-400/40 hover:shadow-[0_0_20px_rgba(251,191,36,0.06)]"
+                style={
+                  {
+                    '--enter-delay': `${Math.min(index * 55, 440)}ms`,
+                  } as React.CSSProperties
+                }
+                className="enter-card group border-border/50 bg-card relative flex flex-col overflow-hidden rounded-xl border transition-all duration-300 hover:border-amber-400/40 hover:shadow-[0_0_20px_rgba(251,191,36,0.06)]"
               >
                 {/* Image */}
                 <div className="bg-muted relative aspect-video overflow-hidden">
