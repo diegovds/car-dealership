@@ -23,9 +23,10 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { updateUserSchema, type UpdateUserFormValues } from '@/lib/schemas'
+import { applyPhoneMask } from '@/lib/utils'
 
 interface EditProfileDialogProps {
-  user: { name: string; email: string }
+  user: { name: string; email: string; phone: string | null }
 }
 
 export function EditProfileDialog({ user }: EditProfileDialogProps) {
@@ -37,6 +38,7 @@ export function EditProfileDialog({ user }: EditProfileDialogProps) {
     defaultValues: {
       name: user.name,
       email: user.email,
+      phone: user.phone ?? '',
       currentPassword: '',
       newPassword: '',
     },
@@ -108,6 +110,28 @@ export function EditProfileDialog({ user }: EditProfileDialogProps) {
                       type="email"
                       placeholder="seu@email.com"
                       {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="phone"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Telefone</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="tel"
+                      placeholder="(11) 91234-5678"
+                      autoComplete="tel"
+                      {...field}
+                      onChange={(e) =>
+                        field.onChange(applyPhoneMask(e.target.value))
+                      }
                     />
                   </FormControl>
                   <FormMessage />

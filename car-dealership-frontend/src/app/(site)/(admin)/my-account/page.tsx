@@ -54,6 +54,12 @@ export default async function MyAccountPage({
           >
             {user.email}
           </p>
+          <p
+            style={{ '--enter-delay': '180ms' } as React.CSSProperties}
+            className="enter-hero text-muted-foreground text-sm"
+          >
+            {user.phone}
+          </p>
         </div>
         <div
           style={{ '--enter-delay': '100ms' } as React.CSSProperties}

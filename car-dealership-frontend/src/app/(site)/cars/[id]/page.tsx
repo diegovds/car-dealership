@@ -1,7 +1,7 @@
 import { Badge } from '@/components/ui/badge'
 import { getCarsId } from '@/http/api'
 import { formatBRL } from '@/lib/currency'
-import { Calendar, Car, Fuel, Gauge, Settings2 } from 'lucide-react'
+import { Calendar, Car, Fuel, Gauge, Phone, Settings2, User } from 'lucide-react'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { ButtonBack } from './_components/button-back'
@@ -161,6 +161,26 @@ export default async function CarDetailPage({ params }: CarDetailPageProps) {
             <p className="text-4xl font-bold tracking-tight tabular-nums">
               {formatBRL(String(car.price))}
             </p>
+          </div>
+
+          {/* Seller */}
+          <div className="border-border/30 flex flex-col gap-3 rounded-xl border p-4">
+            <p className="text-muted-foreground/50 text-[10px] tracking-widest uppercase">
+              Vendedor
+            </p>
+            <div className="flex items-center gap-2">
+              <div className="bg-muted flex size-8 items-center justify-center rounded-full">
+                <User className="text-muted-foreground size-4" />
+              </div>
+              <span className="text-sm font-medium">{car.seller.name}</span>
+            </div>
+            <a
+              href={`tel:${car.seller.phone}`}
+              className="flex items-center gap-2 rounded-lg bg-amber-400/10 px-3 py-2 text-sm font-medium text-amber-400 transition-colors hover:bg-amber-400/20"
+            >
+              <Phone className="size-3.5" />
+              {car.seller.phone}
+            </a>
           </div>
 
           {/* Metadata */}

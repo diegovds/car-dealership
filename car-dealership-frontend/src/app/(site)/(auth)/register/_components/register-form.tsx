@@ -17,13 +17,14 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { registerSchema, type RegisterFormValues } from '@/lib/schemas'
+import { applyPhoneMask } from '@/lib/utils'
 
 export function RegisterForm() {
   const [isPending, startTransition] = useTransition()
 
   const form = useForm<RegisterFormValues>({
     resolver: zodResolver(registerSchema),
-    defaultValues: { name: '', email: '', password: '' },
+    defaultValues: { name: '', email: '', password: '', phone: '' },
   })
 
   function onSubmit(values: RegisterFormValues) {
@@ -97,6 +98,28 @@ export function RegisterForm() {
                   placeholder="Mínimo 6 caracteres"
                   autoComplete="new-password"
                   {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="phone"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Telefone</FormLabel>
+              <FormControl>
+                <Input
+                  type="tel"
+                  placeholder="(11) 91234-5678"
+                  autoComplete="tel"
+                  {...field}
+                  onChange={(e) =>
+                    field.onChange(applyPhoneMask(e.target.value))
+                  }
                 />
               </FormControl>
               <FormMessage />

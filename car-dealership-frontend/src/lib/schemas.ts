@@ -1,7 +1,7 @@
 import { z } from 'zod'
 
 export const loginSchema = z.object({
-  email: z.string().email({ error: 'Email inválido' }),
+  email: z.email({ error: 'Email inválido' }),
   password: z
     .string()
     .min(6, { error: 'Senha deve ter no mínimo 6 caracteres' }),
@@ -9,10 +9,13 @@ export const loginSchema = z.object({
 
 export const registerSchema = z.object({
   name: z.string().min(2, { error: 'Nome deve ter no mínimo 2 caracteres' }),
-  email: z.string().email({ error: 'Email inválido' }),
+  email: z.email({ error: 'Email inválido' }),
   password: z
     .string()
     .min(6, { error: 'Senha deve ter no mínimo 6 caracteres' }),
+  phone: z
+    .string()
+    .regex(/^\(\d{2}\) \d{5}-\d{4}$/, { error: 'Telefone inválido' }),
 })
 
 export const carSchema = z.object({
@@ -28,7 +31,6 @@ export const carSchema = z.object({
   transmission: z.string().optional(),
   mileage: z.number().optional(),
   imageUrl: z
-    .string()
     .url({ error: 'URL inválida' })
     .optional()
     .or(z.literal('').transform(() => undefined)),
@@ -42,10 +44,12 @@ export const updateUserSchema = z
       .optional()
       .or(z.literal('')),
     email: z
-      .string()
       .email({ error: 'Email inválido' })
       .optional()
       .or(z.literal('')),
+    phone: z
+      .string()
+      .regex(/^\(\d{2}\) \d{5}-\d{4}$/, { error: 'Telefone inválido' }),
     currentPassword: z
       .string()
       .min(6, { error: 'Senha atual deve ter no mínimo 6 caracteres' })

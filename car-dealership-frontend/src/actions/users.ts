@@ -19,6 +19,7 @@ export async function updateUserAction(
   const payload: Record<string, string> = {}
   if (data.name) payload.name = data.name
   if (data.email) payload.email = data.email
+  if (data.phone !== undefined) payload.phone = data.phone
   if (data.currentPassword) payload.currentPassword = data.currentPassword
   if (data.newPassword) payload.newPassword = data.newPassword
 
