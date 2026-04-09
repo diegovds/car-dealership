@@ -200,6 +200,8 @@ body {
     opacity 600ms cubic-bezier(0.4, 0, 0.2, 1),
     transform 600ms cubic-bezier(0.4, 0, 0.2, 1);
   transition-delay: var(--enter-delay, 0ms);
+  will-change: opacity, transform;
+  backface-visibility: hidden;
 }
 @starting-style {
   .enter-hero {
@@ -216,6 +218,8 @@ body {
     opacity 500ms cubic-bezier(0.4, 0, 0.2, 1),
     transform 500ms cubic-bezier(0.4, 0, 0.2, 1);
   transition-delay: var(--enter-delay, 0ms);
+  will-change: opacity, transform;
+  backface-visibility: hidden;
 }
 @starting-style {
   .enter-header {
@@ -232,6 +236,8 @@ body {
     opacity 650ms cubic-bezier(0.4, 0, 0.2, 1),
     transform 650ms cubic-bezier(0.4, 0, 0.2, 1);
   transition-delay: var(--enter-delay, 0ms);
+  will-change: opacity, transform;
+  backface-visibility: hidden;
 }
 @starting-style {
   .enter-right {
@@ -247,6 +253,8 @@ body {
   transition:
     opacity 500ms cubic-bezier(0.4, 0, 0.2, 1),
     transform 500ms cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: opacity, transform;
+  backface-visibility: hidden;
 }
 @starting-style {
   .enter-left {
@@ -258,31 +266,31 @@ body {
 /* Cards / itens de lista: escalonados com --enter-delay */
 .enter-card {
   opacity: 1;
-  transform: translateY(0) scale(1);
+  transform: translateY(0);
   transition:
     opacity 500ms cubic-bezier(0.4, 0, 0.2, 1),
     transform 500ms cubic-bezier(0.4, 0, 0.2, 1);
   transition-delay: var(--enter-delay, 0ms);
+  will-change: opacity, transform;
+  backface-visibility: hidden;
 }
 @starting-style {
   .enter-card {
     opacity: 0;
-    transform: translateY(10px) scale(0.97);
+    transform: translateY(10px);
   }
 }
 
-/* Imagem: zoom sutil */
+/* Imagem: fade in simples */
 .enter-zoom {
   opacity: 1;
-  transform: scale(1);
-  transition:
-    opacity 700ms cubic-bezier(0.4, 0, 0.2, 1),
-    transform 700ms cubic-bezier(0.4, 0, 0.2, 1);
+  transition: opacity 700ms cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: opacity;
+  backface-visibility: hidden;
 }
 @starting-style {
   .enter-zoom {
     opacity: 0;
-    transform: scale(0.97);
   }
 }
 
