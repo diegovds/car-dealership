@@ -26,7 +26,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import type { GetUsers200CarsItem } from '@/http/api'
-import { formatBRL, parseBRL } from '@/lib/currency'
+import { formatBRL, formatKm, parseBRL, parseKm } from '@/lib/currency'
 import { updateCarSchema, type UpdateCarFormValues } from '@/lib/schemas'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Pencil } from 'lucide-react'
@@ -250,18 +250,30 @@ export function EditCarDialog({ car }: EditCarDialogProps) {
               name="mileage"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Quilometragem (km)</FormLabel>
+                  <FormLabel>Quilometragem</FormLabel>
                   <FormControl>
                     <Input
-                      type="number"
-                      placeholder="50000"
-                      {...field}
-                      value={field.value ?? ''}
-                      onChange={(e) =>
-                        field.onChange(
-                          e.target.value ? e.target.valueAsNumber : undefined,
-                        )
-                      }
+                      placeholder="0 km"
+                      value={formatKm(field.value)}
+                      onChange={(e) => field.onChange(parseKm(e.target.value))}
+                      onKeyDown={(e) => {
+                        if (
+                          e.key === 'Backspace' &&
+                          field.value !== undefined
+                        ) {
+                          const input = e.currentTarget
+                          if (input.selectionStart === input.selectionEnd) {
+                            e.preventDefault()
+                            const s = String(field.value)
+                            field.onChange(
+                              s.length <= 1
+                                ? undefined
+                                : parseInt(s.slice(0, -1), 10),
+                            )
+                          }
+                        }
+                      }}
+                      onBlur={field.onBlur}
                     />
                   </FormControl>
                   <FormMessage />
