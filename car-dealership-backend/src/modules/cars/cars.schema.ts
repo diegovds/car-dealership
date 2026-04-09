@@ -43,6 +43,13 @@ export const carResponseSchema = z.object({
   updatedAt: z.date(),
 })
 
+export const carWithSellerResponseSchema = carResponseSchema.extend({
+  seller: z.object({
+    name: z.string(),
+    phone: z.string(),
+  }),
+})
+
 export const carListResponseSchema = z.array(carResponseSchema)
 
 export const paginationQuerySchema = z.object({

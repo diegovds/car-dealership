@@ -21,7 +21,7 @@ export type PostUsersBody = {
    * @minLength 10
    * @maxLength 20
    */
-  phone?: string
+  phone: string
 }
 
 export type PostUsers201 = {
@@ -105,7 +105,7 @@ export type PatchUsersBody = {
    * @minLength 10
    * @maxLength 20
    */
-  phone?: string
+  phone: string
   /** @minLength 6 */
   currentPassword?: string
   /** @minLength 6 */
@@ -277,6 +277,11 @@ export type PostCars201 = {
   updatedAt: string
 }
 
+export type GetCarsId200Seller = {
+  name: string
+  phone: string
+}
+
 export type GetCarsId200 = {
   /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$ */
   id: string
@@ -296,6 +301,7 @@ export type GetCarsId200 = {
   imageUrl: string | null
   createdAt: string
   updatedAt: string
+  seller: GetCarsId200Seller
 }
 
 export type GetCarsId404 = {

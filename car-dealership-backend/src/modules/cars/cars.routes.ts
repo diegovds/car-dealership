@@ -7,6 +7,7 @@ import {
   carIdParamSchema,
   carListPaginatedResponseSchema,
   carResponseSchema,
+  carWithSellerResponseSchema,
   createCarSchema,
   paginationQuerySchema,
   searchRequestSchema,
@@ -61,7 +62,7 @@ export async function carsRoutes(instance: FastifyInstance) {
         description: 'Retorna os detalhes de um carro específico.',
         params: carIdParamSchema,
         response: {
-          200: carResponseSchema,
+          200: carWithSellerResponseSchema,
           404: z.object({ message: z.string() }),
         },
       },

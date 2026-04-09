@@ -4,7 +4,7 @@ export const createUserSchema = z.object({
   name: z.string().min(2),
   email: z.email(),
   password: z.string().min(6),
-  phone: z.string().min(10).max(20).optional(),
+  phone: z.string().min(10).max(20),
 })
 
 export const loginSchema = z.object({
@@ -16,7 +16,7 @@ export const updateUserSchema = z
   .object({
     name: z.string().min(2).optional(),
     email: z.email().optional(),
-    phone: z.string().min(10).max(20).optional(),
+    phone: z.string().min(10).max(20),
     currentPassword: z.string().min(6).optional(),
     newPassword: z.string().min(6).optional(),
   })

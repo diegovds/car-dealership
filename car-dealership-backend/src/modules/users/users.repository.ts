@@ -1,7 +1,14 @@
 import { count, desc, eq } from 'drizzle-orm'
 import { db } from '../../db/client'
 import { cars, users } from '../../db/schema'
-import type { CreateUserInput, UpdateUserInput } from './users.schema'
+import type { CreateUserInput } from './users.schema'
+
+type UserUpdatePayload = {
+  name?: string
+  email?: string
+  phone?: string
+  password?: string
+}
 
 export async function findUserById(id: string) {
   const result = await db.select().from(users).where(eq(users.id, id))
@@ -18,7 +25,7 @@ export async function createUser(data: CreateUserInput & { password: string }) {
   return result[0]
 }
 
-export async function updateUser(id: string, data: UpdateUserInput) {
+export async function updateUser(id: string, data: UserUpdatePayload) {
   const result = await db
     .update(users)
     .set({ ...data, updatedAt: new Date() })

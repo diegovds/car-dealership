@@ -1,6 +1,6 @@
 import { and, count, desc, eq } from 'drizzle-orm'
 import { db } from '../../db/client'
-import { cars } from '../../db/schema'
+import { cars, users } from '../../db/schema'
 import type {
   CreateCarInput,
   SearchFilters,
@@ -36,6 +36,31 @@ export async function countAllCars() {
 
 export async function findCarById(id: string) {
   const result = await db.select().from(cars).where(eq(cars.id, id))
+  return result[0] ?? null
+}
+
+export async function findCarByIdWithSeller(id: string) {
+  const result = await db
+    .select({
+      id: cars.id,
+      brand: cars.brand,
+      model: cars.model,
+      version: cars.version,
+      year: cars.year,
+      price: cars.price,
+      fuel: cars.fuel,
+      transmission: cars.transmission,
+      mileage: cars.mileage,
+      imageUrl: cars.imageUrl,
+      userId: cars.userId,
+      createdAt: cars.createdAt,
+      updatedAt: cars.updatedAt,
+      sellerName: users.name,
+      sellerPhone: users.phone,
+    })
+    .from(cars)
+    .leftJoin(users, eq(cars.userId, users.id))
+    .where(eq(cars.id, id))
   return result[0] ?? null
 }
 

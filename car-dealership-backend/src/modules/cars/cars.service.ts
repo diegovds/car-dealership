@@ -36,11 +36,18 @@ export async function listCars(page: number) {
 }
 
 export async function getCarById(id: string) {
-  const car = await repository.findCarById(id)
-  if (!car) {
+  const result = await repository.findCarByIdWithSeller(id)
+  if (!result) {
     throw new AppError(404, 'Carro não encontrado')
   }
-  return car
+  const { sellerName, sellerPhone, ...car } = result
+  return {
+    ...car,
+    seller: {
+      name: sellerName ?? '',
+      phone: sellerPhone ?? null,
+    },
+  }
 }
 
 export async function createCar(userId: string, data: CreateCarInput) {
