@@ -1,12 +1,7 @@
 'use client'
 
-import { useState, useTransition } from 'react'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { Pencil } from 'lucide-react'
 import { updateCarAction } from '@/actions/cars'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
 import {
   Dialog,
   DialogContent,
@@ -22,6 +17,7 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
 import {
   Select,
   SelectContent,
@@ -29,9 +25,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { updateCarSchema, type UpdateCarFormValues } from '@/lib/schemas'
-import { formatBRL, parseBRL } from '@/lib/currency'
 import type { GetUsers200CarsItem } from '@/http/api'
+import { formatBRL, parseBRL } from '@/lib/currency'
+import { updateCarSchema, type UpdateCarFormValues } from '@/lib/schemas'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { Pencil } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import { useState, useTransition } from 'react'
+import { useForm } from 'react-hook-form'
 
 interface EditCarDialogProps {
   car: GetUsers200CarsItem
@@ -50,6 +51,7 @@ const TRANSMISSION_OPTIONS = ['Manual', 'Automático', 'CVT', 'Semi-automático'
 export function EditCarDialog({ car }: EditCarDialogProps) {
   const [open, setOpen] = useState(false)
   const [isPending, startTransition] = useTransition()
+  const router = useRouter()
 
   const form = useForm<UpdateCarFormValues>({
     resolver: zodResolver(updateCarSchema),
@@ -73,6 +75,7 @@ export function EditCarDialog({ car }: EditCarDialogProps) {
         form.setError('root', { message: result.error })
       } else {
         setOpen(false)
+        router.push('/my-account')
       }
     })
   }

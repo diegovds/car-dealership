@@ -1,12 +1,7 @@
 'use client'
 
-import { useState, useTransition } from 'react'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { Plus } from 'lucide-react'
 import { createCarAction } from '@/actions/cars'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
 import {
   Dialog,
   DialogContent,
@@ -22,6 +17,7 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
 import {
   Select,
   SelectContent,
@@ -29,8 +25,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { carSchema, type CarFormValues } from '@/lib/schemas'
 import { formatBRL, parseBRL } from '@/lib/currency'
+import { carSchema, type CarFormValues } from '@/lib/schemas'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { Plus } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import { useState, useTransition } from 'react'
+import { useForm } from 'react-hook-form'
 
 const FUEL_OPTIONS = [
   'Gasolina',
@@ -45,6 +46,7 @@ const TRANSMISSION_OPTIONS = ['Manual', 'Automático', 'CVT', 'Semi-automático'
 export function AddCarDialog() {
   const [open, setOpen] = useState(false)
   const [isPending, startTransition] = useTransition()
+  const router = useRouter()
 
   const form = useForm<CarFormValues>({
     resolver: zodResolver(carSchema),
@@ -69,6 +71,7 @@ export function AddCarDialog() {
       } else {
         form.reset()
         setOpen(false)
+        router.push('/my-account')
       }
     })
   }
