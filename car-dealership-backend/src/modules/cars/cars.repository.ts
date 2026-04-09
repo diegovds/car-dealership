@@ -24,7 +24,7 @@ export async function findAllCars(page: number, perPage: number) {
   return db
     .select()
     .from(cars)
-    .orderBy(desc(cars.createdAt))
+    .orderBy(desc(cars.updatedAt))
     .limit(perPage)
     .offset((page - 1) * perPage)
 }

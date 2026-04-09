@@ -41,7 +41,7 @@ export async function findUserCars(
     .select()
     .from(cars)
     .where(eq(cars.userId, userId))
-    .orderBy(desc(cars.createdAt))
+    .orderBy(desc(cars.updatedAt))
     .limit(perPage)
     .offset((page - 1) * perPage)
 }
