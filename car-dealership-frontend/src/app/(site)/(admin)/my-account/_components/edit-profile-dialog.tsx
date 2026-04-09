@@ -56,20 +56,29 @@ export function EditProfileDialog({ user }: EditProfileDialogProps) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="ghost" size="icon-sm" className="text-muted-foreground hover:text-foreground">
+        <Button
+          variant="ghost"
+          size="icon-sm"
+          className="text-muted-foreground hover:text-foreground"
+        >
           <Pencil className="size-3.5" />
         </Button>
       </DialogTrigger>
 
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle className="text-base font-bold">Editar perfil</DialogTitle>
+          <DialogTitle className="text-base font-bold">
+            Editar perfil
+          </DialogTitle>
         </DialogHeader>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4 pt-2">
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="flex flex-col gap-4 pt-2"
+          >
             {form.formState.errors.root && (
-              <div className="rounded-lg border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
+              <div className="border-destructive/30 bg-destructive/10 text-destructive rounded-lg border px-4 py-3 text-sm">
                 {form.formState.errors.root.message}
               </div>
             )}
@@ -95,16 +104,20 @@ export function EditProfileDialog({ user }: EditProfileDialogProps) {
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input type="email" placeholder="seu@email.com" {...field} />
+                    <Input
+                      type="email"
+                      placeholder="seu@email.com"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
 
-            <div className="h-px bg-border/40" />
+            <div className="bg-border/40 h-px" />
 
-            <p className="text-[11px] uppercase tracking-widest text-muted-foreground">
+            <p className="text-muted-foreground text-[11px] tracking-widest uppercase">
               Alterar senha (opcional)
             </p>
 
@@ -115,7 +128,12 @@ export function EditProfileDialog({ user }: EditProfileDialogProps) {
                 <FormItem>
                   <FormLabel>Senha atual</FormLabel>
                   <FormControl>
-                    <Input type="password" placeholder="••••••" autoComplete="current-password" {...field} />
+                    <Input
+                      type="password"
+                      placeholder="••••••"
+                      autoComplete="current-password"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -129,7 +147,12 @@ export function EditProfileDialog({ user }: EditProfileDialogProps) {
                 <FormItem>
                   <FormLabel>Nova senha</FormLabel>
                   <FormControl>
-                    <Input type="password" placeholder="Mínimo 6 caracteres" autoComplete="new-password" {...field} />
+                    <Input
+                      type="password"
+                      placeholder="Mínimo 6 caracteres"
+                      autoComplete="new-password"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -137,7 +160,12 @@ export function EditProfileDialog({ user }: EditProfileDialogProps) {
             />
 
             <div className="flex justify-end gap-2 pt-2">
-              <Button type="button" variant="outline" onClick={() => setOpen(false)} disabled={isPending}>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setOpen(false)}
+                disabled={isPending}
+              >
                 Cancelar
               </Button>
               <Button

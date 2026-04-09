@@ -31,7 +31,14 @@ import {
 } from '@/components/ui/select'
 import { carSchema, type CarFormValues } from '@/lib/schemas'
 
-const FUEL_OPTIONS = ['Gasolina', 'Etanol', 'Flex', 'Diesel', 'Elétrico', 'Híbrido']
+const FUEL_OPTIONS = [
+  'Gasolina',
+  'Etanol',
+  'Flex',
+  'Diesel',
+  'Elétrico',
+  'Híbrido',
+]
 const TRANSMISSION_OPTIONS = ['Manual', 'Automático', 'CVT', 'Semi-automático']
 
 export function AddCarDialog() {
@@ -76,13 +83,18 @@ export function AddCarDialog() {
 
       <DialogContent className="max-h-[90dvh] overflow-y-auto sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle className="text-base font-bold">Cadastrar novo anúncio</DialogTitle>
+          <DialogTitle className="text-base font-bold">
+            Cadastrar novo anúncio
+          </DialogTitle>
         </DialogHeader>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4 pt-2">
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="flex flex-col gap-4 pt-2"
+          >
             {form.formState.errors.root && (
-              <div className="rounded-lg border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
+              <div className="border-destructive/30 bg-destructive/10 text-destructive rounded-lg border px-4 py-3 text-sm">
                 {form.formState.errors.root.message}
               </div>
             )}
@@ -228,7 +240,9 @@ export function AddCarDialog() {
                       {...field}
                       value={field.value ?? ''}
                       onChange={(e) =>
-                        field.onChange(e.target.value ? e.target.valueAsNumber : undefined)
+                        field.onChange(
+                          e.target.value ? e.target.valueAsNumber : undefined,
+                        )
                       }
                     />
                   </FormControl>

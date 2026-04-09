@@ -1,14 +1,16 @@
-import type { Metadata } from 'next'
 import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { getCars, getCarsSearch } from '@/http/api'
+import { Car } from 'lucide-react'
+import type { Metadata } from 'next'
+import Link from 'next/link'
+import { SearchForm } from './_components/search-form'
 
 export const metadata: Metadata = {
   title: 'Veículos à Venda',
-  description: 'Explore centenas de veículos disponíveis. Use nossa busca inteligente com IA para encontrar o carro ideal para você.',
+  description:
+    'Explore centenas de veículos disponíveis. Use nossa busca inteligente com IA para encontrar o carro ideal para você.',
 }
-import { Button } from '@/components/ui/button'
-import { getCars, getCarsSearch } from '@/http/api'
-import Link from 'next/link'
-import { SearchForm } from './_components/search-form'
 
 interface HomePageProps {
   searchParams: Promise<{ search?: string; page?: string }>
@@ -52,21 +54,22 @@ export default async function HomePage({ searchParams }: HomePageProps) {
           <p className="text-xs tracking-[0.3em] text-amber-400 uppercase">
             Marketplace de Veículos
           </p>
-          <h1 className="text-4xl font-bold tracking-tight text-foreground md:text-5xl">
+          <h1 className="text-foreground text-4xl font-bold tracking-tight md:text-5xl">
             Encontre seu
             <br />
             <span className="text-amber-400">próximo carro</span>
           </h1>
         </div>
-        <p className="max-w-md text-sm text-muted-foreground">
-          Busca inteligente com IA — descreva o carro que você quer em linguagem natural.
+        <p className="text-muted-foreground max-w-md text-sm">
+          Busca inteligente com IA — descreva o carro que você quer em linguagem
+          natural.
         </p>
         <SearchForm defaultValue={search} />
       </section>
 
       {/* AI reply */}
       {aiReply && (
-        <div className="border-l-2 border-amber-400 pl-4 text-sm text-muted-foreground italic">
+        <div className="text-muted-foreground border-l-2 border-amber-400 pl-4 text-sm italic">
           {aiReply}
         </div>
       )}
@@ -84,7 +87,7 @@ export default async function HomePage({ searchParams }: HomePageProps) {
       ) : (
         <section className="flex flex-col gap-6">
           <div className="flex items-center justify-between">
-            <h2 className="text-sm font-medium tracking-wider text-muted-foreground uppercase">
+            <h2 className="text-muted-foreground text-sm font-medium tracking-wider uppercase">
               {!search && `${meta?.total ?? cars.length} veículos disponíveis`}
             </h2>
             {search && (
@@ -99,10 +102,10 @@ export default async function HomePage({ searchParams }: HomePageProps) {
               <Link
                 key={car.id}
                 href={`/cars/${car.id}`}
-                className="group relative flex flex-col overflow-hidden rounded-xl border border-border/50 bg-card transition-all duration-300 hover:border-amber-400/40 hover:shadow-[0_0_20px_rgba(251,191,36,0.06)]"
+                className="group border-border/50 bg-card relative flex flex-col overflow-hidden rounded-xl border transition-all duration-300 hover:border-amber-400/40 hover:shadow-[0_0_20px_rgba(251,191,36,0.06)]"
               >
                 {/* Image */}
-                <div className="relative aspect-video overflow-hidden bg-muted">
+                <div className="bg-muted relative aspect-video overflow-hidden">
                   {car.imageUrl ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img
@@ -111,15 +114,19 @@ export default async function HomePage({ searchParams }: HomePageProps) {
                       className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                     />
                   ) : (
-                    <div className="flex h-full flex-col items-center justify-center gap-2 text-muted-foreground/30">
-                      <span className="text-4xl">🚗</span>
-                      <p className="text-[10px] tracking-widest uppercase">Sem imagem</p>
+                    <div className="text-muted-foreground/30 flex h-full flex-col items-center justify-center gap-2">
+                      <span>
+                        <Car size={36} color="#3f3f3f" fill="#3f3f3f" />
+                      </span>
+                      <p className="text-[10px] tracking-widest uppercase">
+                        Sem imagem
+                      </p>
                     </div>
                   )}
                   {car.fuel && (
                     <Badge
                       variant="secondary"
-                      className="absolute top-2 right-2 text-[10px] uppercase tracking-wider"
+                      className="absolute top-2 right-2 text-[10px] tracking-wider uppercase"
                     >
                       {car.fuel}
                     </Badge>
@@ -132,20 +139,23 @@ export default async function HomePage({ searchParams }: HomePageProps) {
                     <p className="text-[11px] font-medium tracking-widest text-amber-400 uppercase">
                       {car.brand}
                     </p>
-                    <h3 className="font-semibold leading-tight text-foreground">
+                    <h3 className="text-foreground leading-tight font-semibold">
                       {car.model}
                       {car.version && (
-                        <span className="font-normal text-muted-foreground"> {car.version}</span>
+                        <span className="text-muted-foreground font-normal">
+                          {' '}
+                          {car.version}
+                        </span>
                       )}
                     </h3>
                   </div>
 
                   <div className="mt-auto flex items-end justify-between gap-2">
                     <div>
-                      <p className="text-lg font-bold text-foreground tabular-nums">
+                      <p className="text-foreground text-lg font-bold tabular-nums">
                         {formatPrice(car.price)}
                       </p>
-                      <div className="flex gap-2 text-[11px] text-muted-foreground">
+                      <div className="text-muted-foreground flex gap-2 text-[11px]">
                         <span>{car.year}</span>
                         {car.mileage !== null && car.mileage !== undefined && (
                           <>
@@ -175,7 +185,7 @@ export default async function HomePage({ searchParams }: HomePageProps) {
                   <Link href={`/?page=${currentPage - 1}`}>← Anterior</Link>
                 </Button>
               )}
-              <span className="text-xs text-muted-foreground">
+              <span className="text-muted-foreground text-xs">
                 {currentPage} / {meta.totalPages}
               </span>
               {currentPage < meta.totalPages && (

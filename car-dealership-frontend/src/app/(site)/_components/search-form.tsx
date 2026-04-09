@@ -32,9 +32,13 @@ export function SearchForm({ defaultValue }: SearchFormProps) {
         name="search"
         defaultValue={defaultValue}
         placeholder="Ex: gol flex até 50 mil, SUV automático, Honda ano 2020..."
-        className="flex-1 border-border/60 bg-muted/30 text-sm placeholder:text-muted-foreground/50 focus-visible:border-amber-400/60 focus-visible:ring-amber-400/10"
+        className="border-border/60 bg-muted/30 placeholder:text-muted-foreground/50 flex-1 text-sm focus-visible:border-amber-400/60 focus-visible:ring-amber-400/10"
       />
-      <Button type="submit" disabled={isPending} className="bg-amber-400 text-black hover:bg-amber-300 font-semibold">
+      <Button
+        type="submit"
+        disabled={isPending}
+        className="bg-amber-400 font-semibold text-black hover:bg-amber-300"
+      >
         {isPending ? '...' : 'Buscar'}
       </Button>
     </form>

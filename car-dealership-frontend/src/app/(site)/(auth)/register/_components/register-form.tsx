@@ -36,9 +36,12 @@ export function RegisterForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="flex w-full flex-col gap-5">
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="flex w-full flex-col gap-5"
+      >
         {form.formState.errors.root && (
-          <div className="rounded-lg border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
+          <div className="border-destructive/30 bg-destructive/10 text-destructive rounded-lg border px-4 py-3 text-sm">
             {form.formState.errors.root.message}
           </div>
         )}
@@ -108,7 +111,7 @@ export function RegisterForm() {
           {isPending ? 'Criando conta...' : 'Criar conta'}
         </Button>
 
-        <p className="text-center text-xs text-muted-foreground">
+        <p className="text-muted-foreground text-center text-xs">
           Já tem conta?{' '}
           <Link
             href="/login"

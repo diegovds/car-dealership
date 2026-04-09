@@ -8,7 +8,11 @@ import type { UpdateUserFormValues } from '@/lib/schemas'
 
 export type UserActionResult = { error: string } | null
 
-export async function updateUserAction(data: UpdateUserFormValues): Promise<UserActionResult> {
+type UserResult = { id?: string; message?: string }
+
+export async function updateUserAction(
+  data: UpdateUserFormValues,
+): Promise<UserActionResult> {
   const token = await getAuthToken()
   if (!token) redirect('/login')
 
@@ -18,10 +22,12 @@ export async function updateUserAction(data: UpdateUserFormValues): Promise<User
   if (data.currentPassword) payload.currentPassword = data.currentPassword
   if (data.newPassword) payload.newPassword = data.newPassword
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const result = (await patchUsers(payload as any, {
-    headers: { Authorization: `Bearer ${token}` },
-  })) as any
+  const result = (await patchUsers(
+    payload as Parameters<typeof patchUsers>[0],
+    {
+      headers: { Authorization: `Bearer ${token}` },
+    },
+  )) as UserResult
 
   if (!result.id) {
     return { error: result.message || 'Erro ao atualizar perfil' }

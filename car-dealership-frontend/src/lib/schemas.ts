@@ -2,13 +2,17 @@ import { z } from 'zod'
 
 export const loginSchema = z.object({
   email: z.string().email({ error: 'Email inválido' }),
-  password: z.string().min(6, { error: 'Senha deve ter no mínimo 6 caracteres' }),
+  password: z
+    .string()
+    .min(6, { error: 'Senha deve ter no mínimo 6 caracteres' }),
 })
 
 export const registerSchema = z.object({
   name: z.string().min(2, { error: 'Nome deve ter no mínimo 2 caracteres' }),
   email: z.string().email({ error: 'Email inválido' }),
-  password: z.string().min(6, { error: 'Senha deve ter no mínimo 6 caracteres' }),
+  password: z
+    .string()
+    .min(6, { error: 'Senha deve ter no mínimo 6 caracteres' }),
 })
 
 export const carSchema = z.object({
@@ -37,7 +41,11 @@ export const updateUserSchema = z
       .min(2, { error: 'Nome deve ter no mínimo 2 caracteres' })
       .optional()
       .or(z.literal('')),
-    email: z.string().email({ error: 'Email inválido' }).optional().or(z.literal('')),
+    email: z
+      .string()
+      .email({ error: 'Email inválido' })
+      .optional()
+      .or(z.literal('')),
     currentPassword: z
       .string()
       .min(6, { error: 'Senha atual deve ter no mínimo 6 caracteres' })
@@ -54,7 +62,10 @@ export const updateUserSchema = z
       if (data.newPassword && !data.currentPassword) return false
       return true
     },
-    { message: 'Informe a senha atual para definir uma nova', path: ['currentPassword'] },
+    {
+      message: 'Informe a senha atual para definir uma nova',
+      path: ['currentPassword'],
+    },
   )
 
 export const updateCarSchema = carSchema.partial()

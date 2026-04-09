@@ -5,669 +5,599 @@
  * API para a Car Dealership
  * OpenAPI spec version: 0.0.1
  */
-import { customFetch } from '../lib/fetch-client';
+import { customFetch } from '../lib/fetch-client'
 export type Get200 = {
-  Car_Dealership_API: string;
-};
+  Car_Dealership_API: string
+}
 
 export type PostUsersBody = {
   /** @minLength 2 */
-  name: string;
+  name: string
   /** @pattern ^(?!\.)(?!.*\.\.)([A-Za-z0-9_'+\-\.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9\-]*\.)+[A-Za-z]{2,}$ */
-  email: string;
+  email: string
   /** @minLength 6 */
-  password: string;
-};
+  password: string
+}
 
 export type PostUsers201 = {
   /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$ */
-  id: string;
-  name: string;
-  email: string;
-  createdAt: string;
-  updatedAt: string;
-};
+  id: string
+  name: string
+  email: string
+  createdAt: string
+  updatedAt: string
+}
 
 export type PostUsers409 = {
-  message: string;
-};
+  message: string
+}
 
 export type GetUsersParams = {
-/**
- * @minimum 1
- * @maximum 9007199254740991
- */
-page?: number;
-};
+  /**
+   * @minimum 1
+   * @maximum 9007199254740991
+   */
+  page?: number
+}
 
 export type GetUsers200User = {
   /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$ */
-  id: string;
-  name: string;
-  email: string;
-  createdAt: string;
-  updatedAt: string;
-};
+  id: string
+  name: string
+  email: string
+  createdAt: string
+  updatedAt: string
+}
 
 export type GetUsers200CarsItem = {
   /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$ */
-  id: string;
-  brand: string;
-  model: string;
+  id: string
+  brand: string
+  model: string
   /** @nullable */
-  version: string | null;
-  year: number;
-  price: string;
+  version: string | null
+  year: number
+  price: string
   /** @nullable */
-  fuel: string | null;
+  fuel: string | null
   /** @nullable */
-  transmission: string | null;
+  transmission: string | null
   /** @nullable */
-  mileage: number | null;
+  mileage: number | null
   /** @nullable */
-  imageUrl: string | null;
-  createdAt: string;
-  updatedAt: string;
-};
+  imageUrl: string | null
+  createdAt: string
+  updatedAt: string
+}
 
 export type GetUsers200Meta = {
-  page: number;
-  perPage: number;
-  total: number;
-  totalPages: number;
-};
+  page: number
+  perPage: number
+  total: number
+  totalPages: number
+}
 
 export type GetUsers200 = {
-  user: GetUsers200User;
-  cars: GetUsers200CarsItem[];
-  meta: GetUsers200Meta;
-};
+  user: GetUsers200User
+  cars: GetUsers200CarsItem[]
+  meta: GetUsers200Meta
+}
 
 export type GetUsers404 = {
-  message: string;
-};
+  message: string
+}
 
 export type PatchUsersBody = {
   /** @minLength 2 */
-  name?: string;
+  name?: string
   /** @pattern ^(?!\.)(?!.*\.\.)([A-Za-z0-9_'+\-\.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9\-]*\.)+[A-Za-z]{2,}$ */
-  email?: string;
+  email?: string
   /** @minLength 6 */
-  currentPassword?: string;
+  currentPassword?: string
   /** @minLength 6 */
-  newPassword?: string;
-};
+  newPassword?: string
+}
 
 export type PatchUsers200 = {
   /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$ */
-  id: string;
-  name: string;
-  email: string;
-  createdAt: string;
-  updatedAt: string;
-};
+  id: string
+  name: string
+  email: string
+  createdAt: string
+  updatedAt: string
+}
 
 export type PatchUsers404 = {
-  message: string;
-};
+  message: string
+}
 
 export type PatchUsers409 = {
-  message: string;
-};
+  message: string
+}
 
 /**
  * Usuário deletado com sucesso
  * @nullable
  */
-export type DeleteUsers204 = typeof DeleteUsers204[keyof typeof DeleteUsers204] | null;
+export type DeleteUsers204 =
+  | (typeof DeleteUsers204)[keyof typeof DeleteUsers204]
+  | null
 
-
-export const DeleteUsers204 = {
-} as const;
+export const DeleteUsers204 = {} as const
 
 export type DeleteUsers404 = {
-  message: string;
-};
+  message: string
+}
 
 export type PostUsersLoginBody = {
   /** @pattern ^(?!\.)(?!.*\.\.)([A-Za-z0-9_'+\-\.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9\-]*\.)+[A-Za-z]{2,}$ */
-  email: string;
+  email: string
   /** @minLength 6 */
-  password: string;
-};
+  password: string
+}
 
 export type PostUsersLogin200 = {
-  token: string;
-};
+  token: string
+}
 
 export type PostUsersLogin401 = {
-  message: string;
-};
+  message: string
+}
 
 export type GetCarsSearchParams = {
-/**
- * @minLength 1
- */
-search: string;
-};
+  /**
+   * @minLength 1
+   */
+  search: string
+}
 
 export type GetCarsSearch200CarsItem = {
   /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$ */
-  id: string;
-  brand: string;
-  model: string;
+  id: string
+  brand: string
+  model: string
   /** @nullable */
-  version: string | null;
-  year: number;
-  price: string;
+  version: string | null
+  year: number
+  price: string
   /** @nullable */
-  fuel: string | null;
+  fuel: string | null
   /** @nullable */
-  transmission: string | null;
+  transmission: string | null
   /** @nullable */
-  mileage: number | null;
+  mileage: number | null
   /** @nullable */
-  imageUrl: string | null;
-  createdAt: string;
-  updatedAt: string;
-};
+  imageUrl: string | null
+  createdAt: string
+  updatedAt: string
+}
 
 export type GetCarsSearch200 = {
-  cars: GetCarsSearch200CarsItem[];
-  reply: string;
-};
+  cars: GetCarsSearch200CarsItem[]
+  reply: string
+}
 
 export type GetCarsParams = {
-/**
- * @minimum 1
- * @maximum 9007199254740991
- */
-page?: number;
-};
+  /**
+   * @minimum 1
+   * @maximum 9007199254740991
+   */
+  page?: number
+}
 
 export type GetCars200CarsItem = {
   /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$ */
-  id: string;
-  brand: string;
-  model: string;
+  id: string
+  brand: string
+  model: string
   /** @nullable */
-  version: string | null;
-  year: number;
-  price: string;
+  version: string | null
+  year: number
+  price: string
   /** @nullable */
-  fuel: string | null;
+  fuel: string | null
   /** @nullable */
-  transmission: string | null;
+  transmission: string | null
   /** @nullable */
-  mileage: number | null;
+  mileage: number | null
   /** @nullable */
-  imageUrl: string | null;
-  createdAt: string;
-  updatedAt: string;
-};
+  imageUrl: string | null
+  createdAt: string
+  updatedAt: string
+}
 
 export type GetCars200Meta = {
-  page: number;
-  perPage: number;
-  total: number;
-  totalPages: number;
-};
+  page: number
+  perPage: number
+  total: number
+  totalPages: number
+}
 
 export type GetCars200 = {
-  cars: GetCars200CarsItem[];
-  meta: GetCars200Meta;
-};
+  cars: GetCars200CarsItem[]
+  meta: GetCars200Meta
+}
 
 export type PostCarsBody = {
   /** @minLength 1 */
-  brand: string;
+  brand: string
   /** @minLength 1 */
-  model: string;
-  version?: string;
+  model: string
+  version?: string
   /**
-     * @minimum 1900
-     * @maximum 9007199254740991
-     */
-  year: number;
-  price: string;
-  fuel?: string;
-  transmission?: string;
+   * @minimum 1900
+   * @maximum 9007199254740991
+   */
+  year: number
+  price: string
+  fuel?: string
+  transmission?: string
   /**
-     * @minimum -9007199254740991
-     * @maximum 9007199254740991
-     */
-  mileage?: number;
-  imageUrl?: string;
-};
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  mileage?: number
+  imageUrl?: string
+}
 
 export type PostCars201 = {
   /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$ */
-  id: string;
-  brand: string;
-  model: string;
+  id: string
+  brand: string
+  model: string
   /** @nullable */
-  version: string | null;
-  year: number;
-  price: string;
+  version: string | null
+  year: number
+  price: string
   /** @nullable */
-  fuel: string | null;
+  fuel: string | null
   /** @nullable */
-  transmission: string | null;
+  transmission: string | null
   /** @nullable */
-  mileage: number | null;
+  mileage: number | null
   /** @nullable */
-  imageUrl: string | null;
-  createdAt: string;
-  updatedAt: string;
-};
+  imageUrl: string | null
+  createdAt: string
+  updatedAt: string
+}
 
 export type GetCarsId200 = {
   /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$ */
-  id: string;
-  brand: string;
-  model: string;
+  id: string
+  brand: string
+  model: string
   /** @nullable */
-  version: string | null;
-  year: number;
-  price: string;
+  version: string | null
+  year: number
+  price: string
   /** @nullable */
-  fuel: string | null;
+  fuel: string | null
   /** @nullable */
-  transmission: string | null;
+  transmission: string | null
   /** @nullable */
-  mileage: number | null;
+  mileage: number | null
   /** @nullable */
-  imageUrl: string | null;
-  createdAt: string;
-  updatedAt: string;
-};
+  imageUrl: string | null
+  createdAt: string
+  updatedAt: string
+}
 
 export type GetCarsId404 = {
-  message: string;
-};
+  message: string
+}
 
 export type PatchCarsIdBody = {
   /** @minLength 1 */
-  brand?: string;
+  brand?: string
   /** @minLength 1 */
-  model?: string;
-  version?: string;
+  model?: string
+  version?: string
   /**
-     * @minimum 1900
-     * @maximum 9007199254740991
-     */
-  year?: number;
-  price?: string;
-  fuel?: string;
-  transmission?: string;
+   * @minimum 1900
+   * @maximum 9007199254740991
+   */
+  year?: number
+  price?: string
+  fuel?: string
+  transmission?: string
   /**
-     * @minimum -9007199254740991
-     * @maximum 9007199254740991
-     */
-  mileage?: number;
-  imageUrl?: string;
-};
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  mileage?: number
+  imageUrl?: string
+}
 
 export type PatchCarsId200 = {
   /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$ */
-  id: string;
-  brand: string;
-  model: string;
+  id: string
+  brand: string
+  model: string
   /** @nullable */
-  version: string | null;
-  year: number;
-  price: string;
+  version: string | null
+  year: number
+  price: string
   /** @nullable */
-  fuel: string | null;
+  fuel: string | null
   /** @nullable */
-  transmission: string | null;
+  transmission: string | null
   /** @nullable */
-  mileage: number | null;
+  mileage: number | null
   /** @nullable */
-  imageUrl: string | null;
-  createdAt: string;
-  updatedAt: string;
-};
+  imageUrl: string | null
+  createdAt: string
+  updatedAt: string
+}
 
 export type PatchCarsId404 = {
-  message: string;
-};
+  message: string
+}
 
 /**
  * Carro deletado com sucesso
  * @nullable
  */
-export type DeleteCarsId204 = typeof DeleteCarsId204[keyof typeof DeleteCarsId204] | null;
+export type DeleteCarsId204 =
+  | (typeof DeleteCarsId204)[keyof typeof DeleteCarsId204]
+  | null
 
-
-export const DeleteCarsId204 = {
-} as const;
+export const DeleteCarsId204 = {} as const
 
 export type DeleteCarsId404 = {
-  message: string;
-};
+  message: string
+}
 
 /**
  * Retorna um link para a documentação da API.
  * @summary Rota padrão
  */
 export const getGetUrl = () => {
-
-
-
-
   return `/`
 }
 
-export const get = async ( options?: RequestInit): Promise<Get200> => {
-
-  return customFetch<Get200>(getGetUrl(),
-  {
+export const get = async (options?: RequestInit): Promise<Get200> => {
+  return customFetch<Get200>(getGetUrl(), {
     ...options,
-    method: 'GET'
-
-
-  }
-);}
-
-
+    method: 'GET',
+  })
+}
 
 /**
  * Cria uma nova conta com nome, email e senha.
  * @summary Cadastrar usuário
  */
 export const getPostUsersUrl = () => {
-
-
-
-
   return `/users`
 }
 
-export const postUsers = async (postUsersBody: PostUsersBody, options?: RequestInit): Promise<PostUsers201> => {
-
-  return customFetch<PostUsers201>(getPostUsersUrl(),
-  {
+export const postUsers = async (
+  postUsersBody: PostUsersBody,
+  options?: RequestInit,
+): Promise<PostUsers201> => {
+  return customFetch<PostUsers201>(getPostUsersUrl(), {
     ...options,
     method: 'POST',
     headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      postUsersBody,)
-  }
-);}
-
-
+    body: JSON.stringify(postUsersBody),
+  })
+}
 
 /**
  * Retorna o perfil do usuário autenticado e seus carros paginados.
  * @summary Obter perfil
  */
-export const getGetUsersUrl = (params?: GetUsersParams,) => {
-  const normalizedParams = new URLSearchParams();
+export const getGetUsersUrl = (params?: GetUsersParams) => {
+  const normalizedParams = new URLSearchParams()
 
   Object.entries(params || {}).forEach(([key, value]) => {
-
     if (value !== undefined) {
       normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
-  });
+  })
 
-  const stringifiedParams = normalizedParams.toString();
+  const stringifiedParams = normalizedParams.toString()
 
   return stringifiedParams.length > 0 ? `/users?${stringifiedParams}` : `/users`
 }
 
-export const getUsers = async (params?: GetUsersParams, options?: RequestInit): Promise<GetUsers200> => {
-
-  return customFetch<GetUsers200>(getGetUsersUrl(params),
-  {
+export const getUsers = async (
+  params?: GetUsersParams,
+  options?: RequestInit,
+): Promise<GetUsers200> => {
+  return customFetch<GetUsers200>(getGetUsersUrl(params), {
     ...options,
-    method: 'GET'
-
-
-  }
-);}
-
-
+    method: 'GET',
+  })
+}
 
 /**
  * Atualiza nome, email ou senha do usuário autenticado.
  * @summary Atualizar perfil
  */
 export const getPatchUsersUrl = () => {
-
-
-
-
   return `/users`
 }
 
-export const patchUsers = async (patchUsersBody: PatchUsersBody, options?: RequestInit): Promise<PatchUsers200> => {
-
-  return customFetch<PatchUsers200>(getPatchUsersUrl(),
-  {
+export const patchUsers = async (
+  patchUsersBody: PatchUsersBody,
+  options?: RequestInit,
+): Promise<PatchUsers200> => {
+  return customFetch<PatchUsers200>(getPatchUsersUrl(), {
     ...options,
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      patchUsersBody,)
-  }
-);}
-
-
+    body: JSON.stringify(patchUsersBody),
+  })
+}
 
 /**
  * Remove a conta do usuário autenticado e seus carros.
  * @summary Excluir conta
  */
 export const getDeleteUsersUrl = () => {
-
-
-
-
   return `/users`
 }
 
-export const deleteUsers = async ( options?: RequestInit): Promise<DeleteUsers204> => {
-
-  return customFetch<DeleteUsers204>(getDeleteUsersUrl(),
-  {
+export const deleteUsers = async (
+  options?: RequestInit,
+): Promise<DeleteUsers204> => {
+  return customFetch<DeleteUsers204>(getDeleteUsersUrl(), {
     ...options,
-    method: 'DELETE'
-
-
-  }
-);}
-
-
+    method: 'DELETE',
+  })
+}
 
 /**
  * Autentica o usuário e retorna um token JWT.
  * @summary Login
  */
 export const getPostUsersLoginUrl = () => {
-
-
-
-
   return `/users/login`
 }
 
-export const postUsersLogin = async (postUsersLoginBody: PostUsersLoginBody, options?: RequestInit): Promise<PostUsersLogin200> => {
-
-  return customFetch<PostUsersLogin200>(getPostUsersLoginUrl(),
-  {
+export const postUsersLogin = async (
+  postUsersLoginBody: PostUsersLoginBody,
+  options?: RequestInit,
+): Promise<PostUsersLogin200> => {
+  return customFetch<PostUsersLogin200>(getPostUsersLoginUrl(), {
     ...options,
     method: 'POST',
     headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      postUsersLoginBody,)
-  }
-);}
-
-
+    body: JSON.stringify(postUsersLoginBody),
+  })
+}
 
 /**
  * Interpreta a busca com IA e retorna carros relevantes.
  * @summary Buscar carros por texto (IA)
  */
-export const getGetCarsSearchUrl = (params: GetCarsSearchParams,) => {
-  const normalizedParams = new URLSearchParams();
+export const getGetCarsSearchUrl = (params: GetCarsSearchParams) => {
+  const normalizedParams = new URLSearchParams()
 
   Object.entries(params || {}).forEach(([key, value]) => {
-
     if (value !== undefined) {
       normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
-  });
+  })
 
-  const stringifiedParams = normalizedParams.toString();
+  const stringifiedParams = normalizedParams.toString()
 
-  return stringifiedParams.length > 0 ? `/cars/search?${stringifiedParams}` : `/cars/search`
+  return stringifiedParams.length > 0
+    ? `/cars/search?${stringifiedParams}`
+    : `/cars/search`
 }
 
-export const getCarsSearch = async (params: GetCarsSearchParams, options?: RequestInit): Promise<GetCarsSearch200> => {
-
-  return customFetch<GetCarsSearch200>(getGetCarsSearchUrl(params),
-  {
+export const getCarsSearch = async (
+  params: GetCarsSearchParams,
+  options?: RequestInit,
+): Promise<GetCarsSearch200> => {
+  return customFetch<GetCarsSearch200>(getGetCarsSearchUrl(params), {
     ...options,
-    method: 'GET'
-
-
-  }
-);}
-
-
+    method: 'GET',
+  })
+}
 
 /**
  * Retorna todos os carros com paginação.
  * @summary Listar carros
  */
-export const getGetCarsUrl = (params?: GetCarsParams,) => {
-  const normalizedParams = new URLSearchParams();
+export const getGetCarsUrl = (params?: GetCarsParams) => {
+  const normalizedParams = new URLSearchParams()
 
   Object.entries(params || {}).forEach(([key, value]) => {
-
     if (value !== undefined) {
       normalizedParams.append(key, value === null ? 'null' : value.toString())
     }
-  });
+  })
 
-  const stringifiedParams = normalizedParams.toString();
+  const stringifiedParams = normalizedParams.toString()
 
   return stringifiedParams.length > 0 ? `/cars?${stringifiedParams}` : `/cars`
 }
 
-export const getCars = async (params?: GetCarsParams, options?: RequestInit): Promise<GetCars200> => {
-
-  return customFetch<GetCars200>(getGetCarsUrl(params),
-  {
+export const getCars = async (
+  params?: GetCarsParams,
+  options?: RequestInit,
+): Promise<GetCars200> => {
+  return customFetch<GetCars200>(getGetCarsUrl(params), {
     ...options,
-    method: 'GET'
-
-
-  }
-);}
-
-
+    method: 'GET',
+  })
+}
 
 /**
  * Cadastra um novo carro para o usuário autenticado.
  * @summary Cadastrar carro
  */
 export const getPostCarsUrl = () => {
-
-
-
-
   return `/cars`
 }
 
-export const postCars = async (postCarsBody: PostCarsBody, options?: RequestInit): Promise<PostCars201> => {
-
-  return customFetch<PostCars201>(getPostCarsUrl(),
-  {
+export const postCars = async (
+  postCarsBody: PostCarsBody,
+  options?: RequestInit,
+): Promise<PostCars201> => {
+  return customFetch<PostCars201>(getPostCarsUrl(), {
     ...options,
     method: 'POST',
     headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      postCarsBody,)
-  }
-);}
-
-
+    body: JSON.stringify(postCarsBody),
+  })
+}
 
 /**
  * Retorna os detalhes de um carro específico.
  * @summary Obter carro por ID
  */
-export const getGetCarsIdUrl = (id: string,) => {
-
-
-
-
+export const getGetCarsIdUrl = (id: string) => {
   return `/cars/${id}`
 }
 
-export const getCarsId = async (id: string, options?: RequestInit): Promise<GetCarsId200> => {
-
-  return customFetch<GetCarsId200>(getGetCarsIdUrl(id),
-  {
+export const getCarsId = async (
+  id: string,
+  options?: RequestInit,
+): Promise<GetCarsId200> => {
+  return customFetch<GetCarsId200>(getGetCarsIdUrl(id), {
     ...options,
-    method: 'GET'
-
-
-  }
-);}
-
-
+    method: 'GET',
+  })
+}
 
 /**
  * Atualiza os dados de um carro do usuário autenticado.
  * @summary Atualizar carro
  */
-export const getPatchCarsIdUrl = (id: string,) => {
-
-
-
-
+export const getPatchCarsIdUrl = (id: string) => {
   return `/cars/${id}`
 }
 
-export const patchCarsId = async (id: string,
-    patchCarsIdBody: PatchCarsIdBody, options?: RequestInit): Promise<PatchCarsId200> => {
-
-  return customFetch<PatchCarsId200>(getPatchCarsIdUrl(id),
-  {
+export const patchCarsId = async (
+  id: string,
+  patchCarsIdBody: PatchCarsIdBody,
+  options?: RequestInit,
+): Promise<PatchCarsId200> => {
+  return customFetch<PatchCarsId200>(getPatchCarsIdUrl(id), {
     ...options,
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      patchCarsIdBody,)
-  }
-);}
-
-
+    body: JSON.stringify(patchCarsIdBody),
+  })
+}
 
 /**
  * Remove um carro do usuário autenticado.
  * @summary Excluir carro
  */
-export const getDeleteCarsIdUrl = (id: string,) => {
-
-
-
-
+export const getDeleteCarsIdUrl = (id: string) => {
   return `/cars/${id}`
 }
 
-export const deleteCarsId = async (id: string, options?: RequestInit): Promise<DeleteCarsId204> => {
-
-  return customFetch<DeleteCarsId204>(getDeleteCarsIdUrl(id),
-  {
+export const deleteCarsId = async (
+  id: string,
+  options?: RequestInit,
+): Promise<DeleteCarsId204> => {
+  return customFetch<DeleteCarsId204>(getDeleteCarsIdUrl(id), {
     ...options,
-    method: 'DELETE'
-
-
-  }
-);}
+    method: 'DELETE',
+  })
+}

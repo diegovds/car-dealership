@@ -1,12 +1,8 @@
 'use client'
 
-import { useState, useTransition } from 'react'
-import Link from 'next/link'
-import { Trash2 } from 'lucide-react'
 import { deleteCarAction } from '@/actions/cars'
-import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { EditCarDialog } from './edit-car-dialog'
+import { Button } from '@/components/ui/button'
 import {
   Dialog,
   DialogContent,
@@ -16,6 +12,10 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import type { GetUsers200CarsItem } from '@/http/api'
+import { Car, Trash2 } from 'lucide-react'
+import Link from 'next/link'
+import { useState, useTransition } from 'react'
+import { EditCarDialog } from './edit-car-dialog'
 
 interface CarItemProps {
   car: GetUsers200CarsItem
@@ -41,11 +41,11 @@ export function CarItem({ car }: CarItemProps) {
   }
 
   return (
-    <div className="group flex gap-4 rounded-xl border border-border/50 bg-card p-4 transition-colors hover:border-border">
+    <div className="group border-border/50 bg-card hover:border-border flex gap-4 rounded-xl border p-4 transition-colors">
       {/* Thumbnail — clicável */}
       <Link
         href={`/cars/${car.id}`}
-        className="relative h-20 w-28 shrink-0 overflow-hidden rounded-lg bg-muted"
+        className="bg-muted relative h-20 w-28 shrink-0 overflow-hidden rounded-lg"
       >
         {car.imageUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
@@ -55,8 +55,10 @@ export function CarItem({ car }: CarItemProps) {
             className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
           />
         ) : (
-          <div className="flex h-full flex-col items-center justify-center gap-1 text-muted-foreground/30">
-            <span className="text-xl">🚗</span>
+          <div className="text-muted-foreground/30 flex h-full flex-col items-center justify-center gap-1">
+            <span>
+              <Car size={20} color="#3f3f3f" fill="#3f3f3f" />
+            </span>
             <p className="text-[8px] tracking-widest uppercase">Sem imagem</p>
           </div>
         )}
@@ -65,16 +67,19 @@ export function CarItem({ car }: CarItemProps) {
       {/* Info — clicável */}
       <Link
         href={`/cars/${car.id}`}
-        className="flex flex-1 flex-col justify-between gap-1 min-w-0 hover:opacity-80 transition-opacity"
+        className="flex min-w-0 flex-1 flex-col justify-between gap-1 transition-opacity hover:opacity-80"
       >
         <div>
           <p className="text-[10px] font-medium tracking-widest text-amber-400 uppercase">
             {car.brand}
           </p>
-          <p className="font-semibold leading-tight truncate">
+          <p className="truncate leading-tight font-semibold">
             {car.model}
             {car.version && (
-              <span className="font-normal text-muted-foreground"> {car.version}</span>
+              <span className="text-muted-foreground font-normal">
+                {' '}
+                {car.version}
+              </span>
             )}
           </p>
         </div>
@@ -102,8 +107,10 @@ export function CarItem({ car }: CarItemProps) {
       </Link>
 
       {/* Price + actions */}
-      <div className="flex flex-col items-end justify-between shrink-0">
-        <p className="text-base font-bold tabular-nums">{formatPrice(car.price)}</p>
+      <div className="flex shrink-0 flex-col items-end justify-between">
+        <p className="text-base font-bold tabular-nums">
+          {formatPrice(car.price)}
+        </p>
         <div className="flex items-center gap-1">
           <EditCarDialog car={car} />
           <Button
@@ -111,7 +118,7 @@ export function CarItem({ car }: CarItemProps) {
             size="icon-sm"
             onClick={() => setOpen(true)}
             disabled={isPending}
-            className="text-muted-foreground transition-opacity hover:text-destructive sm:opacity-0 sm:group-hover:opacity-100"
+            className="text-muted-foreground hover:text-destructive transition-opacity sm:opacity-0 sm:group-hover:opacity-100"
           >
             <Trash2 className="size-3.5" />
           </Button>
@@ -124,14 +131,18 @@ export function CarItem({ car }: CarItemProps) {
             <DialogTitle>Remover anúncio</DialogTitle>
             <DialogDescription>
               Tem certeza que deseja remover o anúncio de{' '}
-              <span className="font-semibold text-foreground">
+              <span className="text-foreground font-semibold">
                 {car.brand} {car.model}
               </span>
               ? Esta ação não pode ser desfeita.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="gap-2">
-            <Button variant="outline" onClick={() => setOpen(false)} disabled={isPending}>
+            <Button
+              variant="outline"
+              onClick={() => setOpen(false)}
+              disabled={isPending}
+            >
               Cancelar
             </Button>
             <Button

@@ -36,7 +36,14 @@ interface EditCarDialogProps {
   car: GetUsers200CarsItem
 }
 
-const FUEL_OPTIONS = ['Gasolina', 'Etanol', 'Flex', 'Diesel', 'Elétrico', 'Híbrido']
+const FUEL_OPTIONS = [
+  'Gasolina',
+  'Etanol',
+  'Flex',
+  'Diesel',
+  'Elétrico',
+  'Híbrido',
+]
 const TRANSMISSION_OPTIONS = ['Manual', 'Automático', 'CVT', 'Semi-automático']
 
 export function EditCarDialog({ car }: EditCarDialogProps) {
@@ -75,7 +82,7 @@ export function EditCarDialog({ car }: EditCarDialogProps) {
         <Button
           variant="ghost"
           size="icon-sm"
-          className="text-muted-foreground transition-opacity hover:text-foreground sm:opacity-0 sm:group-hover:opacity-100"
+          className="text-muted-foreground hover:text-foreground transition-opacity sm:opacity-0 sm:group-hover:opacity-100"
         >
           <Pencil className="size-3.5" />
         </Button>
@@ -83,13 +90,18 @@ export function EditCarDialog({ car }: EditCarDialogProps) {
 
       <DialogContent className="max-h-[90dvh] overflow-y-auto sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle className="text-base font-bold">Editar anúncio</DialogTitle>
+          <DialogTitle className="text-base font-bold">
+            Editar anúncio
+          </DialogTitle>
         </DialogHeader>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4 pt-2">
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="flex flex-col gap-4 pt-2"
+          >
             {form.formState.errors.root && (
-              <div className="rounded-lg border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
+              <div className="border-destructive/30 bg-destructive/10 text-destructive rounded-lg border px-4 py-3 text-sm">
                 {form.formState.errors.root.message}
               </div>
             )}
@@ -235,7 +247,9 @@ export function EditCarDialog({ car }: EditCarDialogProps) {
                       {...field}
                       value={field.value ?? ''}
                       onChange={(e) =>
-                        field.onChange(e.target.value ? e.target.valueAsNumber : undefined)
+                        field.onChange(
+                          e.target.value ? e.target.valueAsNumber : undefined,
+                        )
                       }
                     />
                   </FormControl>

@@ -8,17 +8,20 @@ import type { CarFormValues } from '@/lib/schemas'
 
 export type CarActionResult = { error: string } | null
 
-export async function createCarAction(data: CarFormValues): Promise<CarActionResult> {
+type CarResult = { id?: string; message?: string }
+
+export async function createCarAction(
+  data: CarFormValues,
+): Promise<CarActionResult> {
   const token = await getAuthToken()
   if (!token) redirect('/login')
 
   const { imageUrl, ...rest } = data
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const result = (await postCars(
     { ...rest, imageUrl: imageUrl || undefined },
     { headers: { Authorization: `Bearer ${token}` } },
-  )) as any
+  )) as CarResult
 
   if (!result.id) {
     return { error: result.message || 'Erro ao cadastrar carro' }
@@ -37,12 +40,11 @@ export async function updateCarAction(
 
   const { imageUrl, ...rest } = data
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const result = (await patchCarsId(
     id,
     { ...rest, imageUrl: imageUrl || undefined },
     { headers: { Authorization: `Bearer ${token}` } },
-  )) as any
+  )) as CarResult
 
   if (!result.id) {
     return { error: result.message || 'Erro ao atualizar carro' }

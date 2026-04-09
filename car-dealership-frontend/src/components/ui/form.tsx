@@ -19,7 +19,9 @@ type FormFieldContextValue<
   name: TName
 }
 
-const FormFieldContext = React.createContext<FormFieldContextValue>({} as FormFieldContextValue)
+const FormFieldContext = React.createContext<FormFieldContextValue>(
+  {} as FormFieldContextValue,
+)
 
 function FormField<
   TFieldValues extends FieldValues = FieldValues,
@@ -32,7 +34,9 @@ function FormField<
   )
 }
 
-const FormItemContext = React.createContext<{ id: string }>({} as { id: string })
+const FormItemContext = React.createContext<{ id: string }>(
+  {} as { id: string },
+)
 
 function useFormField() {
   const fieldContext = React.useContext(FormFieldContext)
@@ -56,19 +60,26 @@ function FormItem({ className, ...props }: React.ComponentProps<'div'>) {
   const id = React.useId()
   return (
     <FormItemContext.Provider value={{ id }}>
-      <div data-slot="form-item" className={cn('flex flex-col gap-1.5', className)} {...props} />
+      <div
+        data-slot="form-item"
+        className={cn('flex flex-col gap-1.5', className)}
+        {...props}
+      />
     </FormItemContext.Provider>
   )
 }
 
-function FormLabel({ className, ...props }: React.ComponentProps<typeof Label>) {
+function FormLabel({
+  className,
+  ...props
+}: React.ComponentProps<typeof Label>) {
   const { error, formItemId } = useFormField()
   return (
     <Label
       data-slot="form-label"
       data-error={!!error}
       className={cn(
-        'text-xs tracking-wider uppercase text-muted-foreground data-[error=true]:text-destructive',
+        'text-muted-foreground data-[error=true]:text-destructive text-xs tracking-wider uppercase',
         className,
       )}
       htmlFor={formItemId}
@@ -83,7 +94,9 @@ function FormControl({ ...props }: React.ComponentProps<'div'>) {
     <div
       data-slot="form-control"
       id={formItemId}
-      aria-describedby={!error ? formDescriptionId : `${formDescriptionId} ${formMessageId}`}
+      aria-describedby={
+        !error ? formDescriptionId : `${formDescriptionId} ${formMessageId}`
+      }
       aria-invalid={!!error}
       {...props}
     />
@@ -96,13 +109,17 @@ function FormDescription({ className, ...props }: React.ComponentProps<'p'>) {
     <p
       data-slot="form-description"
       id={formDescriptionId}
-      className={cn('text-xs text-muted-foreground', className)}
+      className={cn('text-muted-foreground text-xs', className)}
       {...props}
     />
   )
 }
 
-function FormMessage({ className, children, ...props }: React.ComponentProps<'p'>) {
+function FormMessage({
+  className,
+  children,
+  ...props
+}: React.ComponentProps<'p'>) {
   const { error, formMessageId } = useFormField()
   const body = error ? String(error?.message ?? '') : children
   if (!body) return null
@@ -110,7 +127,7 @@ function FormMessage({ className, children, ...props }: React.ComponentProps<'p'
     <p
       data-slot="form-message"
       id={formMessageId}
-      className={cn('text-xs text-destructive', className)}
+      className={cn('text-destructive text-xs', className)}
       {...props}
     >
       {body}

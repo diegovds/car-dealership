@@ -7,9 +7,13 @@ import type { LoginFormValues, RegisterFormValues } from '@/lib/schemas'
 
 export type AuthActionResult = { error: string } | null
 
-export async function loginAction(data: LoginFormValues): Promise<AuthActionResult> {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const result = (await postUsersLogin(data)) as any
+type LoginResult = { token?: string; message?: string }
+type RegisterResult = { id?: string; message?: string }
+
+export async function loginAction(
+  data: LoginFormValues,
+): Promise<AuthActionResult> {
+  const result = (await postUsersLogin(data)) as LoginResult
 
   if (!result.token) {
     return { error: result.message || 'Email ou senha inválidos' }
@@ -27,19 +31,19 @@ export async function loginAction(data: LoginFormValues): Promise<AuthActionResu
   redirect('/my-account')
 }
 
-export async function registerAction(data: RegisterFormValues): Promise<AuthActionResult> {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const result = (await postUsers(data)) as any
+export async function registerAction(
+  data: RegisterFormValues,
+): Promise<AuthActionResult> {
+  const result = (await postUsers(data)) as RegisterResult
 
   if (!result.id) {
     return { error: result.message || 'Erro ao criar conta' }
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const loginResult = (await postUsersLogin({
     email: data.email,
     password: data.password,
-  })) as any
+  })) as LoginResult
 
   if (loginResult.token) {
     const cookieStore = await cookies()

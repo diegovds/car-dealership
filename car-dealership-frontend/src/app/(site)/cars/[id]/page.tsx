@@ -1,16 +1,18 @@
-import Link from 'next/link'
-import { notFound } from 'next/navigation'
-import { ArrowLeft, Calendar, Fuel, Gauge, Settings2 } from 'lucide-react'
-import type { Metadata } from 'next'
-import { getCarsId } from '@/http/api'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { getCarsId } from '@/http/api'
+import { ArrowLeft, Calendar, Car, Fuel, Gauge, Settings2 } from 'lucide-react'
+import type { Metadata } from 'next'
+import Link from 'next/link'
+import { notFound } from 'next/navigation'
 
 interface CarDetailPageProps {
   params: Promise<{ id: string }>
 }
 
-export async function generateMetadata({ params }: CarDetailPageProps): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: CarDetailPageProps): Promise<Metadata> {
   const { id } = await params
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const car = (await getCarsId(id)) as any
@@ -60,16 +62,31 @@ export default async function CarDetailPage({ params }: CarDetailPageProps) {
   const specs = [
     { icon: Calendar, label: 'Ano', value: String(car.year) },
     car.fuel ? { icon: Fuel, label: 'Combustível', value: car.fuel } : null,
-    car.transmission ? { icon: Settings2, label: 'Câmbio', value: car.transmission } : null,
-    car.mileage != null
-      ? { icon: Gauge, label: 'Quilometragem', value: formatMileage(car.mileage) }
+    car.transmission
+      ? { icon: Settings2, label: 'Câmbio', value: car.transmission }
       : null,
-  ].filter(Boolean) as { icon: React.ElementType; label: string; value: string }[]
+    car.mileage != null
+      ? {
+          icon: Gauge,
+          label: 'Quilometragem',
+          value: formatMileage(car.mileage),
+        }
+      : null,
+  ].filter(Boolean) as {
+    icon: React.ElementType
+    label: string
+    value: string
+  }[]
 
   return (
     <div className="container mx-auto px-4 py-8">
       {/* Back */}
-      <Button variant="ghost" size="sm" asChild className="-ml-2 mb-6 text-muted-foreground">
+      <Button
+        variant="ghost"
+        size="sm"
+        asChild
+        className="text-muted-foreground mb-6 -ml-2"
+      >
         <Link href="/">
           <ArrowLeft className="size-4" />
           Voltar
@@ -79,7 +96,7 @@ export default async function CarDetailPage({ params }: CarDetailPageProps) {
       <div className="grid gap-8 lg:grid-cols-[1fr_380px] lg:items-start">
         {/* Left — image */}
         <div className="flex flex-col gap-4">
-          <div className="relative aspect-video w-full overflow-hidden rounded-2xl border border-border/50 bg-muted">
+          <div className="border-border/50 bg-muted relative aspect-video w-full overflow-hidden rounded-2xl border">
             {car.imageUrl ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img
@@ -88,8 +105,10 @@ export default async function CarDetailPage({ params }: CarDetailPageProps) {
                 className="h-full w-full object-cover"
               />
             ) : (
-              <div className="flex h-full flex-col items-center justify-center gap-3 text-muted-foreground/30">
-                <span className="text-7xl">🚗</span>
+              <div className="text-muted-foreground/30 flex h-full flex-col items-center justify-center gap-3">
+                <span>
+                  <Car size={72} color="#3f3f3f" fill="#3f3f3f" />
+                </span>
                 <p className="text-xs tracking-widest uppercase">Sem imagem</p>
               </div>
             )}
@@ -101,11 +120,13 @@ export default async function CarDetailPage({ params }: CarDetailPageProps) {
               {specs.map(({ icon: Icon, label, value }) => (
                 <div
                   key={label}
-                  className="flex flex-col gap-1 rounded-xl border border-border/50 bg-card p-4"
+                  className="border-border/50 bg-card flex flex-col gap-1 rounded-xl border p-4"
                 >
-                  <div className="flex items-center gap-1.5 text-muted-foreground">
+                  <div className="text-muted-foreground flex items-center gap-1.5">
                     <Icon className="size-3.5" />
-                    <span className="text-[10px] uppercase tracking-wider">{label}</span>
+                    <span className="text-[10px] tracking-wider uppercase">
+                      {label}
+                    </span>
                   </div>
                   <p className="text-sm font-semibold">{value}</p>
                 </div>
@@ -123,16 +144,19 @@ export default async function CarDetailPage({ params }: CarDetailPageProps) {
                 {car.brand}
               </span>
               {car.fuel && (
-                <Badge variant="secondary" className="text-[10px] uppercase tracking-wider">
+                <Badge
+                  variant="secondary"
+                  className="text-[10px] tracking-wider uppercase"
+                >
                   {car.fuel}
                 </Badge>
               )}
             </div>
 
-            <h1 className="text-3xl font-bold leading-tight tracking-tight">
+            <h1 className="text-3xl leading-tight font-bold tracking-tight">
               {car.model}
               {car.version && (
-                <span className="block text-lg font-normal text-muted-foreground mt-0.5">
+                <span className="text-muted-foreground mt-0.5 block text-lg font-normal">
                   {car.version}
                 </span>
               )}
@@ -141,18 +165,20 @@ export default async function CarDetailPage({ params }: CarDetailPageProps) {
 
           {/* Price */}
           <div className="flex flex-col gap-1 rounded-2xl border border-amber-400/20 bg-amber-400/5 p-5">
-            <p className="text-[10px] uppercase tracking-widest text-amber-400/70">Preço</p>
-            <p className="text-4xl font-bold tabular-nums tracking-tight">
+            <p className="text-[10px] tracking-widest text-amber-400/70 uppercase">
+              Preço
+            </p>
+            <p className="text-4xl font-bold tracking-tight tabular-nums">
               {formatPrice(car.price)}
             </p>
           </div>
 
           {/* Metadata */}
-          <div className="flex flex-col gap-1 border-t border-border/30 pt-4">
-            <p className="text-[10px] uppercase tracking-widest text-muted-foreground/50">
+          <div className="border-border/30 flex flex-col gap-1 border-t pt-4">
+            <p className="text-muted-foreground/50 text-[10px] tracking-widest uppercase">
               Anunciado em
             </p>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-muted-foreground text-xs">
               {new Date(car.createdAt).toLocaleDateString('pt-BR', {
                 day: '2-digit',
                 month: 'long',

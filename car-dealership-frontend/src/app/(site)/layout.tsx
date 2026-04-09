@@ -3,16 +3,27 @@ import { Button } from '@/components/ui/button'
 import { isAuthenticated } from '@/lib/auth'
 import Link from 'next/link'
 
-export default async function SiteLayout({ children }: { children: React.ReactNode }) {
+export default async function SiteLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
   const authenticated = await isAuthenticated()
 
   return (
     <div className="flex min-h-dvh flex-col">
-      <header className="sticky top-0 z-50 border-b border-border/40 bg-background/80 backdrop-blur-md">
+      <header className="border-border/40 bg-background/80 sticky top-0 z-50 border-b backdrop-blur-md">
         <div className="container mx-auto flex h-14 items-center justify-between px-4">
-          <Link href="/" className="flex items-center transition-opacity hover:opacity-80">
-            <span className="text-amber-400 font-bold tracking-wider text-lg">Auto</span>
-            <span className="text-foreground font-bold tracking-wider text-lg">Mercado</span>
+          <Link
+            href="/"
+            className="flex items-center transition-opacity hover:opacity-80"
+          >
+            <span className="text-lg font-bold tracking-wider text-amber-400">
+              Auto
+            </span>
+            <span className="text-foreground text-lg font-bold tracking-wider">
+              Mercado
+            </span>
           </Link>
 
           <nav className="flex items-center gap-2">
@@ -43,9 +54,10 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
 
       <main className="flex flex-1 flex-col">{children}</main>
 
-      <footer className="border-t border-border/40 py-6">
-        <div className="container mx-auto px-4 text-center text-xs text-muted-foreground">
-          © {new Date().getFullYear()} AutoMercado — compre e venda com confiança
+      <footer className="border-border/40 border-t py-6">
+        <div className="text-muted-foreground container mx-auto px-4 text-center text-xs">
+          © {new Date().getFullYear()} AutoMercado — compre e venda com
+          confiança
         </div>
       </footer>
     </div>

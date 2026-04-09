@@ -15,8 +15,15 @@ export const metadata: Metadata = {
     default: 'AutoMercado',
     template: '%s | AutoMercado',
   },
-  description: 'Marketplace de veículos com busca inteligente por IA. Compre e venda carros com facilidade.',
-  keywords: ['carros', 'veículos', 'comprar carro', 'vender carro', 'marketplace automotivo'],
+  description:
+    'Marketplace de veículos com busca inteligente por IA. Compre e venda carros com facilidade.',
+  keywords: [
+    'carros',
+    'veículos',
+    'comprar carro',
+    'vender carro',
+    'marketplace automotivo',
+  ],
   openGraph: {
     siteName: 'AutoMercado',
     locale: 'pt_BR',
@@ -32,9 +39,14 @@ export default function RootLayout({
   return (
     <html
       lang="pt-BR"
-      className={cn('dark', 'antialiased', jetbrainsMono.variable, geist.variable)}
+      className={cn(
+        'dark',
+        'antialiased',
+        jetbrainsMono.variable,
+        geist.variable,
+      )}
     >
-      <body className="flex min-h-dvh flex-col bg-background font-mono text-foreground">
+      <body className="bg-background text-foreground flex min-h-dvh flex-col font-mono">
         {children}
       </body>
     </html>
