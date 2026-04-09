@@ -57,7 +57,11 @@ export function CarItem({ car }: CarItemProps) {
         ) : (
           <div className="text-muted-foreground/30 flex h-full flex-col items-center justify-center gap-1">
             <span>
-              <Car size={20} fill="currentColor" strokeWidth={0} />
+              <Car
+                size={20}
+                strokeWidth={0}
+                className="text-muted-foreground/20 fill-current"
+              />
             </span>
             <p className="text-[8px] tracking-widest uppercase">Sem imagem</p>
           </div>

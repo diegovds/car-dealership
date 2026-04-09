@@ -116,7 +116,11 @@ export default async function HomePage({ searchParams }: HomePageProps) {
                   ) : (
                     <div className="text-muted-foreground/30 flex h-full flex-col items-center justify-center gap-2">
                       <span>
-                        <Car size={36} fill="currentColor" strokeWidth={0} />
+                        <Car
+                          size={36}
+                          strokeWidth={0}
+                          className="text-muted-foreground/20 fill-current"
+                        />
                       </span>
                       <p className="text-[10px] tracking-widest uppercase">
                         Sem imagem
