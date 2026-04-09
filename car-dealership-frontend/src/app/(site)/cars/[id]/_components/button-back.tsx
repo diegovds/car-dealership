@@ -7,13 +7,24 @@ import { useRouter } from 'next/navigation'
 export function ButtonBack() {
   const router = useRouter()
 
+  function handleBack() {
+    const referrer = document.referrer
+    const isSameOrigin =
+      referrer && new URL(referrer).origin === window.location.origin
+    if (isSameOrigin) {
+      router.back()
+    } else {
+      router.push('/')
+    }
+  }
+
   return (
     <Button
       variant="ghost"
       size="sm"
       asChild
       className="text-muted-foreground mb-6 -ml-2 cursor-pointer"
-      onClick={() => router.back()}
+      onClick={handleBack}
     >
       <div>
         <ArrowLeft className="size-4" />
