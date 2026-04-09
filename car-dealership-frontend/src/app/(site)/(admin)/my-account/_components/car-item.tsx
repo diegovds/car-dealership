@@ -110,7 +110,7 @@ export function CarItem({ car }: CarItemProps) {
             size="icon-sm"
             onClick={() => setOpen(true)}
             disabled={isPending}
-            className="text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100 hover:text-destructive"
+            className="text-muted-foreground transition-opacity hover:text-destructive sm:opacity-0 sm:group-hover:opacity-100"
           >
             <Trash2 className="size-3.5" />
           </Button>

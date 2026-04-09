@@ -75,7 +75,7 @@ export function EditCarDialog({ car }: EditCarDialogProps) {
         <Button
           variant="ghost"
           size="icon-sm"
-          className="text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100 hover:text-foreground"
+          className="text-muted-foreground transition-opacity hover:text-foreground sm:opacity-0 sm:group-hover:opacity-100"
         >
           <Pencil className="size-3.5" />
         </Button>
