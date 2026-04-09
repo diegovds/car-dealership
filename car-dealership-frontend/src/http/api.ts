@@ -5,6 +5,7 @@
  * API para a Car Dealership
  * OpenAPI spec version: 0.0.1
  */
+import { customFetch } from '../lib/fetch-client';
 export type Get200 = {
   Car_Dealership_API: string;
 };
@@ -355,25 +356,19 @@ export const getGetUrl = () => {
 
 
 
-  return `http://localhost:3333/`
+  return `/`
 }
 
 export const get = async ( options?: RequestInit): Promise<Get200> => {
 
-  const res = await fetch(getGetUrl(),
+  return customFetch<Get200>(getGetUrl(),
   {
     ...options,
     method: 'GET'
 
 
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: Get200 = body ? JSON.parse(body) : {}
-  return data
-}
+);}
 
 
 
@@ -386,12 +381,12 @@ export const getPostUsersUrl = () => {
 
 
 
-  return `http://localhost:3333/users`
+  return `/users`
 }
 
 export const postUsers = async (postUsersBody: PostUsersBody, options?: RequestInit): Promise<PostUsers201> => {
 
-  const res = await fetch(getPostUsersUrl(),
+  return customFetch<PostUsers201>(getPostUsersUrl(),
   {
     ...options,
     method: 'POST',
@@ -399,13 +394,7 @@ export const postUsers = async (postUsersBody: PostUsersBody, options?: RequestI
     body: JSON.stringify(
       postUsersBody,)
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: PostUsers201 = body ? JSON.parse(body) : {}
-  return data
-}
+);}
 
 
 
@@ -425,25 +414,19 @@ export const getGetUsersUrl = (params?: GetUsersParams,) => {
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `http://localhost:3333/users?${stringifiedParams}` : `http://localhost:3333/users`
+  return stringifiedParams.length > 0 ? `/users?${stringifiedParams}` : `/users`
 }
 
 export const getUsers = async (params?: GetUsersParams, options?: RequestInit): Promise<GetUsers200> => {
 
-  const res = await fetch(getGetUsersUrl(params),
+  return customFetch<GetUsers200>(getGetUsersUrl(params),
   {
     ...options,
     method: 'GET'
 
 
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: GetUsers200 = body ? JSON.parse(body) : {}
-  return data
-}
+);}
 
 
 
@@ -456,12 +439,12 @@ export const getPatchUsersUrl = () => {
 
 
 
-  return `http://localhost:3333/users`
+  return `/users`
 }
 
 export const patchUsers = async (patchUsersBody: PatchUsersBody, options?: RequestInit): Promise<PatchUsers200> => {
 
-  const res = await fetch(getPatchUsersUrl(),
+  return customFetch<PatchUsers200>(getPatchUsersUrl(),
   {
     ...options,
     method: 'PATCH',
@@ -469,13 +452,7 @@ export const patchUsers = async (patchUsersBody: PatchUsersBody, options?: Reque
     body: JSON.stringify(
       patchUsersBody,)
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: PatchUsers200 = body ? JSON.parse(body) : {}
-  return data
-}
+);}
 
 
 
@@ -488,25 +465,19 @@ export const getDeleteUsersUrl = () => {
 
 
 
-  return `http://localhost:3333/users`
+  return `/users`
 }
 
 export const deleteUsers = async ( options?: RequestInit): Promise<DeleteUsers204> => {
 
-  const res = await fetch(getDeleteUsersUrl(),
+  return customFetch<DeleteUsers204>(getDeleteUsersUrl(),
   {
     ...options,
     method: 'DELETE'
 
 
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: DeleteUsers204 = body ? JSON.parse(body) : {}
-  return data
-}
+);}
 
 
 
@@ -519,12 +490,12 @@ export const getPostUsersLoginUrl = () => {
 
 
 
-  return `http://localhost:3333/users/login`
+  return `/users/login`
 }
 
 export const postUsersLogin = async (postUsersLoginBody: PostUsersLoginBody, options?: RequestInit): Promise<PostUsersLogin200> => {
 
-  const res = await fetch(getPostUsersLoginUrl(),
+  return customFetch<PostUsersLogin200>(getPostUsersLoginUrl(),
   {
     ...options,
     method: 'POST',
@@ -532,13 +503,7 @@ export const postUsersLogin = async (postUsersLoginBody: PostUsersLoginBody, opt
     body: JSON.stringify(
       postUsersLoginBody,)
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: PostUsersLogin200 = body ? JSON.parse(body) : {}
-  return data
-}
+);}
 
 
 
@@ -558,25 +523,19 @@ export const getGetCarsSearchUrl = (params: GetCarsSearchParams,) => {
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `http://localhost:3333/cars/search?${stringifiedParams}` : `http://localhost:3333/cars/search`
+  return stringifiedParams.length > 0 ? `/cars/search?${stringifiedParams}` : `/cars/search`
 }
 
 export const getCarsSearch = async (params: GetCarsSearchParams, options?: RequestInit): Promise<GetCarsSearch200> => {
 
-  const res = await fetch(getGetCarsSearchUrl(params),
+  return customFetch<GetCarsSearch200>(getGetCarsSearchUrl(params),
   {
     ...options,
     method: 'GET'
 
 
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: GetCarsSearch200 = body ? JSON.parse(body) : {}
-  return data
-}
+);}
 
 
 
@@ -596,25 +555,19 @@ export const getGetCarsUrl = (params?: GetCarsParams,) => {
 
   const stringifiedParams = normalizedParams.toString();
 
-  return stringifiedParams.length > 0 ? `http://localhost:3333/cars?${stringifiedParams}` : `http://localhost:3333/cars`
+  return stringifiedParams.length > 0 ? `/cars?${stringifiedParams}` : `/cars`
 }
 
 export const getCars = async (params?: GetCarsParams, options?: RequestInit): Promise<GetCars200> => {
 
-  const res = await fetch(getGetCarsUrl(params),
+  return customFetch<GetCars200>(getGetCarsUrl(params),
   {
     ...options,
     method: 'GET'
 
 
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: GetCars200 = body ? JSON.parse(body) : {}
-  return data
-}
+);}
 
 
 
@@ -627,12 +580,12 @@ export const getPostCarsUrl = () => {
 
 
 
-  return `http://localhost:3333/cars`
+  return `/cars`
 }
 
 export const postCars = async (postCarsBody: PostCarsBody, options?: RequestInit): Promise<PostCars201> => {
 
-  const res = await fetch(getPostCarsUrl(),
+  return customFetch<PostCars201>(getPostCarsUrl(),
   {
     ...options,
     method: 'POST',
@@ -640,13 +593,7 @@ export const postCars = async (postCarsBody: PostCarsBody, options?: RequestInit
     body: JSON.stringify(
       postCarsBody,)
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: PostCars201 = body ? JSON.parse(body) : {}
-  return data
-}
+);}
 
 
 
@@ -659,25 +606,19 @@ export const getGetCarsIdUrl = (id: string,) => {
 
 
 
-  return `http://localhost:3333/cars/${id}`
+  return `/cars/${id}`
 }
 
 export const getCarsId = async (id: string, options?: RequestInit): Promise<GetCarsId200> => {
 
-  const res = await fetch(getGetCarsIdUrl(id),
+  return customFetch<GetCarsId200>(getGetCarsIdUrl(id),
   {
     ...options,
     method: 'GET'
 
 
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: GetCarsId200 = body ? JSON.parse(body) : {}
-  return data
-}
+);}
 
 
 
@@ -690,13 +631,13 @@ export const getPatchCarsIdUrl = (id: string,) => {
 
 
 
-  return `http://localhost:3333/cars/${id}`
+  return `/cars/${id}`
 }
 
 export const patchCarsId = async (id: string,
     patchCarsIdBody: PatchCarsIdBody, options?: RequestInit): Promise<PatchCarsId200> => {
 
-  const res = await fetch(getPatchCarsIdUrl(id),
+  return customFetch<PatchCarsId200>(getPatchCarsIdUrl(id),
   {
     ...options,
     method: 'PATCH',
@@ -704,13 +645,7 @@ export const patchCarsId = async (id: string,
     body: JSON.stringify(
       patchCarsIdBody,)
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: PatchCarsId200 = body ? JSON.parse(body) : {}
-  return data
-}
+);}
 
 
 
@@ -723,22 +658,16 @@ export const getDeleteCarsIdUrl = (id: string,) => {
 
 
 
-  return `http://localhost:3333/cars/${id}`
+  return `/cars/${id}`
 }
 
 export const deleteCarsId = async (id: string, options?: RequestInit): Promise<DeleteCarsId204> => {
 
-  const res = await fetch(getDeleteCarsIdUrl(id),
+  return customFetch<DeleteCarsId204>(getDeleteCarsIdUrl(id),
   {
     ...options,
     method: 'DELETE'
 
 
   }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-
-  const data: DeleteCarsId204 = body ? JSON.parse(body) : {}
-  return data
-}
+);}

@@ -1,7 +1,7 @@
-import Link from 'next/link'
-import { getCars, getCarsSearch } from '@/http/api'
-import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { getCars, getCarsSearch } from '@/http/api'
+import Link from 'next/link'
 import { SearchForm } from './_components/search-form'
 
 interface HomePageProps {

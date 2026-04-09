@@ -1,16 +1,20 @@
+import 'dotenv/config'
 import { defineConfig } from 'orval'
+import { env } from './src/lib/env'
 
 export default defineConfig({
   api: {
-    input: 'http://localhost:3333/docs/json',
+    input: `${env.API_URL}/docs/json`,
     output: {
       target: './src/http/api.ts',
       client: 'fetch',
       httpClient: 'fetch',
       clean: true,
-      baseUrl: 'http://localhost:3333',
-
       override: {
+        mutator: {
+          path: './src/lib/fetch-client.ts',
+          name: 'customFetch',
+        },
         fetch: {
           includeHttpResponseReturnType: false,
         },
