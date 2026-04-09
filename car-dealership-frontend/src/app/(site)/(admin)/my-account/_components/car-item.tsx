@@ -1,6 +1,7 @@
 'use client'
 
 import { deleteCarAction } from '@/actions/cars'
+import { formatBRL } from '@/lib/currency'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
@@ -19,14 +20,6 @@ import { EditCarDialog } from './edit-car-dialog'
 
 interface CarItemProps {
   car: GetUsers200CarsItem
-}
-
-function formatPrice(price: string) {
-  return new Intl.NumberFormat('pt-BR', {
-    style: 'currency',
-    currency: 'BRL',
-    maximumFractionDigits: 0,
-  }).format(Number(price))
 }
 
 export function CarItem({ car }: CarItemProps) {
@@ -113,7 +106,7 @@ export function CarItem({ car }: CarItemProps) {
       {/* Price + actions */}
       <div className="flex shrink-0 flex-col items-end justify-between">
         <p className="text-base font-bold tabular-nums">
-          {formatPrice(car.price)}
+          {formatBRL(car.price)}
         </p>
         <div className="flex items-center gap-1">
           <EditCarDialog car={car} />

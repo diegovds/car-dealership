@@ -30,6 +30,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { carSchema, type CarFormValues } from '@/lib/schemas'
+import { formatBRL, parseBRL } from '@/lib/currency'
 
 const FUEL_OPTIONS = [
   'Gasolina',
@@ -166,9 +167,16 @@ export function AddCarDialog() {
                 name="price"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Preço (R$) *</FormLabel>
+                    <FormLabel>Preço *</FormLabel>
                     <FormControl>
-                      <Input placeholder="45000" {...field} />
+                      <Input
+                        placeholder="R$ 0,00"
+                        value={formatBRL(field.value)}
+                        onChange={(e) =>
+                          field.onChange(parseBRL(e.target.value))
+                        }
+                        onBlur={field.onBlur}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

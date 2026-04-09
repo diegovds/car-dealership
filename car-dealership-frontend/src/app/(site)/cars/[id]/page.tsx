@@ -1,3 +1,4 @@
+import { formatBRL } from '@/lib/currency'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { getCarsId } from '@/http/api'
@@ -22,11 +23,7 @@ export async function generateMetadata({
   }
 
   const title = `${car.brand} ${car.model}${car.version ? ` ${car.version}` : ''} (${car.year})`
-  const price = new Intl.NumberFormat('pt-BR', {
-    style: 'currency',
-    currency: 'BRL',
-    maximumFractionDigits: 0,
-  }).format(Number(car.price))
+  const price = formatBRL(String(car.price))
 
   return {
     title,
@@ -37,14 +34,6 @@ export async function generateMetadata({
       ...(car.imageUrl ? { images: [{ url: car.imageUrl, alt: title }] } : {}),
     },
   }
-}
-
-function formatPrice(price: string) {
-  return new Intl.NumberFormat('pt-BR', {
-    style: 'currency',
-    currency: 'BRL',
-    maximumFractionDigits: 0,
-  }).format(Number(price))
 }
 
 function formatMileage(mileage: number) {
@@ -173,7 +162,7 @@ export default async function CarDetailPage({ params }: CarDetailPageProps) {
               Preço
             </p>
             <p className="text-4xl font-bold tracking-tight tabular-nums">
-              {formatPrice(car.price)}
+              {formatBRL(String(car.price))}
             </p>
           </div>
 

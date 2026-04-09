@@ -1,3 +1,4 @@
+import { formatBRL } from '@/lib/currency'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { getCars, getCarsSearch } from '@/http/api'
@@ -14,14 +15,6 @@ export const metadata: Metadata = {
 
 interface HomePageProps {
   searchParams: Promise<{ search?: string; page?: string }>
-}
-
-function formatPrice(price: string) {
-  return new Intl.NumberFormat('pt-BR', {
-    style: 'currency',
-    currency: 'BRL',
-    maximumFractionDigits: 0,
-  }).format(Number(price))
 }
 
 function formatMileage(mileage: number) {
@@ -157,7 +150,7 @@ export default async function HomePage({ searchParams }: HomePageProps) {
                   <div className="mt-auto flex items-end justify-between gap-2">
                     <div>
                       <p className="text-foreground text-lg font-bold tabular-nums">
-                        {formatPrice(car.price)}
+                        {formatBRL(car.price)}
                       </p>
                       <div className="text-muted-foreground flex gap-2 text-[11px]">
                         <span>{car.year}</span>
