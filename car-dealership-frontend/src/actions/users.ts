@@ -16,10 +16,9 @@ export async function updateUserAction(
   const token = await getAuthToken()
   if (!token) redirect('/login')
 
-  const payload: Record<string, string> = {}
+  const payload: Record<string, string> = { phone: data.phone }
   if (data.name) payload.name = data.name
   if (data.email) payload.email = data.email
-  if (data.phone !== undefined) payload.phone = data.phone
   if (data.currentPassword) payload.currentPassword = data.currentPassword
   if (data.newPassword) payload.newPassword = data.newPassword
 

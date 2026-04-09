@@ -26,7 +26,7 @@ import { updateUserSchema, type UpdateUserFormValues } from '@/lib/schemas'
 import { applyPhoneMask } from '@/lib/utils'
 
 interface EditProfileDialogProps {
-  user: { name: string; email: string; phone: string | null }
+  user: { name: string; email: string; phone: string }
 }
 
 export function EditProfileDialog({ user }: EditProfileDialogProps) {
@@ -38,7 +38,7 @@ export function EditProfileDialog({ user }: EditProfileDialogProps) {
     defaultValues: {
       name: user.name,
       email: user.email,
-      phone: user.phone ?? '',
+      phone: user.phone,
       currentPassword: '',
       newPassword: '',
     },

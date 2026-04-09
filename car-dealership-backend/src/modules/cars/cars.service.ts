@@ -45,7 +45,7 @@ export async function getCarById(id: string) {
     ...car,
     seller: {
       name: sellerName ?? '',
-      phone: sellerPhone ?? null,
+      phone: sellerPhone ?? '',
     },
   }
 }

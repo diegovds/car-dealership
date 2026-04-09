@@ -35,7 +35,7 @@ export const userResponseSchema = z.object({
   id: z.uuid(),
   name: z.string(),
   email: z.string(),
-  phone: z.string().nullable(),
+  phone: z.string(),
   createdAt: z.date(),
   updatedAt: z.date(),
 })

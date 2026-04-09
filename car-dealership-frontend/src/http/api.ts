@@ -29,8 +29,7 @@ export type PostUsers201 = {
   id: string
   name: string
   email: string
-  /** @nullable */
-  phone: string | null
+  phone: string
   createdAt: string
   updatedAt: string
 }
@@ -52,8 +51,7 @@ export type GetUsers200User = {
   id: string
   name: string
   email: string
-  /** @nullable */
-  phone: string | null
+  phone: string
   createdAt: string
   updatedAt: string
 }
@@ -117,8 +115,7 @@ export type PatchUsers200 = {
   id: string
   name: string
   email: string
-  /** @nullable */
-  phone: string | null
+  phone: string
   createdAt: string
   updatedAt: string
 }
