@@ -1,5 +1,5 @@
 import { cn } from '@/lib/utils'
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { Geist, JetBrains_Mono } from 'next/font/google'
 import './globals.css'
 
@@ -9,6 +9,13 @@ const jetbrainsMono = JetBrains_Mono({
   variable: '--font-jetbrains-mono',
   subsets: ['latin'],
 })
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+}
 
 export const metadata: Metadata = {
   title: {
