@@ -9,9 +9,12 @@ export function ButtonBack() {
 
   function handleBack() {
     const referrer = document.referrer
-    const isSameOrigin =
-      referrer && new URL(referrer).origin === window.location.origin
-    if (isSameOrigin) {
+    const isExternalReferrer =
+      referrer && new URL(referrer).origin !== window.location.origin
+
+    if (isExternalReferrer) {
+      router.push('/')
+    } else if (window.history.length > 1) {
       router.back()
     } else {
       router.push('/')
