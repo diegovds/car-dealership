@@ -11,8 +11,17 @@ const jetbrainsMono = JetBrains_Mono({
 })
 
 export const metadata: Metadata = {
-  title: 'AutoMercado',
-  description: 'Compre e venda carros com facilidade',
+  title: {
+    default: 'AutoMercado',
+    template: '%s | AutoMercado',
+  },
+  description: 'Marketplace de veículos com busca inteligente por IA. Compre e venda carros com facilidade.',
+  keywords: ['carros', 'veículos', 'comprar carro', 'vender carro', 'marketplace automotivo'],
+  openGraph: {
+    siteName: 'AutoMercado',
+    locale: 'pt_BR',
+    type: 'website',
+  },
 }
 
 export default function RootLayout({

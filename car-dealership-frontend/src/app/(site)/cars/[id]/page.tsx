@@ -1,12 +1,40 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { ArrowLeft, Calendar, Fuel, Gauge, Settings2 } from 'lucide-react'
+import type { Metadata } from 'next'
 import { getCarsId } from '@/http/api'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 
 interface CarDetailPageProps {
   params: Promise<{ id: string }>
+}
+
+export async function generateMetadata({ params }: CarDetailPageProps): Promise<Metadata> {
+  const { id } = await params
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const car = (await getCarsId(id)) as any
+
+  if (car?.message || !car?.id) {
+    return { title: 'Veículo não encontrado' }
+  }
+
+  const title = `${car.brand} ${car.model}${car.version ? ` ${car.version}` : ''} (${car.year})`
+  const price = new Intl.NumberFormat('pt-BR', {
+    style: 'currency',
+    currency: 'BRL',
+    maximumFractionDigits: 0,
+  }).format(Number(car.price))
+
+  return {
+    title,
+    description: `${title} por ${price}. Confira os detalhes e entre em contato.`,
+    openGraph: {
+      title,
+      description: `${title} — ${price}`,
+      ...(car.imageUrl ? { images: [{ url: car.imageUrl, alt: title }] } : {}),
+    },
+  }
 }
 
 function formatPrice(price: string) {

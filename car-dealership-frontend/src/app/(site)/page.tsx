@@ -1,4 +1,10 @@
+import type { Metadata } from 'next'
 import { Badge } from '@/components/ui/badge'
+
+export const metadata: Metadata = {
+  title: 'Veículos à Venda',
+  description: 'Explore centenas de veículos disponíveis. Use nossa busca inteligente com IA para encontrar o carro ideal para você.',
+}
 import { Button } from '@/components/ui/button'
 import { getCars, getCarsSearch } from '@/http/api'
 import Link from 'next/link'

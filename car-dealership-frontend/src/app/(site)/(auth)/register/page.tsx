@@ -1,4 +1,10 @@
+import type { Metadata } from 'next'
 import { RegisterForm } from './_components/register-form'
+
+export const metadata: Metadata = {
+  title: 'Criar Conta',
+  description: 'Crie sua conta gratuitamente e comece a anunciar seus veículos no AutoMercado.',
+}
 
 export default function RegisterPage() {
   return (

@@ -1,4 +1,10 @@
+import type { Metadata } from 'next'
 import Link from 'next/link'
+
+export const metadata: Metadata = {
+  title: 'Minha Conta',
+  description: 'Gerencie seu perfil e seus anúncios de veículos no AutoMercado.',
+}
 import { getUsers } from '@/http/api'
 import { getAuthToken } from '@/lib/auth'
 import { AddCarDialog } from './_components/add-car-dialog'
