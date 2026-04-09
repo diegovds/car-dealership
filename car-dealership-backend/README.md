@@ -183,7 +183,7 @@ Usuário: "tem gol flex até 50 mil?"
 - A IA **não acessa o banco** - ela apenas converte texto em filtros estruturados
 - `tool_choice: 'required'` garante que a IA sempre chame a function
 - `temperature: 0` garante respostas determinísticas
-- Se a IA não conseguir extrair filtros, retorna todos os carros
+- Se a IA não conseguir extrair filtros, não retorna nenhum carro
 
 ## Estrutura do projeto
 
