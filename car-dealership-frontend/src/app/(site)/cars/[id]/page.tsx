@@ -1,11 +1,10 @@
-import { formatBRL } from '@/lib/currency'
 import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
 import { getCarsId } from '@/http/api'
-import { ArrowLeft, Calendar, Car, Fuel, Gauge, Settings2 } from 'lucide-react'
+import { formatBRL } from '@/lib/currency'
+import { Calendar, Car, Fuel, Gauge, Settings2 } from 'lucide-react'
 import type { Metadata } from 'next'
-import Link from 'next/link'
 import { notFound } from 'next/navigation'
+import { ButtonBack } from './_components/button-back'
 
 interface CarDetailPageProps {
   params: Promise<{ id: string }>
@@ -70,17 +69,7 @@ export default async function CarDetailPage({ params }: CarDetailPageProps) {
   return (
     <div className="container mx-auto px-4 py-8">
       {/* Back */}
-      <Button
-        variant="ghost"
-        size="sm"
-        asChild
-        className="text-muted-foreground mb-6 -ml-2"
-      >
-        <Link href="/">
-          <ArrowLeft className="size-4" />
-          Voltar
-        </Link>
-      </Button>
+      <ButtonBack />
 
       <div className="grid gap-8 lg:grid-cols-[1fr_380px] lg:items-start">
         {/* Left — image */}
