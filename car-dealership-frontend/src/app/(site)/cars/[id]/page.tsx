@@ -107,7 +107,7 @@ export default async function CarDetailPage({ params }: CarDetailPageProps) {
             ) : (
               <div className="text-muted-foreground/30 flex h-full flex-col items-center justify-center gap-3">
                 <span>
-                  <Car size={72} color="#3f3f3f" fill="#3f3f3f" />
+                  <Car size={72} fill="currentColor" strokeWidth={0} />
                 </span>
                 <p className="text-xs tracking-widest uppercase">Sem imagem</p>
               </div>
