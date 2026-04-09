@@ -77,7 +77,7 @@ export async function searchFilterCars(filters: SearchFilters) {
     query = query.where(where)
   }
 
-  const items = await query.orderBy(desc(cars.createdAt))
+  const items = await query.orderBy(desc(cars.updatedAt))
 
   return { cars: items }
 }
