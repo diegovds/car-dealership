@@ -1,7 +1,7 @@
-import Link from 'next/link'
 import { logoutAction } from '@/actions/auth'
 import { Button } from '@/components/ui/button'
 import { isAuthenticated } from '@/lib/auth'
+import Link from 'next/link'
 
 export default async function SiteLayout({ children }: { children: React.ReactNode }) {
   const authenticated = await isAuthenticated()
@@ -10,9 +10,9 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
     <div className="flex min-h-dvh flex-col">
       <header className="sticky top-0 z-50 border-b border-border/40 bg-background/80 backdrop-blur-md">
         <div className="container mx-auto flex h-14 items-center justify-between px-4">
-          <Link href="/" className="flex items-center gap-2 transition-opacity hover:opacity-80">
-            <span className="text-amber-400 font-bold tracking-wider text-lg">AUTO</span>
-            <span className="text-foreground font-bold tracking-wider text-lg">MERCADO</span>
+          <Link href="/" className="flex items-center transition-opacity hover:opacity-80">
+            <span className="text-amber-400 font-bold tracking-wider text-lg">Auto</span>
+            <span className="text-foreground font-bold tracking-wider text-lg">Mercado</span>
           </Link>
 
           <nav className="flex items-center gap-2">
