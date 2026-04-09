@@ -197,6 +197,14 @@ export function createAiSearchAgent() {
       ? toolJsonToFilters(call.function.arguments ?? '{}')
       : {}
 
+    if (Object.keys(filters).length === 0) {
+      return {
+        cars: [],
+        reply:
+          'Não consegui identificar filtros compatíveis com a busca. Tente descrever marca, modelo, ano, preço, combustível ou câmbio.',
+      }
+    }
+
     const { cars } = await searchFilterCars(filters)
 
     return {
