@@ -1,6 +1,6 @@
 # Car Dealership Frontend
 
-Interface web para a plataforma Car Dealership, construida com Next.js 16 e React 19.
+Interface web para a plataforma Car Dealership, construída com Next.js 16 e React 19.
 
 ## Tecnologias
 
@@ -8,9 +8,9 @@ Interface web para a plataforma Car Dealership, construida com Next.js 16 e Reac
 - **React 19** com Server Actions
 - **Tailwind CSS 4** com CSS variables e tema dark
 - **shadcn/ui** (estilo `radix-nova`) sobre Radix UI
-- **React Hook Form + Zod 4** para formularios e validacao
-- **Orval** para geracao automatica de tipos a partir da API (OpenAPI)
-- **Lucide React** para icones
+- **React Hook Form + Zod 4** para formulários e validação
+- **Orval** para geração automática de tipos a partir da API (OpenAPI)
+- **Lucide React** para ícones
 - **JetBrains Mono** como fonte principal
 
 ## Requisitos
@@ -20,13 +20,13 @@ Interface web para a plataforma Car Dealership, construida com Next.js 16 e Reac
 
 ## Setup
 
-### 1. Instalar dependencias
+### 1. Instalar dependências
 
 ```bash
 npm install
 ```
 
-### 2. Variaveis de ambiente
+### 2. Variáveis de ambiente
 
 Crie um arquivo `.env` na raiz do frontend:
 
@@ -34,19 +34,19 @@ Crie um arquivo `.env` na raiz do frontend:
 API_URL=http://localhost:3333
 ```
 
-| Variavel | Descricao |
+| Variável | Descrição |
 |---|---|
 | `API_URL` | URL base da API REST do backend |
 
 ### 3. Gerar tipos da API (opcional)
 
-Os tipos ja estao commitados em `src/http/api.ts`. Para regenerar apos mudancas no backend:
+Os tipos já estão commitados em `src/http/api.ts`. Para regenerar após mudanças no backend:
 
 ```bash
 npx orval
 ```
 
-Isso le o OpenAPI spec de `${API_URL}/docs/json` e gera o client tipado.
+Isso lê o OpenAPI spec de `${API_URL}/docs/json` e gera o client tipado.
 
 ### 4. Iniciar em desenvolvimento
 
@@ -54,38 +54,38 @@ Isso le o OpenAPI spec de `${API_URL}/docs/json` e gera o client tipado.
 npm run dev
 ```
 
-App disponivel em `http://localhost:3000`.
+App disponível em `http://localhost:3000`.
 
 ## Scripts
 
-| Script | Descricao |
+| Script | Descrição |
 |---|---|
 | `npm run dev` | Inicia o servidor de desenvolvimento |
-| `npm run build` | Build de producao |
-| `npm run start` | Inicia o servidor de producao |
+| `npm run build` | Build de produção |
+| `npm run start` | Inicia o servidor de produção |
 | `npm run lint` | Roda o ESLint |
 
-## Paginas
+## Páginas
 
-| Rota | Descricao | Acesso |
+| Rota | Descrição | Acesso |
 |---|---|---|
-| `/` | Listagem de veiculos com paginacao e busca por IA | Publico |
-| `/cars/:id` | Detalhes do veiculo com info do vendedor (nome e telefone) | Publico |
+| `/` | Listagem de veículos com paginação e busca por IA | Público |
+| `/cars/:id` | Detalhes do veículo com info do vendedor (nome e telefone) | Público |
 | `/login` | Login do vendedor | Somente visitante |
 | `/register` | Cadastro do vendedor (nome, email, senha, telefone) | Somente visitante |
-| `/my-account` | Painel do vendedor (perfil + anuncios) | Autenticado |
+| `/my-account` | Painel do vendedor (perfil + anúncios) | Autenticado |
 
-## Autenticacao
+## Autenticação
 
 - **Login/Register**: Server Actions chamam a API e armazenam o JWT em um cookie httpOnly (`auth_token`, 7 dias)
-- **Protecao de rotas**: feita nos layouts — `(auth)/layout.tsx` redireciona usuarios logados para `/my-account`; `(admin)/layout.tsx` redireciona visitantes para `/login`
+- **Proteção de rotas**: feita nos layouts — `(auth)/layout.tsx` redireciona usuários logados para `/my-account`; `(admin)/layout.tsx` redireciona visitantes para `/login`
 - **Token**: lido server-side via `cookies()` do Next.js e passado como header `Authorization: Bearer <token>` nas chamadas autenticadas
 
-## Integracao com API
+## Integração com API
 
-O arquivo `src/http/api.ts` e gerado pelo Orval e exporta funcoes tipadas para todos os endpoints da API. Um `customFetch` em `src/lib/fetch-client.ts` serve como mutator que prefixa a `API_URL` e trata respostas sem body (204/304).
+O arquivo `src/http/api.ts` é gerado pelo Orval e exporta funções tipadas para todos os endpoints da API. Um `customFetch` em `src/lib/fetch-client.ts` serve como mutator que prefixa a `API_URL` e trata respostas sem body (204/304).
 
-Server Actions em `src/actions/` encapsulam as chamadas autenticadas e fazem `revalidatePath` apos mutacoes.
+Server Actions em `src/actions/` encapsulam as chamadas autenticadas e fazem `revalidatePath` após mutações.
 
 ## Componentes
 
@@ -95,18 +95,18 @@ Server Actions em `src/actions/` encapsulam as chamadas autenticadas e fazem `re
 
 ### Custom
 
-| Componente | Descricao |
+| Componente | Descrição |
 |---|---|
-| `SearchForm` | Input de busca por IA com navegacao via query string |
-| `LoginForm` / `RegisterForm` | Formularios com React Hook Form + Zod + mascara de telefone |
-| `EditProfileDialog` | Edicao de perfil (nome, email, telefone, senha) |
-| `AddCarDialog` / `EditCarDialog` | Formularios de criacao/edicao de veiculo |
-| `CarItem` | Linha de veiculo no painel do vendedor com acoes de editar/excluir |
-| `ButtonBack` | Botao de voltar na pagina de detalhes |
+| `SearchForm` | Input de busca por IA com navegação via query string |
+| `LoginForm` / `RegisterForm` | Formulários com React Hook Form + Zod + máscara de telefone |
+| `EditProfileDialog` | Edição de perfil (nome, email, telefone, senha) |
+| `AddCarDialog` / `EditCarDialog` | Formulários de criação/edição de veículo |
+| `CarItem` | Linha de veículo no painel do vendedor com ações de editar/excluir |
+| `ButtonBack` | Botão de voltar na página de detalhes |
 
-## Animacoes
+## Animações
 
-O projeto usa `@starting-style` (CSS nativo) para animacoes de entrada SSR-safe — sem flash de conteudo. As classes (`enter-hero`, `enter-card`, `enter-right`, etc.) usam apenas `opacity` e `translate` para performance em mobile (GPU-composited).
+O projeto usa `@starting-style` (CSS nativo) para animações de entrada SSR-safe — sem flash de conteúdo. As classes (`enter-hero`, `enter-card`, `enter-right`, etc.) usam apenas `opacity` e `translate` para performance em mobile (GPU-composited).
 
 ## Estrutura do projeto
 
@@ -114,20 +114,20 @@ O projeto usa `@starting-style` (CSS nativo) para animacoes de entrada SSR-safe 
 src/
   app/
     layout.tsx                   # Layout raiz (fontes, dark mode, metadata)
-    globals.css                  # Tema, variaveis CSS, animacoes
+    globals.css                  # Tema, variáveis CSS, animações
     (site)/
       layout.tsx                 # Shell do site (header + footer)
       page.tsx                   # Home (listagem + busca IA)
       _components/
         search-form.tsx          # Input de busca
       cars/[id]/
-        page.tsx                 # Detalhes do veiculo
+        page.tsx                 # Detalhes do veículo
         _components/
           button-back.tsx
       (auth)/
         layout.tsx               # Redireciona logados
-        login/                   # Pagina de login
-        register/                # Pagina de cadastro
+        login/                   # Página de login
+        register/                # Página de cadastro
       (admin)/
         layout.tsx               # Redireciona visitantes
         my-account/              # Painel do vendedor
@@ -136,12 +136,12 @@ src/
   http/
     api.ts                       # Client gerado pelo Orval
   lib/
-    auth.ts                      # Helpers de autenticacao (cookie)
-    env.ts                       # Validacao de env vars
+    auth.ts                      # Helpers de autenticação (cookie)
+    env.ts                       # Validação de env vars
     fetch-client.ts              # Mutator do Orval (customFetch)
-    schemas.ts                   # Schemas Zod para formularios
-    currency.ts                  # Formatacao BRL
-    utils.ts                     # cn() + mascara de telefone
+    schemas.ts                   # Schemas Zod para formulários
+    currency.ts                  # Formatação BRL
+    utils.ts                     # cn() + máscara de telefone
   components/
     ui/                          # Componentes shadcn
 ```
