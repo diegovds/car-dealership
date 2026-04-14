@@ -1,15 +1,11 @@
 import { Badge } from '@/components/ui/badge'
-import { formatBRL } from '@/lib/currency'
+import { formatBRL, formatKm } from '@/lib/currency'
 import type { GetCars200CarsItem } from '@/http/api'
 import { Car } from 'lucide-react'
 import Link from 'next/link'
 
 interface CarCardProps {
   car: GetCars200CarsItem
-}
-
-function formatMileage(mileage: number) {
-  return new Intl.NumberFormat('pt-BR').format(mileage) + ' km'
 }
 
 export function CarCard({ car }: CarCardProps) {
@@ -76,7 +72,7 @@ export function CarCard({ car }: CarCardProps) {
               {car.mileage !== null && car.mileage !== undefined && (
                 <>
                   <span>·</span>
-                  <span>{formatMileage(car.mileage)}</span>
+                  <span>{formatKm(car.mileage)}</span>
                 </>
               )}
               {car.transmission && (

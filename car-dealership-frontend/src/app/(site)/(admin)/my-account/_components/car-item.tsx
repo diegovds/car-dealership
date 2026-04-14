@@ -1,7 +1,6 @@
 'use client'
 
 import { deleteCarAction } from '@/actions/cars'
-import { formatBRL } from '@/lib/currency'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
@@ -13,6 +12,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import type { GetUsers200CarsItem } from '@/http/api'
+import { formatBRL, formatKm } from '@/lib/currency'
 import { Car, Trash2 } from 'lucide-react'
 import Link from 'next/link'
 import { useState, useTransition } from 'react'
@@ -34,7 +34,7 @@ export function CarItem({ car }: CarItemProps) {
   }
 
   return (
-    <div className="group border-border/50 bg-card hover:border-border flex gap-4 rounded-xl border p-4 transition-all duration-300 hover:shadow-sm hover:-translate-y-px">
+    <div className="group border-border/50 bg-card hover:border-border flex gap-4 rounded-xl border p-4 transition-all duration-300 hover:-translate-y-px hover:shadow-sm">
       {/* Thumbnail — clicável */}
       <Link
         href={`/cars/${car.id}`}
@@ -97,7 +97,7 @@ export function CarItem({ car }: CarItemProps) {
           )}
           {car.mileage !== null && car.mileage !== undefined && (
             <Badge variant="secondary" className="text-[10px]">
-              {new Intl.NumberFormat('pt-BR').format(car.mileage)} km
+              {formatKm(car.mileage)}
             </Badge>
           )}
         </div>

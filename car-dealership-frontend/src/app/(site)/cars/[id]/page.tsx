@@ -1,7 +1,15 @@
 import { Badge } from '@/components/ui/badge'
 import { getCarsId } from '@/http/api'
-import { formatBRL } from '@/lib/currency'
-import { Calendar, Car, Fuel, Gauge, Phone, Settings2, User } from 'lucide-react'
+import { formatBRL, formatKm } from '@/lib/currency'
+import {
+  Calendar,
+  Car,
+  Fuel,
+  Gauge,
+  Phone,
+  Settings2,
+  User,
+} from 'lucide-react'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { ButtonBack } from './_components/button-back'
@@ -35,10 +43,6 @@ export async function generateMetadata({
   }
 }
 
-function formatMileage(mileage: number) {
-  return new Intl.NumberFormat('pt-BR').format(mileage) + ' km'
-}
-
 export default async function CarDetailPage({ params }: CarDetailPageProps) {
   const { id } = await params
 
@@ -57,7 +61,7 @@ export default async function CarDetailPage({ params }: CarDetailPageProps) {
       ? {
           icon: Gauge,
           label: 'Quilometragem',
-          value: formatMileage(car.mileage),
+          value: formatKm(car.mileage),
         }
       : null,
   ].filter(Boolean) as {
