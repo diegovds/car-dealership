@@ -1,6 +1,6 @@
 # Car Dealership API
 
-API para gerenciamento de uma concessionária de veículos, com autenticação JWT, CRUD de usuários e carros, e busca inteligente por linguagem natural usando IA.
+API REST para gerenciamento de uma concessionaria de veiculos, com autenticacao JWT, CRUD de usuarios e carros, e busca inteligente por linguagem natural usando IA.
 
 ## Tecnologias
 
@@ -87,10 +87,10 @@ A API estará disponível em `http://localhost:3333` e a documentação Swagger 
 
 | Método | Rota | Auth | Descrição |
 |---|---|---|---|
-| POST | `/users` | Não | Cadastrar usuário |
-| POST | `/users/login` | Não | Login (retorna token JWT) |
+| POST | `/users` | Nao | Cadastrar usuario (nome, email, senha, telefone) |
+| POST | `/users/login` | Nao | Login (retorna token JWT) |
 | GET | `/users` | Sim | Obter perfil com carros paginados |
-| PATCH | `/users` | Sim | Atualizar perfil |
+| PATCH | `/users` | Sim | Atualizar perfil (nome, email, telefone, senha) |
 | DELETE | `/users` | Sim | Excluir conta e seus carros |
 
 ### Cars
@@ -98,7 +98,7 @@ A API estará disponível em `http://localhost:3333` e a documentação Swagger 
 | Método | Rota | Auth | Descrição |
 |---|---|---|---|
 | GET | `/cars` | Não | Listar carros com paginação |
-| GET | `/cars/:id` | Não | Obter carro por ID |
+| GET | `/cars/:id` | Nao | Obter carro por ID (inclui dados do vendedor) |
 | GET | `/cars/search` | Não | Buscar carros por texto (IA) |
 | POST | `/cars` | Sim | Cadastrar carro |
 | PATCH | `/cars/:id` | Sim | Atualizar carro |
