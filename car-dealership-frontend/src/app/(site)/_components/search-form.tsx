@@ -32,7 +32,7 @@ export function SearchForm({ defaultValue }: SearchFormProps) {
       <Input
         name="search"
         defaultValue={defaultValue}
-        placeholder="Ex: gol flex até 50 mil, SUV automático, Honda ano 2020..."
+        placeholder="Ex: gol flex até 60 mil, corolla automático, Honda ano 2022..."
         className="border-border/60 bg-muted/30 placeholder:text-muted-foreground/50 flex-1 text-sm focus-visible:border-amber-400/60 focus-visible:ring-amber-400/10"
       />
       <Button
