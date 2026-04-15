@@ -64,7 +64,7 @@ export function EditCarDialog({ car }: EditCarDialogProps) {
         form.setError('root', { message: result.error })
       } else {
         setOpen(false)
-        router.push('/my-account')
+        router.refresh()
       }
     })
   }

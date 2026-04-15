@@ -60,7 +60,7 @@ export function AddCarDialog() {
       } else {
         form.reset()
         setOpen(false)
-        router.push('/my-account')
+        router.refresh()
       }
     })
   }
