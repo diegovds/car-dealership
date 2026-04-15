@@ -1,13 +1,7 @@
 'use client'
 
-import { useState, useTransition } from 'react'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { Pencil } from 'lucide-react'
 import { updateUserAction } from '@/actions/users'
 import { Button } from '@/components/ui/button'
-import { FormError } from '@/components/ui/form-error'
-import { Input } from '@/components/ui/input'
 import {
   Dialog,
   DialogContent,
@@ -23,8 +17,14 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form'
+import { FormError } from '@/components/ui/form-error'
+import { Input } from '@/components/ui/input'
 import { updateUserSchema, type UpdateUserFormValues } from '@/lib/schemas'
 import { applyPhoneMask } from '@/lib/utils'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { Pencil } from 'lucide-react'
+import { useEffect, useRef, useState, useTransition } from 'react'
+import { useForm } from 'react-hook-form'
 
 interface EditProfileDialogProps {
   user: { name: string; email: string; phone: string }
@@ -33,6 +33,14 @@ interface EditProfileDialogProps {
 export function EditProfileDialog({ user }: EditProfileDialogProps) {
   const [open, setOpen] = useState(false)
   const [isPending, startTransition] = useTransition()
+  const resetTimer = useRef<ReturnType<typeof setTimeout>>(null)
+
+  useEffect(
+    () => () => {
+      if (resetTimer.current) clearTimeout(resetTimer.current)
+    },
+    [],
+  )
 
   const form = useForm<UpdateUserFormValues>({
     resolver: zodResolver(updateUserSchema),
@@ -47,7 +55,7 @@ export function EditProfileDialog({ user }: EditProfileDialogProps) {
 
   function handleClose() {
     setOpen(false)
-    setTimeout(() => form.reset(), 200)
+    resetTimer.current = setTimeout(() => form.reset(), 200)
   }
 
   function onSubmit(values: UpdateUserFormValues) {
@@ -62,7 +70,10 @@ export function EditProfileDialog({ user }: EditProfileDialogProps) {
   }
 
   return (
-    <Dialog open={open} onOpenChange={(val) => (val ? setOpen(true) : handleClose())}>
+    <Dialog
+      open={open}
+      onOpenChange={(val) => (val ? setOpen(true) : handleClose())}
+    >
       <DialogTrigger asChild>
         <Button
           variant="ghost"

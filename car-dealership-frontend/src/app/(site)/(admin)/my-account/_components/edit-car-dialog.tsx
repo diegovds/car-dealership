@@ -16,7 +16,7 @@ import { updateCarSchema, type UpdateCarFormValues } from '@/lib/schemas'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Pencil } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import { useState, useTransition } from 'react'
+import { useEffect, useRef, useState, useTransition } from 'react'
 import { useForm } from 'react-hook-form'
 import { CarFormFields } from './car-form-fields'
 
@@ -28,6 +28,14 @@ export function EditCarDialog({ car }: EditCarDialogProps) {
   const [open, setOpen] = useState(false)
   const [isPending, startTransition] = useTransition()
   const router = useRouter()
+  const resetTimer = useRef<ReturnType<typeof setTimeout>>(null)
+
+  useEffect(
+    () => () => {
+      if (resetTimer.current) clearTimeout(resetTimer.current)
+    },
+    [],
+  )
 
   const form = useForm<UpdateCarFormValues>({
     resolver: zodResolver(updateCarSchema),
@@ -46,7 +54,7 @@ export function EditCarDialog({ car }: EditCarDialogProps) {
 
   function handleClose() {
     setOpen(false)
-    setTimeout(() => form.reset(), 200)
+    resetTimer.current = setTimeout(() => form.reset(), 200)
   }
 
   function onSubmit(values: UpdateCarFormValues) {
@@ -62,7 +70,10 @@ export function EditCarDialog({ car }: EditCarDialogProps) {
   }
 
   return (
-    <Dialog open={open} onOpenChange={(val) => (val ? setOpen(true) : handleClose())}>
+    <Dialog
+      open={open}
+      onOpenChange={(val) => (val ? setOpen(true) : handleClose())}
+    >
       <DialogTrigger asChild>
         <Button
           variant="ghost"
