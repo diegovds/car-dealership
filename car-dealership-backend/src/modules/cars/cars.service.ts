@@ -74,7 +74,6 @@ export async function deleteCar(userId: string, id: string) {
   return car
 }
 
-export async function searchCars({ search }: SearchCarsRequestInput) {
-  const resul = await searchAgent(search)
-  return resul
+export async function searchCars({ search, page }: SearchCarsRequestInput) {
+  return searchAgent(search, page)
 }

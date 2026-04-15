@@ -93,16 +93,28 @@ export async function deleteCar(id: string, userId: string) {
   return result[0] ?? null
 }
 
-export async function searchFilterCars(filters: SearchFilters) {
+export async function searchFilterCars(
+  filters: SearchFilters,
+  page: number,
+  perPage: number,
+) {
   const { where } = buildSearchQueryParts(filters)
 
-  let query = db.select().from(cars).$dynamic()
+  let listQuery = db.select().from(cars).$dynamic()
+  let countQuery = db.select({ total: count() }).from(cars).$dynamic()
 
   if (where) {
-    query = query.where(where)
+    listQuery = listQuery.where(where)
+    countQuery = countQuery.where(where)
   }
 
-  const items = await query.orderBy(desc(cars.updatedAt))
+  const [items, countResult] = await Promise.all([
+    listQuery
+      .orderBy(desc(cars.updatedAt))
+      .limit(perPage)
+      .offset((page - 1) * perPage),
+    countQuery,
+  ])
 
-  return { cars: items }
+  return { cars: items, total: countResult[0].total }
 }

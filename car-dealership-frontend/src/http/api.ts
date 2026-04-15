@@ -162,6 +162,11 @@ export type GetCarsSearchParams = {
    * @minLength 1
    */
   search: string
+  /**
+   * @minimum 1
+   * @maximum 9007199254740991
+   */
+  page?: number
 }
 
 export type GetCarsSearch200CarsItem = {
@@ -185,9 +190,17 @@ export type GetCarsSearch200CarsItem = {
   updatedAt: string
 }
 
+export type GetCarsSearch200Meta = {
+  page: number
+  perPage: number
+  total: number
+  totalPages: number
+}
+
 export type GetCarsSearch200 = {
   cars: GetCarsSearch200CarsItem[]
   reply: string
+  meta: GetCarsSearch200Meta
 }
 
 export type GetCarsParams = {

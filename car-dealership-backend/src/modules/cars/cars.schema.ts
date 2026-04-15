@@ -70,6 +70,7 @@ export const carListPaginatedResponseSchema = z.object({
 
 export const searchRequestSchema = z.object({
   search: z.string().min(1),
+  page: z.coerce.number().int().min(1).default(1),
 })
 
 export const searchCarItemSchema = carResponseSchema
@@ -78,6 +79,7 @@ export const searchCarListSchema = z.array(searchCarItemSchema)
 export const searchResponseSchema = z.object({
   cars: searchCarListSchema,
   reply: z.string(),
+  meta: paginationMetaSchema,
 })
 
 const yearMaxFilter = new Date().getFullYear() + 1

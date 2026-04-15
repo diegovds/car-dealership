@@ -26,6 +26,7 @@ export default async function CarsPage({ searchParams }: CarsPageProps) {
   if (search) {
     const result = await getCarsSearch({ search })
     cars = result.cars
+    meta = result.meta
     aiReply = result.reply
   } else {
     const result = await getCars({ page: currentPage })

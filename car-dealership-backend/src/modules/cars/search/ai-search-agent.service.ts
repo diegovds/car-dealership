@@ -167,7 +167,7 @@ function toolJsonToFilters(raw: string): SearchFilters {
 export function createAiSearchAgent() {
   const client = new OpenAI({ apiKey: env.OPENAI_API_KEY })
 
-  return async function run(userMessage: string) {
+  return async function run(userMessage: string, page: number = 1) {
     const completion = await client.chat.completions.create({
       model: env.OPENAI_MODEL,
       temperature: 0,
@@ -197,19 +197,28 @@ export function createAiSearchAgent() {
       ? toolJsonToFilters(call.function.arguments ?? '{}')
       : {}
 
+    const perPage = 12
+
     if (Object.keys(filters).length === 0) {
       return {
         cars: [],
         reply:
           'Não consegui identificar filtros compatíveis com a busca. Tente descrever marca, modelo, ano, preço, combustível ou câmbio.',
+        meta: { page, perPage, total: 0, totalPages: 0 },
       }
     }
 
-    const { cars } = await searchFilterCars(filters)
+    const { cars, total } = await searchFilterCars(filters, page, perPage)
 
     return {
       cars,
-      reply: naturalReply(cars.length, Object.keys(filters).length),
+      reply: naturalReply(total, Object.keys(filters).length),
+      meta: {
+        page,
+        perPage,
+        total,
+        totalPages: Math.ceil(total / perPage),
+      },
     }
   }
 }
