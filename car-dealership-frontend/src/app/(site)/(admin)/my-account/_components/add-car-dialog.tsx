@@ -74,7 +74,10 @@ export function AddCarDialog() {
         </Button>
       </DialogTrigger>
 
-      <DialogContent className="max-h-[90dvh] overflow-y-auto sm:max-w-lg">
+      <DialogContent
+        aria-describedby={undefined}
+        className="max-h-[90dvh] overflow-y-auto sm:max-w-lg"
+      >
         <DialogHeader>
           <DialogTitle className="text-base font-bold">
             Cadastrar novo anúncio
