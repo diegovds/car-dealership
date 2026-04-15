@@ -88,6 +88,11 @@ O arquivo `src/http/api.ts` é gerado pelo Orval e exporta funções tipadas par
 
 Server Actions em `src/actions/` encapsulam as chamadas autenticadas e fazem `revalidatePath` após mutações.
 
+## Busca por IA — comportamento client-side
+
+- **Input preservado na paginação**: `SearchForm` recebe `preserveInput` quando em modo filtro, evitando reset do campo ao trocar de página
+- **Reply da IA sem URL**: `AiReply` usa `sessionStorage` + `useSyncExternalStore` para persistir a resposta entre páginas sem poluir a URL — `string` salva, `undefined` restaura, `null` limpa
+
 ## Componentes
 
 ### UI (shadcn)
@@ -98,13 +103,17 @@ Server Actions em `src/actions/` encapsulam as chamadas autenticadas e fazem `re
 
 | Componente | Descrição |
 |---|---|
-| `SearchForm` | Input de busca por IA com React Hook Form + Zod; reseta ao limpar a busca |
+| `SearchForm` | Input de busca por IA com React Hook Form + Zod; reseta ao limpar a busca, preserva valor ao paginar |
 | `CarCard` | Card de veículo na vitrine pública |
-| `Pagination` | Paginação inteligente: usa filtros extraídos pela IA para paginar sem chamar a IA novamente |
+| `CarItem` | Linha de veículo no painel do vendedor com ações de editar/excluir |
+| `CarFormFields` | Campos de formulário de veículo extraídos e compartilhados entre `AddCarDialog` e `EditCarDialog`; genérico via `Control<T>` |
+| `Pagination` | Paginação compartilhada entre `/cars` (com filtros IA) e `/my-account`; prop `basePath` configura a rota base |
+| `AiReply` | Exibe a resposta em linguagem natural da IA; persiste via `sessionStorage` para sobreviver à paginação sem passar pela URL |
+| `CarImagePlaceholder` | Placeholder "Sem imagem" com ícone `Car`; presets `sm` / `md` / `lg` para uso em card, lista e página de detalhes |
+| `FormError` | Exibe erro root do React Hook Form; usado em todos os formulários |
 | `LoginForm` / `RegisterForm` | Formulários com React Hook Form + Zod + máscara de telefone |
 | `EditProfileDialog` | Edição de perfil (nome, email, telefone, senha) |
-| `AddCarDialog` / `EditCarDialog` | Formulários de criação/edição de veículo |
-| `CarItem` | Linha de veículo no painel do vendedor com ações de editar/excluir |
+| `AddCarDialog` / `EditCarDialog` | Formulários de criação/edição de veículo (campos via `CarFormFields`) |
 | `ButtonBack` | Botão de voltar na página de detalhes |
 
 ## Animações
@@ -122,12 +131,15 @@ src/
       layout.tsx                 # Shell do site (header com nav + footer)
       page.tsx                   # Landing page (tipografia display + marquee de marcas)
       _components/
-        search-form.tsx          # Input de busca (RHF + Zod, reseta ao limpar)
+        search-form.tsx          # Input de busca (RHF + Zod, reseta ao limpar, preserva ao paginar)
         car-card.tsx             # Card de veículo na vitrine
+        car-image-placeholder.tsx# Placeholder "Sem imagem" (presets sm/md/lg)
+        pagination.tsx           # Paginação compartilhada (basePath configurável)
       cars/
         page.tsx                 # Vitrine de veículos (listagem + busca IA + filtro)
         _components/
-          pagination.tsx         # Paginação com suporte a filtros extraídos pela IA
+          ai-reply.tsx           # Resposta da IA persistida via sessionStorage
+          pagination.tsx         # Re-exporta de (site)/_components/pagination
       cars/[id]/
         page.tsx                 # Detalhes do veículo
         _components/
@@ -139,7 +151,12 @@ src/
       (admin)/
         layout.tsx               # Redireciona visitantes
         my-account/              # Painel do vendedor
-          _components/           # Dialogs e itens
+          _components/
+            car-form-fields.tsx  # Campos de formulário de veículo (compartilhado entre add/edit)
+            add-car-dialog.tsx   # Dialog de criação de veículo
+            edit-car-dialog.tsx  # Dialog de edição de veículo
+            edit-profile-dialog.tsx
+            car-item.tsx
   actions/                       # Server Actions (auth, cars, users)
   http/
     api.ts                       # Client gerado pelo Orval (atualizado manualmente)
@@ -150,6 +167,8 @@ src/
     schemas.ts                   # Schemas Zod para formulários
     currency.ts                  # Formatação BRL e quilometragem
     utils.ts                     # cn() + máscara de telefone
+    car-options.ts               # FUEL_OPTIONS e TRANSMISSION_OPTIONS compartilhados
   components/
     ui/                          # Componentes shadcn
+      form-error.tsx             # Exibe erro root do React Hook Form
 ```
