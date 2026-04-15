@@ -40,8 +40,8 @@ export function AddCarDialog() {
   })
 
   function handleClose() {
-    form.reset()
     setOpen(false)
+    setTimeout(() => form.reset(), 200)
   }
 
   function onSubmit(values: CarFormValues) {

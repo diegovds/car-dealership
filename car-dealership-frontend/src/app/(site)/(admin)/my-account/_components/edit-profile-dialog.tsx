@@ -46,8 +46,8 @@ export function EditProfileDialog({ user }: EditProfileDialogProps) {
   })
 
   function handleClose() {
-    form.reset()
     setOpen(false)
+    setTimeout(() => form.reset(), 200)
   }
 
   function onSubmit(values: UpdateUserFormValues) {

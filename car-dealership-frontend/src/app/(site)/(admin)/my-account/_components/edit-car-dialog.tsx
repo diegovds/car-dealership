@@ -45,8 +45,8 @@ export function EditCarDialog({ car }: EditCarDialogProps) {
   })
 
   function handleClose() {
-    form.reset()
     setOpen(false)
+    setTimeout(() => form.reset(), 200)
   }
 
   function onSubmit(values: UpdateCarFormValues) {
