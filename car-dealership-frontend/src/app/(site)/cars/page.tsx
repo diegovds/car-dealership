@@ -9,6 +9,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { CarCard } from '../_components/car-card'
 import { SearchForm } from '../_components/search-form'
+import { AiReply } from './_components/ai-reply'
 import { Pagination } from './_components/pagination'
 
 export const metadata: Metadata = {
@@ -43,7 +44,8 @@ export default async function CarsPage({ searchParams }: CarsPageProps) {
 
   let cars: Awaited<ReturnType<typeof getCars>>['cars'] = []
   let meta: Awaited<ReturnType<typeof getCars>>['meta'] | null = null
-  let aiReply: string | null = null
+  // string = nova busca, undefined = paginação (client lê sessionStorage), null = limpar
+  let aiReply: string | null | undefined = null
   let filterParams: GetCarsSearch200Filters | undefined
 
   const isFilterMode =
@@ -68,7 +70,7 @@ export default async function CarsPage({ searchParams }: CarsPageProps) {
       }
     }
     filterParams = filters
-    aiReply = params.reply ?? null
+    aiReply = undefined // client restaura do sessionStorage
     const result = await getCarsFilter({ ...filters, page: currentPage })
     cars = result.cars
     meta = result.meta
@@ -117,11 +119,7 @@ export default async function CarsPage({ searchParams }: CarsPageProps) {
       </section>
 
       {/* AI reply */}
-      {aiReply && (
-        <div className="enter-left text-muted-foreground border-l-2 border-amber-400 pl-4 text-sm italic">
-          {aiReply}
-        </div>
-      )}
+      <AiReply reply={aiReply} />
 
       {/* Car grid */}
       {cars.length === 0 ? (
@@ -167,7 +165,6 @@ export default async function CarsPage({ searchParams }: CarsPageProps) {
             meta={meta}
             currentPage={currentPage}
             filterParams={filterParams}
-            reply={aiReply ?? undefined}
           />
         </section>
       )}
