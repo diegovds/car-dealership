@@ -44,6 +44,11 @@ export function EditCarDialog({ car }: EditCarDialogProps) {
     },
   })
 
+  function handleClose() {
+    form.reset()
+    setOpen(false)
+  }
+
   function onSubmit(values: UpdateCarFormValues) {
     startTransition(async () => {
       const result = await updateCarAction(car.id, values)
@@ -57,7 +62,7 @@ export function EditCarDialog({ car }: EditCarDialogProps) {
   }
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={(val) => (val ? setOpen(true) : handleClose())}>
       <DialogTrigger asChild>
         <Button
           variant="ghost"
@@ -88,7 +93,7 @@ export function EditCarDialog({ car }: EditCarDialogProps) {
               <Button
                 type="button"
                 variant="outline"
-                onClick={() => setOpen(false)}
+                onClick={handleClose}
                 disabled={isPending}
               >
                 Cancelar

@@ -45,6 +45,11 @@ export function EditProfileDialog({ user }: EditProfileDialogProps) {
     },
   })
 
+  function handleClose() {
+    form.reset()
+    setOpen(false)
+  }
+
   function onSubmit(values: UpdateUserFormValues) {
     startTransition(async () => {
       const result = await updateUserAction(values)
@@ -57,7 +62,7 @@ export function EditProfileDialog({ user }: EditProfileDialogProps) {
   }
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={(val) => (val ? setOpen(true) : handleClose())}>
       <DialogTrigger asChild>
         <Button
           variant="ghost"
@@ -184,7 +189,7 @@ export function EditProfileDialog({ user }: EditProfileDialogProps) {
               <Button
                 type="button"
                 variant="outline"
-                onClick={() => setOpen(false)}
+                onClick={handleClose}
                 disabled={isPending}
               >
                 Cancelar

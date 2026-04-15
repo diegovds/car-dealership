@@ -39,6 +39,11 @@ export function AddCarDialog() {
     },
   })
 
+  function handleClose() {
+    form.reset()
+    setOpen(false)
+  }
+
   function onSubmit(values: CarFormValues) {
     startTransition(async () => {
       const result = await createCarAction(values)
@@ -53,7 +58,7 @@ export function AddCarDialog() {
   }
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={(val) => (val ? setOpen(true) : handleClose())}>
       <DialogTrigger asChild>
         <Button className="gap-1.5 bg-amber-400 font-semibold text-black hover:bg-amber-300">
           <Plus className="size-4" />
@@ -81,7 +86,7 @@ export function AddCarDialog() {
               <Button
                 type="button"
                 variant="outline"
-                onClick={() => setOpen(false)}
+                onClick={handleClose}
                 disabled={isPending}
               >
                 Cancelar
