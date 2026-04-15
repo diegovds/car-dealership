@@ -32,17 +32,19 @@ export default function LandingPage() {
   return (
     <div className="relative flex flex-1 flex-col overflow-hidden">
       {/* Top label bar */}
-      <div className="border-border/20 flex items-center justify-between border-b px-6 py-3 md:px-12">
-        <p className="text-[10px] font-bold tracking-[0.4em] text-amber-400 uppercase">
-          Marketplace de Veículos
-        </p>
-        <p className="text-muted-foreground/40 text-[10px] tracking-wider uppercase">
-          Busca por IA
-        </p>
+      <div className="border-border/20 border-b">
+        <div className="container mx-auto flex items-center justify-between px-4 py-3">
+          <p className="text-[10px] font-bold tracking-[0.4em] text-amber-400 uppercase">
+            Marketplace de Veículos
+          </p>
+          <p className="text-muted-foreground/40 text-[10px] tracking-wider uppercase">
+            Busca por IA
+          </p>
+        </div>
       </div>
 
       {/* Hero — bottom-weighted editorial layout */}
-      <section className="flex flex-1 flex-col justify-end px-6 pt-10 pb-8 md:px-12">
+      <section className="container mx-auto flex flex-1 flex-col justify-center px-4 pt-6 pb-8 md:justify-end md:pt-10">
         {/* Monumental typography */}
         <div className="mb-8">
           <h1
