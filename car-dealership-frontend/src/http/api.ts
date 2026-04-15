@@ -197,10 +197,151 @@ export type GetCarsSearch200Meta = {
   totalPages: number
 }
 
+export type GetCarsSearch200Filters = {
+  /** @minLength 1 */
+  brand?: string
+  /** @minLength 1 */
+  model?: string
+  /**
+   * @minLength 1
+   * @maxLength 120
+   */
+  version?: string
+  /**
+   * @minimum 1950
+   * @maximum 2027
+   */
+  year?: number
+  /**
+   * @minimum 1950
+   * @maximum 2027
+   */
+  yearMin?: number
+  /**
+   * @minimum 1950
+   * @maximum 2027
+   */
+  yearMax?: number
+  /**
+   * @minimum 0
+   * @maximum 9007199254740991
+   */
+  mileageMin?: number
+  /**
+   * @minimum 0
+   * @maximum 9007199254740991
+   */
+  mileageMax?: number
+  /** @minLength 1 */
+  fuel?: string
+  /** @minLength 1 */
+  transmission?: string
+  /** @minimum 0 */
+  priceMin?: number
+  /** @minimum 0 */
+  priceMax?: number
+}
+
 export type GetCarsSearch200 = {
   cars: GetCarsSearch200CarsItem[]
   reply: string
   meta: GetCarsSearch200Meta
+  filters: GetCarsSearch200Filters
+}
+
+export type GetCarsFilterParams = {
+  /**
+   * @minLength 1
+   */
+  brand?: string
+  /**
+   * @minLength 1
+   */
+  model?: string
+  /**
+   * @minLength 1
+   * @maxLength 120
+   */
+  version?: string
+  /**
+   * @minimum 1950
+   * @maximum 2027
+   */
+  year?: number
+  /**
+   * @minimum 1950
+   * @maximum 2027
+   */
+  yearMin?: number
+  /**
+   * @minimum 1950
+   * @maximum 2027
+   */
+  yearMax?: number
+  /**
+   * @minimum 0
+   * @maximum 9007199254740991
+   */
+  mileageMin?: number
+  /**
+   * @minimum 0
+   * @maximum 9007199254740991
+   */
+  mileageMax?: number
+  /**
+   * @minLength 1
+   */
+  fuel?: string
+  /**
+   * @minLength 1
+   */
+  transmission?: string
+  /**
+   * @minimum 0
+   */
+  priceMin?: number
+  /**
+   * @minimum 0
+   */
+  priceMax?: number
+  /**
+   * @minimum 1
+   * @maximum 9007199254740991
+   */
+  page?: number
+}
+
+export type GetCarsFilter200CarsItem = {
+  /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$ */
+  id: string
+  brand: string
+  model: string
+  /** @nullable */
+  version: string | null
+  year: number
+  price: string
+  /** @nullable */
+  fuel: string | null
+  /** @nullable */
+  transmission: string | null
+  /** @nullable */
+  mileage: number | null
+  /** @nullable */
+  imageUrl: string | null
+  createdAt: string
+  updatedAt: string
+}
+
+export type GetCarsFilter200Meta = {
+  page: number
+  perPage: number
+  total: number
+  totalPages: number
+}
+
+export type GetCarsFilter200 = {
+  cars: GetCarsFilter200CarsItem[]
+  meta: GetCarsFilter200Meta
 }
 
 export type GetCarsParams = {
@@ -524,6 +665,36 @@ export const getCarsSearch = async (
   options?: RequestInit,
 ): Promise<GetCarsSearch200> => {
   return customFetch<GetCarsSearch200>(getGetCarsSearchUrl(params), {
+    ...options,
+    method: 'GET',
+  })
+}
+
+/**
+ * Busca carros com filtros diretos, sem chamada à IA.
+ * @summary Filtrar carros
+ */
+export const getGetCarsFilterUrl = (params?: GetCarsFilterParams) => {
+  const normalizedParams = new URLSearchParams()
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  })
+
+  const stringifiedParams = normalizedParams.toString()
+
+  return stringifiedParams.length > 0
+    ? `/cars/filter?${stringifiedParams}`
+    : `/cars/filter`
+}
+
+export const getCarsFilter = async (
+  params?: GetCarsFilterParams,
+  options?: RequestInit,
+): Promise<GetCarsFilter200> => {
+  return customFetch<GetCarsFilter200>(getGetCarsFilterUrl(params), {
     ...options,
     method: 'GET',
   })
