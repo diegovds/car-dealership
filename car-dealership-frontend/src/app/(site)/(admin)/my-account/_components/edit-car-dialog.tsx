@@ -16,7 +16,7 @@ import { updateCarSchema, type UpdateCarFormValues } from '@/lib/schemas'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Pencil } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import { useEffect, useRef, useState, useTransition } from 'react'
+import { useEffect, useState, useTransition } from 'react'
 import { useForm } from 'react-hook-form'
 import { CarFormFields } from './car-form-fields'
 
@@ -28,14 +28,6 @@ export function EditCarDialog({ car }: EditCarDialogProps) {
   const [open, setOpen] = useState(false)
   const [isPending, startTransition] = useTransition()
   const router = useRouter()
-  const resetTimer = useRef<ReturnType<typeof setTimeout>>(null)
-
-  useEffect(
-    () => () => {
-      if (resetTimer.current) clearTimeout(resetTimer.current)
-    },
-    [],
-  )
 
   const form = useForm<UpdateCarFormValues>({
     resolver: zodResolver(updateCarSchema),
@@ -52,9 +44,15 @@ export function EditCarDialog({ car }: EditCarDialogProps) {
     },
   })
 
+  useEffect(() => {
+    if (!open) {
+      const timer = setTimeout(() => form.reset(), 200)
+      return () => clearTimeout(timer)
+    }
+  }, [open, form])
+
   function handleClose() {
     setOpen(false)
-    resetTimer.current = setTimeout(() => form.reset(), 200)
   }
 
   function onSubmit(values: UpdateCarFormValues) {
@@ -63,7 +61,7 @@ export function EditCarDialog({ car }: EditCarDialogProps) {
       if (result?.error) {
         form.setError('root', { message: result.error })
       } else {
-        setOpen(false)
+        handleClose()
         router.refresh()
       }
     })

@@ -15,7 +15,7 @@ import { carSchema, type CarFormValues } from '@/lib/schemas'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Plus } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import { useEffect, useRef, useState, useTransition } from 'react'
+import { useEffect, useState, useTransition } from 'react'
 import { useForm } from 'react-hook-form'
 import { CarFormFields } from './car-form-fields'
 
@@ -23,14 +23,6 @@ export function AddCarDialog() {
   const [open, setOpen] = useState(false)
   const [isPending, startTransition] = useTransition()
   const router = useRouter()
-  const resetTimer = useRef<ReturnType<typeof setTimeout>>(null)
-
-  useEffect(
-    () => () => {
-      if (resetTimer.current) clearTimeout(resetTimer.current)
-    },
-    [],
-  )
 
   const form = useForm<CarFormValues>({
     resolver: zodResolver(carSchema),
@@ -47,9 +39,15 @@ export function AddCarDialog() {
     },
   })
 
+  useEffect(() => {
+    if (!open) {
+      const timer = setTimeout(() => form.reset(), 200)
+      return () => clearTimeout(timer)
+    }
+  }, [open, form])
+
   function handleClose() {
     setOpen(false)
-    resetTimer.current = setTimeout(() => form.reset(), 200)
   }
 
   function onSubmit(values: CarFormValues) {
@@ -58,8 +56,7 @@ export function AddCarDialog() {
       if (result?.error) {
         form.setError('root', { message: result.error })
       } else {
-        form.reset()
-        setOpen(false)
+        handleClose()
         router.refresh()
       }
     })

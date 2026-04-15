@@ -23,7 +23,8 @@ import { updateUserSchema, type UpdateUserFormValues } from '@/lib/schemas'
 import { applyPhoneMask } from '@/lib/utils'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Pencil } from 'lucide-react'
-import { useEffect, useRef, useState, useTransition } from 'react'
+import { useRouter } from 'next/navigation'
+import { useEffect, useState, useTransition } from 'react'
 import { useForm } from 'react-hook-form'
 
 interface EditProfileDialogProps {
@@ -33,14 +34,7 @@ interface EditProfileDialogProps {
 export function EditProfileDialog({ user }: EditProfileDialogProps) {
   const [open, setOpen] = useState(false)
   const [isPending, startTransition] = useTransition()
-  const resetTimer = useRef<ReturnType<typeof setTimeout>>(null)
-
-  useEffect(
-    () => () => {
-      if (resetTimer.current) clearTimeout(resetTimer.current)
-    },
-    [],
-  )
+  const router = useRouter()
 
   const form = useForm<UpdateUserFormValues>({
     resolver: zodResolver(updateUserSchema),
@@ -53,9 +47,15 @@ export function EditProfileDialog({ user }: EditProfileDialogProps) {
     },
   })
 
+  useEffect(() => {
+    if (!open) {
+      const timer = setTimeout(() => form.reset(), 200)
+      return () => clearTimeout(timer)
+    }
+  }, [open, form])
+
   function handleClose() {
     setOpen(false)
-    resetTimer.current = setTimeout(() => form.reset(), 200)
   }
 
   function onSubmit(values: UpdateUserFormValues) {
@@ -64,7 +64,8 @@ export function EditProfileDialog({ user }: EditProfileDialogProps) {
       if (result?.error) {
         form.setError('root', { message: result.error })
       } else {
-        setOpen(false)
+        handleClose()
+        router.refresh()
       }
     })
   }
