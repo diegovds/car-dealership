@@ -25,7 +25,7 @@ export default async function CarsPage({ searchParams }: CarsPageProps) {
   let aiReply: string | null = null
 
   if (search) {
-    const result = await getCarsSearch({ search })
+    const result = await getCarsSearch({ search, page: currentPage })
     cars = result.cars
     meta = result.meta
     aiReply = result.reply
