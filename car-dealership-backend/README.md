@@ -99,14 +99,15 @@ A API estará disponível em `http://localhost:3333` e a documentação Swagger 
 |---|---|---|---|
 | GET | `/cars` | Não | Listar carros com paginação |
 | GET | `/cars/:id` | Não | Obter carro por ID (inclui dados do vendedor) |
-| GET | `/cars/search` | Não | Buscar carros por texto (IA) |
+| GET | `/cars/search` | Não | Buscar carros por texto (IA) com paginação |
+| GET | `/cars/filter` | Não | Filtrar carros com parâmetros diretos, sem IA |
 | POST | `/cars` | Sim | Cadastrar carro |
 | PATCH | `/cars/:id` | Sim | Atualizar carro |
 | DELETE | `/cars/:id` | Sim | Excluir carro |
 
 ### Paginação
 
-Os endpoints GET `/users` e GET `/cars` suportam paginação via query string:
+Os endpoints GET `/users`, GET `/cars`, GET `/cars/search` e GET `/cars/filter` suportam paginação via query string:
 
 ```
 GET /cars?page=2
@@ -169,21 +170,36 @@ Usuário: "tem gol flex até 50 mil?"
 
 **4. Query no banco** - Os filtros são aplicados dinamicamente no PostgreSQL via Drizzle ORM. Textos usam `ilike` (busca parcial, case insensitive), números usam comparações exatas ou faixas.
 
-**5. Resposta** - Retorna os carros encontrados e uma mensagem natural:
+**5. Resposta** - Retorna os carros encontrados, mensagem natural, metadados de paginação e os filtros extraídos:
 
 ```json
 {
   "cars": [{ "id": "...", "brand": "Volkswagen", "model": "Gol", ... }],
-  "reply": "Encontrei 3 veículos com essas características."
+  "reply": "Encontrei 3 veículos com essas características.",
+  "meta": { "page": 1, "perPage": 12, "total": 3, "totalPages": 1 },
+  "filters": { "model": "Gol", "fuel": "Flex", "priceMax": 50000 }
 }
 ```
 
+Os `filters` retornados são usados pelo frontend para paginar os resultados sem chamar a IA novamente — a partir da página 2, o frontend usa `GET /cars/filter` com esses filtros diretamente.
+
+### GET /cars/filter
+
+Endpoint de filtro direto, sem IA. Aceita os mesmos parâmetros estruturados que a IA extrairia:
+
+```
+GET /cars/filter?model=Gol&fuel=Flex&priceMax=50000&page=2
+```
+
+Parâmetros disponíveis: `brand`, `model`, `version`, `year`, `yearMin`, `yearMax`, `mileageMin`, `mileageMax`, `fuel`, `transmission`, `priceMin`, `priceMax`, `page`.
+
 ### Detalhes técnicos
 
-- A IA **não acessa o banco** - ela apenas converte texto em filtros estruturados
+- A IA **não acessa o banco** — ela apenas converte texto em filtros estruturados
 - `tool_choice: 'required'` garante que a IA sempre chame a function
-- `temperature: 0` garante respostas determinísticas
+- `temperature: 0` garante respostas determinísticas e evita que o mesmo texto produza filtros diferentes
 - Se a IA não conseguir extrair filtros, não retorna nenhum carro
+- A paginação da busca por IA usa `GET /cars/filter` a partir da página 2, evitando chamadas redundantes à OpenAI
 
 ## Estrutura do projeto
 

@@ -11,7 +11,7 @@ Interface web para a plataforma Car Dealership, construída com Next.js 16 e Rea
 - **React Hook Form + Zod 4** para formulários e validação
 - **Orval** para geração automática de tipos a partir da API (OpenAPI)
 - **Lucide React** para ícones
-- **JetBrains Mono** como fonte principal
+- **JetBrains Mono** como fonte principal (corpo) + **Barlow Condensed** para tipografia display
 
 ## Requisitos
 
@@ -69,7 +69,8 @@ App disponível em `http://localhost:3000`.
 
 | Rota | Descrição | Acesso |
 |---|---|---|
-| `/` | Listagem de veículos com paginação e busca por IA | Público |
+| `/` | Landing page editorial com tipografia display e marquee de marcas | Público |
+| `/cars` | Listagem de veículos com paginação e busca por IA | Público |
 | `/cars/:id` | Detalhes do veículo com info do vendedor (nome e telefone) | Público |
 | `/login` | Login do vendedor | Somente visitante |
 | `/register` | Cadastro do vendedor (nome, email, senha, telefone) | Somente visitante |
@@ -97,7 +98,9 @@ Server Actions em `src/actions/` encapsulam as chamadas autenticadas e fazem `re
 
 | Componente | Descrição |
 |---|---|
-| `SearchForm` | Input de busca por IA com navegação via query string |
+| `SearchForm` | Input de busca por IA com React Hook Form + Zod; reseta ao limpar a busca |
+| `CarCard` | Card de veículo na vitrine pública |
+| `Pagination` | Paginação inteligente: usa filtros extraídos pela IA para paginar sem chamar a IA novamente |
 | `LoginForm` / `RegisterForm` | Formulários com React Hook Form + Zod + máscara de telefone |
 | `EditProfileDialog` | Edição de perfil (nome, email, telefone, senha) |
 | `AddCarDialog` / `EditCarDialog` | Formulários de criação/edição de veículo |
@@ -113,13 +116,18 @@ O projeto usa `@starting-style` (CSS nativo) para animações de entrada SSR-saf
 ```
 src/
   app/
-    layout.tsx                   # Layout raiz (fontes, dark mode, metadata)
-    globals.css                  # Tema, variáveis CSS, animações
+    layout.tsx                   # Layout raiz (fontes Geist + JetBrains Mono + Barlow Condensed, dark mode)
+    globals.css                  # Tema, variáveis CSS, animações (enter, marquee, shimmer)
     (site)/
-      layout.tsx                 # Shell do site (header + footer)
-      page.tsx                   # Home (listagem + busca IA)
+      layout.tsx                 # Shell do site (header com nav + footer)
+      page.tsx                   # Landing page (tipografia display + marquee de marcas)
       _components/
-        search-form.tsx          # Input de busca
+        search-form.tsx          # Input de busca (RHF + Zod, reseta ao limpar)
+        car-card.tsx             # Card de veículo na vitrine
+      cars/
+        page.tsx                 # Vitrine de veículos (listagem + busca IA + filtro)
+        _components/
+          pagination.tsx         # Paginação com suporte a filtros extraídos pela IA
       cars/[id]/
         page.tsx                 # Detalhes do veículo
         _components/
@@ -134,13 +142,13 @@ src/
           _components/           # Dialogs e itens
   actions/                       # Server Actions (auth, cars, users)
   http/
-    api.ts                       # Client gerado pelo Orval
+    api.ts                       # Client gerado pelo Orval (atualizado manualmente)
   lib/
     auth.ts                      # Helpers de autenticação (cookie)
     env.ts                       # Validação de env vars
     fetch-client.ts              # Mutator do Orval (customFetch)
     schemas.ts                   # Schemas Zod para formulários
-    currency.ts                  # Formatação BRL
+    currency.ts                  # Formatação BRL e quilometragem
     utils.ts                     # cn() + máscara de telefone
   components/
     ui/                          # Componentes shadcn

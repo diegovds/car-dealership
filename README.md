@@ -23,11 +23,13 @@ car-dealership/
 
 ## Funcionalidades
 
+- Landing page editorial com tipografia display (Barlow Condensed) e marquee de marcas
 - Cadastro e autenticação de vendedores (JWT)
 - CRUD completo de veículos com imagem, especificações e preço
-- Vitrine pública com paginação
+- Vitrine pública com paginação em `/cars`
 - Página de detalhes do veículo com informações do vendedor (nome e telefone)
 - Busca por linguagem natural com IA (OpenAI function calling)
+- Paginação da busca por IA sem chamadas redundantes — filtros extraídos são reutilizados via `GET /cars/filter`
 - Painel do vendedor para gerenciar perfil e anúncios
 - Design responsivo com animações SSR-safe (`@starting-style`)
 - Geração automática de tipos do frontend a partir da API (Orval)
