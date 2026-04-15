@@ -18,7 +18,7 @@ class AppError extends Error {
 }
 
 export async function listCars(page: number) {
-  const perPage = 10
+  const perPage = 12
   const [cars, total] = await Promise.all([
     repository.findAllCars(page, perPage),
     repository.countAllCars(),
