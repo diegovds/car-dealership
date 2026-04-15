@@ -68,19 +68,7 @@ export const carListPaginatedResponseSchema = z.object({
   meta: paginationMetaSchema,
 })
 
-export const searchRequestSchema = z.object({
-  search: z.string().min(1),
-  page: z.coerce.number().int().min(1).default(1),
-})
-
-export const searchCarItemSchema = carResponseSchema
-export const searchCarListSchema = z.array(searchCarItemSchema)
-
-export const searchResponseSchema = z.object({
-  cars: searchCarListSchema,
-  reply: z.string(),
-  meta: paginationMetaSchema,
-})
+// ─── Filter schemas ──────────────────────────────────────────────────────────
 
 const yearMaxFilter = new Date().getFullYear() + 1
 
@@ -108,7 +96,31 @@ export const filtersSchema = z.object({
   priceMax: z.coerce.number().min(0).optional(),
 })
 
+export const filterQuerySchema = filtersSchema.extend({
+  page: z.coerce.number().int().min(1).default(1),
+})
+
+// ─── Search schemas ──────────────────────────────────────────────────────────
+
+export const searchRequestSchema = z.object({
+  search: z.string().min(1),
+  page: z.coerce.number().int().min(1).default(1),
+})
+
+export const searchCarItemSchema = carResponseSchema
+export const searchCarListSchema = z.array(searchCarItemSchema)
+
+export const searchResponseSchema = z.object({
+  cars: searchCarListSchema,
+  reply: z.string(),
+  meta: paginationMetaSchema,
+  filters: filtersSchema,
+})
+
+// ─── Types ───────────────────────────────────────────────────────────────────
+
 export type SearchCarsRequestInput = z.infer<typeof searchRequestSchema>
+export type FilterCarsInput = z.infer<typeof filterQuerySchema>
 export type SearchFilters = z.infer<typeof filtersSchema>
 export type CreateCarInput = z.infer<typeof createCarSchema>
 export type UpdateCarInput = z.infer<typeof updateCarSchema>

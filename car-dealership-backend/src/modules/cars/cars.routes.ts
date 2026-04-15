@@ -9,6 +9,7 @@ import {
   carResponseSchema,
   carWithSellerResponseSchema,
   createCarSchema,
+  filterQuerySchema,
   paginationQuerySchema,
   searchRequestSchema,
   searchResponseSchema,
@@ -33,6 +34,23 @@ export async function carsRoutes(instance: FastifyInstance) {
       },
     },
     controller.searchCars,
+  )
+
+  pub.get(
+    '/cars/filter',
+    {
+      schema: {
+        tags: ['Cars'],
+        security: [],
+        summary: 'Filtrar carros',
+        description: 'Busca carros com filtros diretos, sem chamada à IA.',
+        querystring: filterQuerySchema,
+        response: {
+          200: carListPaginatedResponseSchema,
+        },
+      },
+    },
+    controller.filterCars,
   )
 
   pub.get(

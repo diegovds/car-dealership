@@ -205,6 +205,7 @@ export function createAiSearchAgent() {
         reply:
           'Não consegui identificar filtros compatíveis com a busca. Tente descrever marca, modelo, ano, preço, combustível ou câmbio.',
         meta: { page, perPage, total: 0, totalPages: 0 },
+        filters: {},
       }
     }
 
@@ -219,6 +220,7 @@ export function createAiSearchAgent() {
         total,
         totalPages: Math.ceil(total / perPage),
       },
+      filters,
     }
   }
 }

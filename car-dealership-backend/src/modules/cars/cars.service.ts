@@ -1,6 +1,7 @@
 import * as repository from './cars.repository'
 import type {
   CreateCarInput,
+  FilterCarsInput,
   SearchCarsRequestInput,
   UpdateCarInput,
 } from './cars.schema'
@@ -76,4 +77,18 @@ export async function deleteCar(userId: string, id: string) {
 
 export async function searchCars({ search, page }: SearchCarsRequestInput) {
   return searchAgent(search, page)
+}
+
+export async function filterCars({ page, ...filters }: FilterCarsInput) {
+  const perPage = 12
+  const { cars, total } = await repository.searchFilterCars(filters, page, perPage)
+  return {
+    cars,
+    meta: {
+      page,
+      perPage,
+      total,
+      totalPages: Math.ceil(total / perPage),
+    },
+  }
 }

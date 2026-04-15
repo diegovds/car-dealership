@@ -1,6 +1,7 @@
 import type { FastifyReply, FastifyRequest } from 'fastify'
 import type {
   CreateCarInput,
+  FilterCarsInput,
   SearchCarsRequestInput,
   UpdateCarInput,
 } from './cars.schema'
@@ -61,4 +62,12 @@ export async function searchCars(
 ) {
   const cars = await service.searchCars(request.query)
   return reply.send(cars)
+}
+
+export async function filterCars(
+  request: FastifyRequest<{ Querystring: FilterCarsInput }>,
+  reply: FastifyReply,
+) {
+  const result = await service.filterCars(request.query)
+  return reply.send(result)
 }
