@@ -15,20 +15,24 @@ import {
 } from '@/components/ui/select'
 import { formatBRL, formatKm, parseBRL, parseKm } from '@/lib/currency'
 import { FUEL_OPTIONS, TRANSMISSION_OPTIONS } from '@/lib/car-options'
-import type { Control } from 'react-hook-form'
+import type { Control, FieldValues, Path } from 'react-hook-form'
 
-interface CarFormFieldsProps {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  control: Control<any>
+interface CarFormFieldsProps<T extends FieldValues> {
+  control: Control<T>
 }
 
-export function CarFormFields({ control }: CarFormFieldsProps) {
+// Carrega os mesmos campos para CarFormValues e UpdateCarFormValues (partial)
+export function CarFormFields<T extends FieldValues>({
+  control,
+}: CarFormFieldsProps<T>) {
+  const f = (name: string) => name as unknown as Path<T>
+
   return (
     <>
       <div className="grid grid-cols-2 gap-4">
         <FormField
           control={control}
-          name="brand"
+          name={f('brand')}
           render={({ field }) => (
             <FormItem>
               <FormLabel>Marca *</FormLabel>
@@ -41,7 +45,7 @@ export function CarFormFields({ control }: CarFormFieldsProps) {
         />
         <FormField
           control={control}
-          name="model"
+          name={f('model')}
           render={({ field }) => (
             <FormItem>
               <FormLabel>Modelo *</FormLabel>
@@ -56,7 +60,7 @@ export function CarFormFields({ control }: CarFormFieldsProps) {
 
       <FormField
         control={control}
-        name="version"
+        name={f('version')}
         render={({ field }) => (
           <FormItem>
             <FormLabel>Versão</FormLabel>
@@ -71,7 +75,7 @@ export function CarFormFields({ control }: CarFormFieldsProps) {
       <div className="grid grid-cols-2 gap-4">
         <FormField
           control={control}
-          name="year"
+          name={f('year')}
           render={({ field }) => (
             <FormItem>
               <FormLabel>Ano *</FormLabel>
@@ -90,7 +94,7 @@ export function CarFormFields({ control }: CarFormFieldsProps) {
         />
         <FormField
           control={control}
-          name="price"
+          name={f('price')}
           render={({ field }) => (
             <FormItem>
               <FormLabel>Preço *</FormLabel>
@@ -111,7 +115,7 @@ export function CarFormFields({ control }: CarFormFieldsProps) {
       <div className="grid grid-cols-2 gap-4">
         <FormField
           control={control}
-          name="fuel"
+          name={f('fuel')}
           render={({ field }) => (
             <FormItem>
               <FormLabel>Combustível</FormLabel>
@@ -122,9 +126,9 @@ export function CarFormFields({ control }: CarFormFieldsProps) {
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  {FUEL_OPTIONS.map((f) => (
-                    <SelectItem key={f} value={f}>
-                      {f}
+                  {FUEL_OPTIONS.map((o) => (
+                    <SelectItem key={o} value={o}>
+                      {o}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -135,7 +139,7 @@ export function CarFormFields({ control }: CarFormFieldsProps) {
         />
         <FormField
           control={control}
-          name="transmission"
+          name={f('transmission')}
           render={({ field }) => (
             <FormItem>
               <FormLabel>Câmbio</FormLabel>
@@ -146,9 +150,9 @@ export function CarFormFields({ control }: CarFormFieldsProps) {
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  {TRANSMISSION_OPTIONS.map((t) => (
-                    <SelectItem key={t} value={t}>
-                      {t}
+                  {TRANSMISSION_OPTIONS.map((o) => (
+                    <SelectItem key={o} value={o}>
+                      {o}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -161,7 +165,7 @@ export function CarFormFields({ control }: CarFormFieldsProps) {
 
       <FormField
         control={control}
-        name="mileage"
+        name={f('mileage')}
         render={({ field }) => (
           <FormItem>
             <FormLabel>Quilometragem</FormLabel>
@@ -194,7 +198,7 @@ export function CarFormFields({ control }: CarFormFieldsProps) {
 
       <FormField
         control={control}
-        name="imageUrl"
+        name={f('imageUrl')}
         render={({ field }) => (
           <FormItem>
             <FormLabel>URL da imagem</FormLabel>
