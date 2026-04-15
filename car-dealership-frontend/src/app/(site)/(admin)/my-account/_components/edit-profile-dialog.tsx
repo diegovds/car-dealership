@@ -6,6 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Pencil } from 'lucide-react'
 import { updateUserAction } from '@/actions/users'
 import { Button } from '@/components/ui/button'
+import { FormError } from '@/components/ui/form-error'
 import { Input } from '@/components/ui/input'
 import {
   Dialog,
@@ -79,11 +80,7 @@ export function EditProfileDialog({ user }: EditProfileDialogProps) {
             onSubmit={form.handleSubmit(onSubmit)}
             className="flex flex-col gap-4 pt-2"
           >
-            {form.formState.errors.root && (
-              <div className="border-destructive/30 bg-destructive/10 text-destructive rounded-lg border px-4 py-3 text-sm">
-                {form.formState.errors.root.message}
-              </div>
-            )}
+            <FormError message={form.formState.errors.root?.message} />
 
             <FormField
               control={form.control}

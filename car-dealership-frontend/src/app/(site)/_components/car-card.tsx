@@ -1,8 +1,8 @@
 import { Badge } from '@/components/ui/badge'
 import { formatBRL, formatKm } from '@/lib/currency'
 import type { GetCars200CarsItem } from '@/http/api'
-import { Car } from 'lucide-react'
 import Link from 'next/link'
+import { CarImagePlaceholder } from './car-image-placeholder'
 
 interface CarCardProps {
   car: GetCars200CarsItem
@@ -24,16 +24,7 @@ export function CarCard({ car }: CarCardProps) {
             className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
           />
         ) : (
-          <div className="text-muted-foreground/30 flex h-full flex-col items-center justify-center gap-2">
-            <span>
-              <Car
-                size={36}
-                strokeWidth={0}
-                className="text-muted-foreground/20 fill-current"
-              />
-            </span>
-            <p className="text-[10px] tracking-widest uppercase">Sem imagem</p>
-          </div>
+          <CarImagePlaceholder size="md" />
         )}
         {car.fuel && (
           <Badge

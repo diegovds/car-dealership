@@ -1,15 +1,8 @@
 import { Badge } from '@/components/ui/badge'
-import { getCarsId } from '@/http/api'
+import { getCarsId, type GetCarsId200 } from '@/http/api'
 import { formatBRL, formatKm } from '@/lib/currency'
-import {
-  Calendar,
-  Car,
-  Fuel,
-  Gauge,
-  Phone,
-  Settings2,
-  User,
-} from 'lucide-react'
+import { CarImagePlaceholder } from '@/app/(site)/_components/car-image-placeholder'
+import { Calendar, Fuel, Gauge, Phone, Settings2, User } from 'lucide-react'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { ButtonBack } from './_components/button-back'
@@ -22,10 +15,9 @@ export async function generateMetadata({
   params,
 }: CarDetailPageProps): Promise<Metadata> {
   const { id } = await params
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const car = (await getCarsId(id)) as any
+  const car = (await getCarsId(id)) as GetCarsId200 | { message: string }
 
-  if (car?.message || !car?.id) {
+  if ('message' in car) {
     return { title: 'Veículo não encontrado' }
   }
 
@@ -46,10 +38,9 @@ export async function generateMetadata({
 export default async function CarDetailPage({ params }: CarDetailPageProps) {
   const { id } = await params
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const car = (await getCarsId(id)) as any
+  const car = (await getCarsId(id)) as GetCarsId200 | { message: string }
 
-  if (car?.message || !car?.id) notFound()
+  if ('message' in car) notFound()
 
   const specs = [
     { icon: Calendar, label: 'Ano', value: String(car.year) },
@@ -87,16 +78,7 @@ export default async function CarDetailPage({ params }: CarDetailPageProps) {
                 className="h-full w-full object-cover"
               />
             ) : (
-              <div className="text-muted-foreground/30 flex h-full flex-col items-center justify-center gap-3">
-                <span className="animate-float">
-                  <Car
-                    size={72}
-                    strokeWidth={0}
-                    className="text-muted-foreground/20 fill-current"
-                  />
-                </span>
-                <p className="text-xs tracking-widest uppercase">Sem imagem</p>
-              </div>
+              <CarImagePlaceholder size="lg" />
             )}
           </div>
 

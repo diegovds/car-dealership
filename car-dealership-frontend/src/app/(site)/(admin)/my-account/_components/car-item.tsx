@@ -13,7 +13,8 @@ import {
 } from '@/components/ui/dialog'
 import type { GetUsers200CarsItem } from '@/http/api'
 import { formatBRL, formatKm } from '@/lib/currency'
-import { Car, Trash2 } from 'lucide-react'
+import { CarImagePlaceholder } from '@/app/(site)/_components/car-image-placeholder'
+import { Trash2 } from 'lucide-react'
 import Link from 'next/link'
 import { useState, useTransition } from 'react'
 import { EditCarDialog } from './edit-car-dialog'
@@ -48,16 +49,7 @@ export function CarItem({ car }: CarItemProps) {
             className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
           />
         ) : (
-          <div className="text-muted-foreground/30 flex h-full flex-col items-center justify-center gap-1">
-            <span>
-              <Car
-                size={20}
-                strokeWidth={0}
-                className="text-muted-foreground/20 fill-current"
-              />
-            </span>
-            <p className="text-[8px] tracking-widest uppercase">Sem imagem</p>
-          </div>
+          <CarImagePlaceholder size="sm" />
         )}
       </Link>
 

@@ -6,6 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import Link from 'next/link'
 import { loginAction } from '@/actions/auth'
 import { Button } from '@/components/ui/button'
+import { FormError } from '@/components/ui/form-error'
 import { Input } from '@/components/ui/input'
 import { Loader2 } from 'lucide-react'
 import {
@@ -41,11 +42,7 @@ export function LoginForm() {
         onSubmit={form.handleSubmit(onSubmit)}
         className="flex w-full flex-col gap-5"
       >
-        {form.formState.errors.root && (
-          <div className="enter-hero border-destructive/30 bg-destructive/10 text-destructive rounded-lg border px-4 py-3 text-sm">
-            {form.formState.errors.root.message}
-          </div>
-        )}
+        <FormError message={form.formState.errors.root?.message} />
 
         <FormField
           control={form.control}

@@ -9,44 +9,20 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog'
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
+import { Form } from '@/components/ui/form'
+import { FormError } from '@/components/ui/form-error'
 import type { GetUsers200CarsItem } from '@/http/api'
-import { formatBRL, formatKm, parseBRL, parseKm } from '@/lib/currency'
 import { updateCarSchema, type UpdateCarFormValues } from '@/lib/schemas'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Pencil } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useState, useTransition } from 'react'
 import { useForm } from 'react-hook-form'
+import { CarFormFields } from './car-form-fields'
 
 interface EditCarDialogProps {
   car: GetUsers200CarsItem
 }
-
-const FUEL_OPTIONS = [
-  'Gasolina',
-  'Etanol',
-  'Flex',
-  'Diesel',
-  'Elétrico',
-  'Híbrido',
-]
-const TRANSMISSION_OPTIONS = ['Manual', 'Automático', 'CVT', 'Semi-automático']
 
 export function EditCarDialog({ car }: EditCarDialogProps) {
   const [open, setOpen] = useState(false)
@@ -104,196 +80,9 @@ export function EditCarDialog({ car }: EditCarDialogProps) {
             onSubmit={form.handleSubmit(onSubmit)}
             className="flex flex-col gap-4 pt-2"
           >
-            {form.formState.errors.root && (
-              <div className="border-destructive/30 bg-destructive/10 text-destructive rounded-lg border px-4 py-3 text-sm">
-                {form.formState.errors.root.message}
-              </div>
-            )}
+            <FormError message={form.formState.errors.root?.message} />
 
-            <div className="grid grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="brand"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Marca</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Ex: Volkswagen" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="model"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Modelo</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Ex: Gol" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-
-            <FormField
-              control={form.control}
-              name="version"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Versão</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Ex: 1.6 MSI Comfortline" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <div className="grid grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="year"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Ano</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="number"
-                        {...field}
-                        value={field.value ?? ''}
-                        onChange={(e) => field.onChange(e.target.valueAsNumber)}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="price"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Preço</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="R$ 0,00"
-                        value={formatBRL(field.value ?? '')}
-                        onChange={(e) =>
-                          field.onChange(parseBRL(e.target.value))
-                        }
-                        onBlur={field.onBlur}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="fuel"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Combustível</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Selecione" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {FUEL_OPTIONS.map((f) => (
-                          <SelectItem key={f} value={f}>
-                            {f}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="transmission"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Câmbio</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Selecione" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {TRANSMISSION_OPTIONS.map((t) => (
-                          <SelectItem key={t} value={t}>
-                            {t}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-
-            <FormField
-              control={form.control}
-              name="mileage"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Quilometragem</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="0 km"
-                      value={formatKm(field.value)}
-                      onChange={(e) => field.onChange(parseKm(e.target.value))}
-                      onKeyDown={(e) => {
-                        if (
-                          e.key === 'Backspace' &&
-                          field.value !== undefined
-                        ) {
-                          const input = e.currentTarget
-                          if (input.selectionStart === input.selectionEnd) {
-                            e.preventDefault()
-                            const s = String(field.value)
-                            field.onChange(
-                              s.length <= 1
-                                ? undefined
-                                : parseInt(s.slice(0, -1), 10),
-                            )
-                          }
-                        }
-                      }}
-                      onBlur={field.onBlur}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="imageUrl"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>URL da imagem</FormLabel>
-                  <FormControl>
-                    <Input placeholder="https://..." {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <CarFormFields control={form.control} />
 
             <div className="flex justify-end gap-2 pt-2">
               <Button

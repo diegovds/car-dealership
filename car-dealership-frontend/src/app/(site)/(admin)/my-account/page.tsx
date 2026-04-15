@@ -1,5 +1,4 @@
 import type { Metadata } from 'next'
-import Link from 'next/link'
 
 export const metadata: Metadata = {
   title: 'Minha Conta',
@@ -8,6 +7,7 @@ export const metadata: Metadata = {
 }
 import { getUsers } from '@/http/api'
 import { getAuthToken } from '@/lib/auth'
+import { Pagination } from '@/app/(site)/_components/pagination'
 import { AddCarDialog } from './_components/add-car-dialog'
 import { CarItem } from './_components/car-item'
 import { EditProfileDialog } from './_components/edit-profile-dialog'
@@ -106,30 +106,11 @@ export default async function MyAccountPage({
           </div>
         )}
 
-        {/* Pagination */}
-        {meta.totalPages > 1 && (
-          <div className="flex items-center justify-center gap-2 pt-2">
-            {currentPage > 1 && (
-              <Link
-                href={`/my-account?page=${currentPage - 1}`}
-                className="text-muted-foreground hover:text-foreground text-xs underline-offset-4 hover:underline"
-              >
-                ← Anterior
-              </Link>
-            )}
-            <span className="text-muted-foreground text-xs">
-              {currentPage} / {meta.totalPages}
-            </span>
-            {currentPage < meta.totalPages && (
-              <Link
-                href={`/my-account?page=${currentPage + 1}`}
-                className="text-muted-foreground hover:text-foreground text-xs underline-offset-4 hover:underline"
-              >
-                Próxima →
-              </Link>
-            )}
-          </div>
-        )}
+        <Pagination
+          meta={meta}
+          currentPage={currentPage}
+          basePath="/my-account"
+        />
       </section>
     </div>
   )
