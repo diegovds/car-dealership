@@ -8,12 +8,14 @@ interface PaginationProps {
   meta: GetCarsSearch200Meta | null
   currentPage: number
   filterParams?: GetCarsSearch200Filters
+  reply?: string
 }
 
 export function Pagination({
   meta,
   currentPage,
   filterParams,
+  reply,
 }: PaginationProps) {
   if (!meta || meta.totalPages <= 1) return null
 
@@ -24,6 +26,7 @@ export function Pagination({
         if (v !== undefined && v !== null) params.set(k, String(v))
       })
     }
+    if (reply) params.set('reply', reply)
     if (page > 1) params.set('page', String(page))
     const qs = params.toString()
     return qs ? `/cars?${qs}` : '/cars'

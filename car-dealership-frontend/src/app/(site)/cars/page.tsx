@@ -68,6 +68,7 @@ export default async function CarsPage({ searchParams }: CarsPageProps) {
       }
     }
     filterParams = filters
+    aiReply = params.reply ?? null
     const result = await getCarsFilter({ ...filters, page: currentPage })
     cars = result.cars
     meta = result.meta
@@ -166,6 +167,7 @@ export default async function CarsPage({ searchParams }: CarsPageProps) {
             meta={meta}
             currentPage={currentPage}
             filterParams={filterParams}
+            reply={aiReply ?? undefined}
           />
         </section>
       )}
