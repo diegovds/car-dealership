@@ -18,9 +18,10 @@ type SearchFormValues = z.infer<typeof searchSchema>
 
 interface SearchFormProps {
   defaultValue?: string
+  preserveInput?: boolean
 }
 
-export function SearchForm({ defaultValue }: SearchFormProps) {
+export function SearchForm({ defaultValue, preserveInput }: SearchFormProps) {
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
 
@@ -30,8 +31,10 @@ export function SearchForm({ defaultValue }: SearchFormProps) {
   })
 
   useEffect(() => {
-    form.reset({ search: defaultValue ?? '' })
-  }, [defaultValue, form])
+    if (!preserveInput) {
+      form.reset({ search: defaultValue ?? '' })
+    }
+  }, [defaultValue, preserveInput, form])
 
   function onSubmit(values: SearchFormValues) {
     const search = values.search.trim()

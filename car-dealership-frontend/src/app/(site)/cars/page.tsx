@@ -112,7 +112,7 @@ export default async function CarsPage({ searchParams }: CarsPageProps) {
           style={{ '--enter-delay': '300ms' } as React.CSSProperties}
           className="enter-hero"
         >
-          <SearchForm defaultValue={search} />
+          <SearchForm defaultValue={search} preserveInput={isFilterMode} />
         </div>
       </section>
 
