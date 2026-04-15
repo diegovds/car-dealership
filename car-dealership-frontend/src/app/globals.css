@@ -8,6 +8,7 @@
   --font-sans: var(--font-sans);
   --font-mono: var(--font-jetbrains-mono);
   --font-heading: var(--font-sans);
+  --font-display: var(--font-display);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -144,6 +145,21 @@ body {
   html {
     @apply font-sans;
   }
+}
+
+/* ─── Marquee ────────────────────────────────────────────────────── */
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+.animate-marquee {
+  animation: marquee 40s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee { animation: none; }
 }
 
 /* ─── Looping Animations (safe — fill-mode irrelevant) ──────────── */

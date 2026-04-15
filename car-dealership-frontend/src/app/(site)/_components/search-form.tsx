@@ -20,9 +20,9 @@ export function SearchForm({ defaultValue }: SearchFormProps) {
     const search = (formData.get('search') as string).trim()
     startTransition(() => {
       if (search) {
-        router.push(`/?search=${encodeURIComponent(search)}`)
+        router.push(`/cars?search=${encodeURIComponent(search)}`)
       } else {
-        router.push('/')
+        router.push('/cars')
       }
     })
   }

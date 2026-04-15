@@ -30,6 +30,9 @@ export default async function SiteLayout({
             style={{ '--enter-delay': '150ms' } as React.CSSProperties}
             className="enter-header flex items-center gap-2"
           >
+            <Button variant="ghost" size="sm" asChild>
+              <Link href="/cars">Veículos</Link>
+            </Button>
             {authenticated ? (
               <>
                 <Button variant="ghost" size="sm" asChild>

@@ -1,139 +1,107 @@
-import { Button } from '@/components/ui/button'
-import { getCars, getCarsSearch } from '@/http/api'
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { CarCard } from './_components/car-card'
-import { SearchForm } from './_components/search-form'
 
 export const metadata: Metadata = {
-  title: 'Veículos à Venda',
+  title: 'AutoMercado — Compre e Venda Veículos',
   description:
-    'Explore centenas de veículos disponíveis. Use nossa busca inteligente com IA para encontrar o carro ideal para você.',
+    'Marketplace de veículos com busca inteligente por IA. Encontre o carro ideal para você.',
 }
 
-interface HomePageProps {
-  searchParams: Promise<{ search?: string; page?: string }>
-}
+const BRANDS = [
+  'FORD',
+  'CHEVROLET',
+  'VOLKSWAGEN',
+  'TOYOTA',
+  'HONDA',
+  'HYUNDAI',
+  'NISSAN',
+  'BMW',
+  'MERCEDES-BENZ',
+  'FIAT',
+  'RENAULT',
+  'JEEP',
+  'MITSUBISHI',
+  'KIA',
+  'PEUGEOT',
+  'CITROËN',
+  'AUDI',
+  'LAND ROVER',
+]
 
-export default async function HomePage({ searchParams }: HomePageProps) {
-  const { search, page } = await searchParams
-  const currentPage = page ? parseInt(page) : 1
-
-  let cars: Awaited<ReturnType<typeof getCars>>['cars'] = []
-  let meta: Awaited<ReturnType<typeof getCars>>['meta'] | null = null
-  let aiReply: string | null = null
-
-  if (search) {
-    const result = await getCarsSearch({ search })
-    cars = result.cars
-    aiReply = result.reply
-  } else {
-    const result = await getCars({ page: currentPage })
-    cars = result.cars
-    meta = result.meta
-  }
-
+export default function LandingPage() {
   return (
-    <div className="container mx-auto flex flex-col gap-10 px-4 py-10">
-      {/* Hero */}
-      <section className="flex flex-col gap-4">
-        <div className="flex flex-col gap-1">
-          <p
-            style={{ '--enter-delay': '0ms' } as React.CSSProperties}
-            className="enter-hero text-xs tracking-[0.3em] text-amber-400 uppercase"
-          >
-            Marketplace de Veículos
-          </p>
+    <div className="relative flex flex-1 flex-col overflow-hidden">
+      {/* Top label bar */}
+      <div className="border-border/20 flex items-center justify-between border-b px-6 py-3 md:px-12">
+        <p className="text-[10px] font-bold tracking-[0.4em] text-amber-400 uppercase">
+          Marketplace de Veículos
+        </p>
+        <p className="text-muted-foreground/40 text-[10px] tracking-wider uppercase">
+          Busca por IA
+        </p>
+      </div>
+
+      {/* Hero — bottom-weighted editorial layout */}
+      <section className="flex flex-1 flex-col justify-end px-6 pt-10 pb-8 md:px-12">
+        {/* Monumental typography */}
+        <div className="mb-8">
           <h1
-            style={{ '--enter-delay': '100ms' } as React.CSSProperties}
-            className="enter-hero text-foreground text-4xl font-bold tracking-tight md:text-5xl"
+            className="leading-[0.85] font-black tracking-tight uppercase"
+            style={{
+              fontFamily: 'var(--font-display)',
+              fontSize: 'clamp(4rem, 16vw, 13rem)',
+            }}
           >
-            Encontre seu
-            <br />
-            <span className="animate-shimmer-text">próximo carro</span>
+            <span className="text-foreground block">Encontre</span>
+            <span className="block text-amber-400">Seu</span>
+            <span className="text-foreground block">Próximo</span>
+            <span className="text-foreground block">
+              Carro<span className="text-amber-400">.</span>
+            </span>
           </h1>
         </div>
-        <p
-          style={{ '--enter-delay': '200ms' } as React.CSSProperties}
-          className="enter-hero text-muted-foreground max-w-md text-sm"
-        >
-          Busca inteligente com IA — descreva o carro que você quer em linguagem
-          natural.
-        </p>
-        <div
-          style={{ '--enter-delay': '300ms' } as React.CSSProperties}
-          className="enter-hero"
-        >
-          <SearchForm defaultValue={search} />
+
+        {/* Amber rule */}
+        <div className="relative mb-8 h-px">
+          <div className="absolute inset-0 bg-linear-to-r from-amber-400/70 via-amber-400/20 to-transparent" />
+        </div>
+
+        {/* Description + CTAs */}
+        <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+          <p className="text-muted-foreground max-w-xs text-sm leading-relaxed">
+            Descreva em linguagem natural e nossa IA encontra o carro
+            ideal&nbsp;— sem filtros, sem complicação.
+          </p>
+          <div className="flex items-center gap-3">
+            <Link
+              href="/cars"
+              className="inline-flex items-center gap-2 bg-amber-400 px-6 py-3 text-sm font-bold text-black transition-all duration-200 hover:bg-amber-300 hover:shadow-[0_0_24px_rgba(251,191,36,0.3)] active:scale-95"
+            >
+              Ver Catálogo →
+            </Link>
+            <Link
+              href="/register"
+              className="border-border/40 text-foreground inline-flex items-center gap-2 border px-6 py-3 text-sm font-medium transition-all duration-200 hover:border-amber-400/40 hover:text-amber-400"
+            >
+              Anunciar
+            </Link>
+          </div>
         </div>
       </section>
 
-      {/* AI reply */}
-      {aiReply && (
-        <div className="enter-left text-muted-foreground border-l-2 border-amber-400 pl-4 text-sm italic">
-          {aiReply}
+      {/* Brand marquee */}
+      <div className="border-border/20 overflow-hidden border-t">
+        <div className="animate-marquee flex gap-14 py-4 whitespace-nowrap">
+          {[...BRANDS, ...BRANDS].map((brand, i) => (
+            <span
+              key={i}
+              className="text-muted-foreground/20 text-[11px] font-bold tracking-[0.35em] uppercase select-none"
+            >
+              {brand}
+            </span>
+          ))}
         </div>
-      )}
-
-      {/* Car grid */}
-      {cars.length === 0 ? (
-        <div className="flex flex-col items-center gap-3 py-20 text-center">
-          <p className="text-muted-foreground">Nenhum carro encontrado.</p>
-          {search && (
-            <Button variant="outline" size="sm" asChild>
-              <Link href="/">Ver todos</Link>
-            </Button>
-          )}
-        </div>
-      ) : (
-        <section className="flex flex-col gap-6">
-          <div className="flex items-center justify-between">
-            <h2 className="text-muted-foreground text-sm font-medium tracking-wider uppercase">
-              {!search && `${meta?.total ?? cars.length} veículos disponíveis`}
-            </h2>
-            {search && (
-              <Button variant="ghost" size="sm" asChild>
-                <Link href="/">Limpar busca</Link>
-              </Button>
-            )}
-          </div>
-
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {cars.map((car, index) => (
-              <div
-                key={car.id}
-                style={
-                  {
-                    '--enter-delay': `${Math.min(index * 55, 440)}ms`,
-                  } as React.CSSProperties
-                }
-                className="enter-card"
-              >
-                <CarCard car={car} />
-              </div>
-            ))}
-          </div>
-
-          {/* Pagination */}
-          {meta && meta.totalPages > 1 && (
-            <div className="flex items-center justify-center gap-2">
-              {currentPage > 1 && (
-                <Button variant="outline" size="sm" asChild>
-                  <Link href={`/?page=${currentPage - 1}`}>← Anterior</Link>
-                </Button>
-              )}
-              <span className="text-muted-foreground text-xs">
-                {currentPage} / {meta.totalPages}
-              </span>
-              {currentPage < meta.totalPages && (
-                <Button variant="outline" size="sm" asChild>
-                  <Link href={`/?page=${currentPage + 1}`}>Próxima →</Link>
-                </Button>
-              )}
-            </div>
-          )}
-        </section>
-      )}
+      </div>
     </div>
   )
 }

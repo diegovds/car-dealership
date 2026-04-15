@@ -1,6 +1,6 @@
 import { cn } from '@/lib/utils'
 import type { Metadata, Viewport } from 'next'
-import { Geist, JetBrains_Mono } from 'next/font/google'
+import { Barlow_Condensed, Geist, JetBrains_Mono } from 'next/font/google'
 import './globals.css'
 
 const geist = Geist({ subsets: ['latin'], variable: '--font-sans' })
@@ -8,6 +8,12 @@ const geist = Geist({ subsets: ['latin'], variable: '--font-sans' })
 const jetbrainsMono = JetBrains_Mono({
   variable: '--font-jetbrains-mono',
   subsets: ['latin'],
+})
+
+const barlowCondensed = Barlow_Condensed({
+  weight: ['700', '800', '900'],
+  subsets: ['latin'],
+  variable: '--font-display',
 })
 
 export const viewport: Viewport = {
@@ -51,6 +57,7 @@ export default function RootLayout({
         'antialiased',
         jetbrainsMono.variable,
         geist.variable,
+        barlowCondensed.variable,
       )}
     >
       <body className="bg-background text-foreground flex min-h-dvh flex-col font-mono">
