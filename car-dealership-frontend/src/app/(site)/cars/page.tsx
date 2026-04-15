@@ -1,5 +1,10 @@
 import { Button } from '@/components/ui/button'
-import { getCars, getCarsSearch } from '@/http/api'
+import {
+  getCars,
+  getCarsFilter,
+  getCarsSearch,
+  type GetCarsSearch200Filters,
+} from '@/http/api'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { CarCard } from '../_components/car-card'
@@ -12,28 +17,68 @@ export const metadata: Metadata = {
     'Explore centenas de veículos disponíveis. Use nossa busca inteligente com IA para encontrar o carro ideal para você.',
 }
 
+const FILTER_KEYS = [
+  'brand',
+  'model',
+  'version',
+  'year',
+  'yearMin',
+  'yearMax',
+  'mileageMin',
+  'mileageMax',
+  'fuel',
+  'transmission',
+  'priceMin',
+  'priceMax',
+] as const
+
 interface CarsPageProps {
-  searchParams: Promise<{ search?: string; page?: string }>
+  searchParams: Promise<Record<string, string | undefined>>
 }
 
 export default async function CarsPage({ searchParams }: CarsPageProps) {
-  const { search, page } = await searchParams
-  const currentPage = page ? parseInt(page) : 1
+  const params = await searchParams
+  const search = params.search
+  const currentPage = params.page ? parseInt(params.page) : 1
 
   let cars: Awaited<ReturnType<typeof getCars>>['cars'] = []
   let meta: Awaited<ReturnType<typeof getCars>>['meta'] | null = null
   let aiReply: string | null = null
+  let filterParams: GetCarsSearch200Filters | undefined
+
+  const isFilterMode =
+    !search && FILTER_KEYS.some((k) => params[k] !== undefined)
 
   if (search) {
-    const result = await getCarsSearch({ search, page: currentPage })
+    // IA: sempre página 1 — filtros extraídos são usados na paginação
+    const result = await getCarsSearch({ search, page: 1 })
     cars = result.cars
     meta = result.meta
     aiReply = result.reply
+    filterParams = result.filters
+  } else if (isFilterMode) {
+    // Paginação da busca IA — vai direto ao banco, sem chamar a IA
+    const filters: GetCarsSearch200Filters = {}
+    for (const k of FILTER_KEYS) {
+      const v = params[k]
+      if (v !== undefined) {
+        ;(filters as Record<string, string | number>)[k] = isNaN(Number(v))
+          ? v
+          : Number(v)
+      }
+    }
+    filterParams = filters
+    const result = await getCarsFilter({ ...filters, page: currentPage })
+    cars = result.cars
+    meta = result.meta
   } else {
+    // Listagem normal
     const result = await getCars({ page: currentPage })
     cars = result.cars
     meta = result.meta
   }
+
+  const isSearching = search || isFilterMode
 
   return (
     <div className="container mx-auto flex flex-col gap-10 px-4 py-10">
@@ -81,7 +126,7 @@ export default async function CarsPage({ searchParams }: CarsPageProps) {
       {cars.length === 0 ? (
         <div className="flex flex-col items-center gap-3 py-20 text-center">
           <p className="text-muted-foreground">Nenhum carro encontrado.</p>
-          {search && (
+          {isSearching && (
             <Button variant="outline" size="sm" asChild>
               <Link href="/cars">Ver todos</Link>
             </Button>
@@ -91,9 +136,10 @@ export default async function CarsPage({ searchParams }: CarsPageProps) {
         <section className="flex flex-col gap-6">
           <div className="flex items-center justify-between">
             <h2 className="text-muted-foreground text-sm font-medium tracking-wider uppercase">
-              {!search && `${meta?.total ?? cars.length} veículos disponíveis`}
+              {!isSearching &&
+                `${meta?.total ?? cars.length} veículos disponíveis`}
             </h2>
-            {search && (
+            {isSearching && (
               <Button variant="ghost" size="sm" asChild>
                 <Link href="/cars">Limpar busca</Link>
               </Button>
@@ -116,8 +162,11 @@ export default async function CarsPage({ searchParams }: CarsPageProps) {
             ))}
           </div>
 
-          {/* Pagination */}
-          <Pagination meta={meta} currentPage={currentPage} />
+          <Pagination
+            meta={meta}
+            currentPage={currentPage}
+            filterParams={filterParams}
+          />
         </section>
       )}
     </div>
