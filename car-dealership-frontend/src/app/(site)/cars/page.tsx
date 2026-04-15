@@ -4,6 +4,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { CarCard } from '../_components/car-card'
 import { SearchForm } from '../_components/search-form'
+import { Pagination } from './_components/pagination'
 
 export const metadata: Metadata = {
   title: 'Veículos à Venda',
@@ -116,23 +117,7 @@ export default async function CarsPage({ searchParams }: CarsPageProps) {
           </div>
 
           {/* Pagination */}
-          {meta && meta.totalPages > 1 && (
-            <div className="flex items-center justify-center gap-2">
-              {currentPage > 1 && (
-                <Button variant="outline" size="sm" asChild>
-                  <Link href={`/cars?page=${currentPage - 1}`}>← Anterior</Link>
-                </Button>
-              )}
-              <span className="text-muted-foreground text-xs">
-                {currentPage} / {meta.totalPages}
-              </span>
-              {currentPage < meta.totalPages && (
-                <Button variant="outline" size="sm" asChild>
-                  <Link href={`/cars?page=${currentPage + 1}`}>Próxima →</Link>
-                </Button>
-              )}
-            </div>
-          )}
+          <Pagination meta={meta} currentPage={currentPage} />
         </section>
       )}
     </div>
