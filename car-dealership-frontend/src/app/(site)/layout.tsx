@@ -1,7 +1,5 @@
-import { logoutAction } from '@/actions/auth'
-import { Button } from '@/components/ui/button'
 import { isAuthenticated } from '@/lib/auth'
-import Link from 'next/link'
+import { SiteHeader } from './_components/site-header'
 
 export default async function SiteLayout({
   children,
@@ -12,51 +10,7 @@ export default async function SiteLayout({
 
   return (
     <div className="flex min-h-dvh flex-col">
-      <header className="enter-header border-border/40 bg-background/80 sticky top-0 z-50 border-b backdrop-blur-md">
-        <div className="container mx-auto flex h-14 items-center justify-between px-4">
-          <Link
-            href="/"
-            className="group flex items-center transition-opacity hover:opacity-80"
-          >
-            <span className="text-lg font-bold tracking-wider text-amber-400 transition-all duration-300 group-hover:tracking-widest">
-              Auto
-            </span>
-            <span className="text-foreground text-lg font-bold tracking-wider">
-              Mercado
-            </span>
-          </Link>
-
-          <nav
-            style={{ '--enter-delay': '150ms' } as React.CSSProperties}
-            className="enter-header flex items-center gap-2"
-          >
-            <Button variant="ghost" size="sm" asChild>
-              <Link href="/cars">Veículos</Link>
-            </Button>
-            {authenticated ? (
-              <>
-                <Button variant="ghost" size="sm" asChild>
-                  <Link href="/my-account">Minha Conta</Link>
-                </Button>
-                <form action={logoutAction}>
-                  <Button variant="outline" size="sm" type="submit">
-                    Sair
-                  </Button>
-                </form>
-              </>
-            ) : (
-              <>
-                <Button variant="ghost" size="sm" asChild>
-                  <Link href="/login">Entrar</Link>
-                </Button>
-                <Button size="sm" asChild>
-                  <Link href="/register">Cadastrar</Link>
-                </Button>
-              </>
-            )}
-          </nav>
-        </div>
-      </header>
+      <SiteHeader authenticated={authenticated} />
 
       <main className="flex flex-1 flex-col">{children}</main>
 
