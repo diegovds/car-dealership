@@ -41,6 +41,14 @@ export const metadata: Metadata = {
     siteName: 'AutoMercado',
     locale: 'pt_BR',
     type: 'website',
+    images: [
+      {
+        url: '/thumbnail.png',
+        width: 1200,
+        height: 630,
+        alt: 'AutoMercado',
+      },
+    ],
   },
 }
 
