@@ -12,20 +12,47 @@ interface SiteHeaderProps {
   authenticated: boolean
 }
 
+const ENTER_MS = 220
+const EXIT_MS = 180
+
 export function SiteHeader({ authenticated }: SiteHeaderProps) {
-  const [open, setOpen] = useState(false)
+  const [isOpen, setIsOpen] = useState(false)
+  const [isMounted, setIsMounted] = useState(false)
   const pathname = usePathname()
 
+  // Abrir: monta → single rAF → aplica estado aberto (transição de entrada)
+  function handleOpen() {
+    setIsMounted(true)
+  }
   useEffect(() => {
-    setOpen(false)
+    if (!isMounted) return
+    const raf = requestAnimationFrame(() => setIsOpen(true))
+    return () => cancelAnimationFrame(raf)
+  }, [isMounted])
+
+  // Fechar: aplica estado fechado → desmonta após transição de saída
+  function handleClose() {
+    setIsOpen(false)
+  }
+  useEffect(() => {
+    if (isMounted && !isOpen) {
+      const timer = setTimeout(() => setIsMounted(false), EXIT_MS)
+      return () => clearTimeout(timer)
+    }
+  }, [isOpen, isMounted])
+
+  // Fallback: fecha se pathname mudar por outra razão (ex: router.push fora do menu)
+  useEffect(() => {
+    const raf = requestAnimationFrame(() => setIsOpen(false))
+    return () => cancelAnimationFrame(raf)
   }, [pathname])
 
   useEffect(() => {
-    document.body.style.overflow = open ? 'hidden' : ''
+    document.body.style.overflow = isOpen ? 'hidden' : ''
     return () => {
       document.body.style.overflow = ''
     }
-  }, [open])
+  }, [isOpen])
 
   function isActive(href: string) {
     return pathname === href || pathname.startsWith(href + '/')
@@ -81,87 +108,114 @@ export function SiteHeader({ authenticated }: SiteHeaderProps) {
             )}
           </nav>
 
-          {/* Mobile hamburger */}
+          {/* Hambúrguer mobile */}
           <button
             className="text-foreground flex items-center justify-center rounded-md p-2 transition-colors hover:bg-white/5 sm:hidden"
-            onClick={() => setOpen((v) => !v)}
-            aria-label={open ? 'Fechar menu' : 'Abrir menu'}
-            aria-expanded={open}
+            onClick={() => (isOpen ? handleClose() : handleOpen())}
+            aria-label={isOpen ? 'Fechar menu' : 'Abrir menu'}
+            aria-expanded={isOpen}
           >
             <Menu
               className={cn(
                 'size-5 transition-all duration-200',
-                open ? 'rotate-90 opacity-0' : 'rotate-0 opacity-100',
+                isOpen ? 'rotate-90 opacity-0' : 'rotate-0 opacity-100',
               )}
             />
             <X
               className={cn(
                 'absolute size-5 transition-all duration-200',
-                open ? 'rotate-0 opacity-100' : '-rotate-90 opacity-0',
+                isOpen ? 'rotate-0 opacity-100' : '-rotate-90 opacity-0',
               )}
             />
           </button>
         </div>
       </header>
 
-      {/* Overlay — sempre no DOM para transição suave */}
-      <div
-        className={cn(
-          'fixed inset-0 top-14 z-40 bg-black/60 backdrop-blur-sm transition-opacity duration-200 sm:hidden',
-          open ? 'opacity-100' : 'pointer-events-none opacity-0',
-        )}
-        onClick={() => setOpen(false)}
-        aria-hidden="true"
-      />
+      {isMounted && (
+        <>
+          {/* Overlay escuro */}
+          <div
+            style={{
+              transitionDuration: isOpen ? `${ENTER_MS}ms` : `${EXIT_MS}ms`,
+              transitionTimingFunction: isOpen
+                ? 'cubic-bezier(0, 0, 0.2, 1)'
+                : 'cubic-bezier(0.4, 0, 1, 1)',
+            }}
+            className={cn(
+              'fixed inset-0 top-14 z-40 bg-black/60 backdrop-blur-sm transition-opacity sm:hidden',
+              isOpen ? 'opacity-100' : 'opacity-0',
+            )}
+            onClick={handleClose}
+            aria-hidden="true"
+          />
 
-      {/* Mobile panel — fixo, desliza de cima para baixo */}
-      <div
-        className={cn(
-          'fixed inset-x-0 top-14 z-50 border-b border-border/40 bg-background shadow-2xl transition-[transform,opacity] duration-200 ease-out sm:hidden',
-          open
-            ? 'translate-y-0 opacity-100'
-            : 'pointer-events-none -translate-y-3 opacity-0',
-        )}
-      >
-        <nav className="container mx-auto flex flex-col gap-0.5 px-4 py-3">
-          <MobileLink href="/cars" active={isActive('/cars')}>
-            Veículos
-          </MobileLink>
-          {authenticated ? (
-            <>
+          {/* Painel deslizante — style inline evita dependência de CSS variables
+              do Tailwind v4 para transform/opacity */}
+          <div
+            style={{
+              transitionProperty: 'transform, opacity',
+              transitionDuration: isOpen ? `${ENTER_MS}ms` : `${EXIT_MS}ms`,
+              transitionTimingFunction: isOpen
+                ? 'cubic-bezier(0, 0, 0.2, 1)'
+                : 'cubic-bezier(0.4, 0, 1, 1)',
+              transform: isOpen ? 'translateY(0)' : 'translateY(-10px)',
+              opacity: isOpen ? 1 : 0,
+              willChange: 'transform, opacity',
+            }}
+            className="border-border/40 bg-background fixed inset-x-0 top-14 z-50 border-b shadow-2xl sm:hidden"
+          >
+            <nav className="container mx-auto flex flex-col gap-0.5 px-4 py-3">
               <MobileLink
-                href="/my-account"
-                active={isActive('/my-account')}
+                href="/cars"
+                active={isActive('/cars')}
+                onClose={handleClose}
               >
-                Minha Conta
+                Veículos
               </MobileLink>
-              <div className="pt-1">
-                <form action={logoutAction}>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    type="submit"
-                    className="w-full"
+              {authenticated ? (
+                <>
+                  <MobileLink
+                    href="/my-account"
+                    active={isActive('/my-account')}
+                    onClose={handleClose}
                   >
-                    Sair
-                  </Button>
-                </form>
-              </div>
-            </>
-          ) : (
-            <>
-              <MobileLink href="/login" active={isActive('/login')}>
-                Entrar
-              </MobileLink>
-              <div className="pt-1">
-                <Button size="sm" asChild className="w-full">
-                  <Link href="/register">Cadastrar</Link>
-                </Button>
-              </div>
-            </>
-          )}
-        </nav>
-      </div>
+                    Minha Conta
+                  </MobileLink>
+                  <div className="pt-1">
+                    <form action={logoutAction}>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        type="submit"
+                        className="w-full"
+                      >
+                        Sair
+                      </Button>
+                    </form>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <MobileLink
+                    href="/login"
+                    active={isActive('/login')}
+                    onClose={handleClose}
+                  >
+                    Entrar
+                  </MobileLink>
+                  <div className="pt-1">
+                    <Button size="sm" asChild className="w-full">
+                      <Link href="/register" onClick={handleClose}>
+                        Cadastrar
+                      </Link>
+                    </Button>
+                  </div>
+                </>
+              )}
+            </nav>
+          </div>
+        </>
+      )}
     </>
   )
 }
@@ -190,7 +244,7 @@ function DesktopLink({
         <Link href={href}>{children}</Link>
       </Button>
       {active && (
-        <span className="bg-amber-400 absolute bottom-0.5 left-2.5 right-2.5 h-px rounded-full" />
+        <span className="absolute right-2.5 bottom-0.5 left-2.5 h-px rounded-full bg-amber-400" />
       )}
     </div>
   )
@@ -200,14 +254,17 @@ function MobileLink({
   href,
   active,
   children,
+  onClose,
 }: {
   href: string
   active: boolean
   children: React.ReactNode
+  onClose: () => void
 }) {
   return (
     <Link
       href={href}
+      onClick={onClose}
       className={cn(
         'flex items-center rounded-md px-3 py-2.5 text-sm font-medium transition-colors',
         active
