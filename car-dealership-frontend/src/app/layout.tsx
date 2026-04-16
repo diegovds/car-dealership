@@ -29,7 +29,7 @@ export const metadata: Metadata = {
     template: '%s | AutoMercado',
   },
   description:
-    'Marketplace de veículos com busca inteligente por IA. Compre e venda carros com facilidade.',
+    'Plataforma de veículos com busca por linguagem natural via IA — cadastre, navegue e encontre.',
   keywords: [
     'carros',
     'veículos',
