@@ -28,6 +28,8 @@ Este documento descreve a stack, a arquitetura e os padrões utilizados no proje
 ## Estrutura de Pastas
 
 ```
+api/
+└── serverless.ts                  # Adaptador Fastify → Vercel serverless
 src/
 ├── @types/
 │   └── fastify-jwt.d.ts          # Tipagem do request.user (JWT payload)
@@ -57,6 +59,8 @@ src/
 │       └── {entidade}.routes.ts
 ├── routes/
 │   └── index.ts                   # Rota default + registro de todos os módulos
+├── scripts/
+│   └── migrate.ts                 # Aplica migrations programaticamente (vercel-build)
 ├── app.ts                         # Instância Fastify + plugins globais
 └── server.ts                      # Inicialização do servidor
 ```
@@ -265,6 +269,15 @@ BASE_URL=https://seu-projeto.vercel.app
 ---
 
 ## Arquivos Base (não mudam entre projetos)
+
+### `.gitignore`
+
+```
+node_modules
+.env
+```
+
+---
 
 ### `.env`
 
