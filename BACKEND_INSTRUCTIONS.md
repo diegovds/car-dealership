@@ -21,6 +21,7 @@ Este documento descreve a stack, a arquitetura e os padrões utilizados no proje
 | **@fastify/swagger** + **@fastify/swagger-ui** | 9+ / 5+ | Documentação OpenAPI |
 | **@fastify/cors** | 11+ | CORS |
 | **tsx** | 4+ | Dev server com watch |
+| **@rocketseat/eslint-config** | 2+ | ESLint config (node preset) |
 
 ---
 
@@ -105,7 +106,9 @@ docker compose down -v
 ```json
 {
   "scripts": {
-    "dev": "tsx watch --env-file=.env src/server.ts"
+    "dev": "tsx watch --env-file=.env src/server.ts",
+    "migrate": "tsx src/scripts/migrate.ts",
+    "vercel-build": "npm run migrate"
   },
   "dependencies": {
     "@fastify/cors": "^11.2.0",
@@ -120,6 +123,7 @@ docker compose down -v
     "zod": "^4.3.6"
   },
   "devDependencies": {
+    "@rocketseat/eslint-config": "^2.2.2",
     "@types/node": "^25.5.2",
     "@types/pg": "^8.20.0",
     "drizzle-kit": "^0.31.10",
@@ -130,6 +134,8 @@ docker compose down -v
 ```
 
 - `npm run dev` — inicia o servidor em modo watch com carregamento automático do `.env`
+- `npm run migrate` — aplica migrations programaticamente (usado pelo Vercel no build)
+- `npm run vercel-build` — hook do Vercel que roda as migrations antes do deploy
 
 ---
 
@@ -150,6 +156,111 @@ docker compose down -v
   }
 }
 ```
+
+---
+
+## ESLint
+
+### `.eslintrc.json`
+
+```json
+{
+  "extends": "@rocketseat/eslint-config/node"
+}
+```
+
+Instalar a devDependency:
+
+```bash
+npm install -D @rocketseat/eslint-config
+```
+
+---
+
+## Deploy na Vercel
+
+### Visão geral
+
+O Fastify não é compatível com o modelo serverless da Vercel nativamente. A solução é criar um adaptador em `api/serverless.ts` que repassa cada request para a instância do Fastify, e configurar o `vercel.json` para rotear tudo para esse arquivo.
+
+### `vercel.json`
+
+```json
+{
+  "github": {
+    "silent": true
+  },
+  "outputDirectory": "dist",
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/api/serverless.ts"
+    }
+  ]
+}
+```
+
+- `github.silent` — suprime comentários automáticos do Vercel em PRs.
+- `outputDirectory` — pasta de saída do build (não usada para TypeScript direto, mas exigida pela Vercel).
+- `rewrites` — todas as rotas são redirecionadas para a função serverless.
+
+### `api/serverless.ts`
+
+```ts
+import { app } from '../src/app'
+
+export default async (req: any, res: any) => {
+  await app.ready()
+  app.server.emit('request', req, res)
+}
+```
+
+Garante que o Fastify esteja inicializado antes de processar o request.
+
+### `src/scripts/migrate.ts`
+
+Script usado pelo `vercel-build` para aplicar migrations programaticamente (sem depender do CLI do drizzle-kit):
+
+```ts
+import { drizzle } from 'drizzle-orm/node-postgres'
+import { migrate } from 'drizzle-orm/node-postgres/migrator'
+import path from 'path'
+import { Pool } from 'pg'
+import { env } from '../config/env'
+
+const pool = new Pool({ connectionString: env.DATABASE_URL })
+const db = drizzle(pool)
+
+async function main() {
+  console.log('Rodando migrations...')
+  await migrate(db, { migrationsFolder: path.resolve('./src/db/migrations') })
+  console.log('Migrations aplicadas com sucesso!')
+  await pool.end()
+  process.exit(0)
+}
+
+main().catch((err) => {
+  console.error('Erro ao rodar migrations:', err)
+  process.exit(1)
+})
+```
+
+### Variáveis de ambiente na Vercel
+
+Configurar no painel da Vercel (Settings → Environment Variables):
+
+```
+DATABASE_URL=postgresql://...
+JWT_SECRET_KEY=...
+BASE_URL=https://seu-projeto.vercel.app
+```
+
+### Fluxo de deploy
+
+1. Push para o repositório → Vercel detecta o projeto.
+2. Vercel executa `npm run vercel-build` → roda as migrations no banco de produção.
+3. A função `api/serverless.ts` é publicada como serverless function.
+4. Todo tráfego é roteado para ela via `rewrites`.
 
 ---
 
