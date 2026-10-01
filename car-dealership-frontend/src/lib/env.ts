@@ -2,6 +2,10 @@ import { z } from 'zod'
 
 const envSchema = z.object({
   API_URL: z.string().url({ error: 'API_URL deve ser uma URL válida' }),
+  SITE_URL: z
+    .string()
+    .url({ error: 'SITE_URL deve ser uma URL válida' })
+    .default('http://localhost:3000'),
 })
 
 const parsed = envSchema.safeParse(process.env)

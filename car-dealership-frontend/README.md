@@ -37,6 +37,7 @@ API_URL=http://localhost:3333
 | Variável | Descrição |
 |---|---|
 | `API_URL` | URL base da API REST do backend |
+| `SITE_URL` | (opcional) URL pública do site, usada como `metadataBase` nas imagens Open Graph. Padrão: `http://localhost:3000`. Defina em produção (ex.: `https://seu-dominio.com`) |
 
 ### 3. Gerar tipos da API (opcional)
 

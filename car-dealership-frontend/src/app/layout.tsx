@@ -1,3 +1,4 @@
+import { env } from '@/lib/env'
 import { cn } from '@/lib/utils'
 import type { Metadata, Viewport } from 'next'
 import { Barlow_Condensed, Geist, JetBrains_Mono } from 'next/font/google'
@@ -24,6 +25,7 @@ export const viewport: Viewport = {
 }
 
 export const metadata: Metadata = {
+  metadataBase: new URL(env.SITE_URL),
   title: {
     default: 'AutoMercado',
     template: '%s | AutoMercado',
