@@ -93,6 +93,38 @@ Server Actions em `src/actions/` encapsulam as chamadas autenticadas e fazem `re
 - **Input preservado na paginação**: `SearchForm` recebe `preserveInput` quando em modo filtro, evitando reset do campo ao trocar de página
 - **Reply da IA sem URL**: `AiReply` usa `sessionStorage` + `useSyncExternalStore` para persistir a resposta entre páginas sem poluir a URL — `string` salva, `undefined` restaura, `null` limpa
 
+### Pesquisas de teste
+
+Resultados esperados com os dados do seed do backend (`npm run seed`, 30 carros). Pode digitar com ou sem acento (`automatico`, `hibrido`): a IA normaliza os valores antes da consulta. Já o filtro direto na URL (`/cars?transmission=...`) usa `ilike` no banco, que não ignora acentos.
+
+| Pesquisa | Resultado esperado |
+|---|---|
+| `Gol` | Gol (1) |
+| `Honda` | Civic (1) |
+| `Onix` | Onix e Onix Plus (2) |
+| `Toyota` | Corolla, Corolla Cross e Hilux (3) |
+| `Mercedes` | Classe C, GLC e GLE (3) |
+| `Fiat` | Argo, Cronos, Pulse e Strada (4) |
+| `diesel` | Hilux e S10 (2) |
+| `híbrido` | X3 (1) |
+| `BMW gasolina` | 320i e X5 (2) |
+| `Volkswagen a partir de 2023` | Polo e T-Cross (2) |
+| `Chevrolet automático até 100 mil` | Onix e Onix Plus (2) |
+| `automático até 90 mil` | Polo, Cronos e Onix Plus (3) |
+| `automático até 100 mil` | Polo, Onix, Onix Plus, Cronos e Pulse (5) |
+| `manual até 75 mil` | Gol, Argo, HB20 e Kwid (4) |
+| `até 8 mil km` | Corolla Cross, X3, Cayenne, X5, GLE e 911 (6) |
+| `entre 250 e 400 mil` | 320i, X3, Classe C, GLC, A3, Q5, Hilux e S10 (8) |
+| `acima de 500 mil` | Cayenne, X5, GLE e 911 (4) |
+| `Gol automático até 50 mil` | Nenhum (o único Gol é manual e custa R$ 58.900) |
+| `Ferrari` | Nenhum |
+
+Observações:
+
+- A IA extrai apenas marca, modelo, versão, ano, quilometragem, combustível, câmbio e preço. Categorias como "SUV", "sedã" ou "picape" não existem como dado e são ignoradas (ex.: `SUV até 150 mil` retorna todos os carros até R$ 150.000).
+- Limites de preço e quilometragem são inclusivos: prefira `até` a `menos de`.
+- Se a IA estiver indisponível (ex.: chave da OpenAI inválida), `/cars` mostra um aviso e a listagem normal em vez de quebrar.
+
 ## Componentes
 
 ### UI (shadcn)
