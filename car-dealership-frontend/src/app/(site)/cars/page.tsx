@@ -51,13 +51,31 @@ export default async function CarsPage({ searchParams }: CarsPageProps) {
   const isFilterMode =
     !search && FILTER_KEYS.some((k) => params[k] !== undefined)
 
+  // Falhas da API não devem derrubar a página
+  let searchUnavailable = false
+  let loadFailed = false
+
   if (search) {
-    // IA: sempre página 1 — filtros extraídos são usados na paginação
-    const result = await getCarsSearch({ search, page: 1 })
-    cars = result.cars
-    meta = result.meta
-    aiReply = result.reply
-    filterParams = result.filters
+    try {
+      // IA: sempre página 1 — filtros extraídos são usados na paginação
+      const result = await getCarsSearch({ search, page: 1 })
+      cars = result.cars ?? []
+      meta = result.meta ?? null
+      aiReply = result.reply
+      filterParams = result.filters
+    } catch (error) {
+      console.error('[cars] busca com IA falhou:', error)
+      searchUnavailable = true
+      // Fallback: listagem normal
+      try {
+        const result = await getCars({ page: 1 })
+        cars = result.cars ?? []
+        meta = result.meta ?? null
+      } catch (fallbackError) {
+        console.error('[cars] listagem falhou:', fallbackError)
+        loadFailed = true
+      }
+    }
   } else if (isFilterMode) {
     // Paginação da busca IA — vai direto ao banco, sem chamar a IA
     const filters: GetCarsSearch200Filters = {}
@@ -71,17 +89,27 @@ export default async function CarsPage({ searchParams }: CarsPageProps) {
     }
     filterParams = filters
     aiReply = undefined // client restaura do sessionStorage
-    const result = await getCarsFilter({ ...filters, page: currentPage })
-    cars = result.cars
-    meta = result.meta
+    try {
+      const result = await getCarsFilter({ ...filters, page: currentPage })
+      cars = result.cars ?? []
+      meta = result.meta ?? null
+    } catch (error) {
+      console.error('[cars] filtro falhou:', error)
+      loadFailed = true
+    }
   } else {
     // Listagem normal
-    const result = await getCars({ page: currentPage })
-    cars = result.cars
-    meta = result.meta
+    try {
+      const result = await getCars({ page: currentPage })
+      cars = result.cars ?? []
+      meta = result.meta ?? null
+    } catch (error) {
+      console.error('[cars] listagem falhou:', error)
+      loadFailed = true
+    }
   }
 
-  const isSearching = search || isFilterMode
+  const isSearching = (search && !searchUnavailable) || isFilterMode
 
   return (
     <div className="container mx-auto flex flex-col gap-10 px-4 py-10">
@@ -121,10 +149,24 @@ export default async function CarsPage({ searchParams }: CarsPageProps) {
       {/* AI reply */}
       <AiReply reply={aiReply} />
 
+      {searchUnavailable && (
+        <p
+          role="status"
+          className="rounded-md border border-amber-400/30 bg-amber-400/10 px-4 py-3 text-sm text-amber-400"
+        >
+          A busca inteligente está indisponível no momento. Mostrando todos os
+          veículos.
+        </p>
+      )}
+
       {/* Car grid */}
       {cars.length === 0 ? (
         <div className="flex flex-col items-center gap-3 py-20 text-center">
-          <p className="text-muted-foreground">Nenhum carro encontrado.</p>
+          <p className="text-muted-foreground">
+            {loadFailed
+              ? 'Não foi possível carregar os veículos. Tente novamente em instantes.'
+              : 'Nenhum carro encontrado.'}
+          </p>
           {isSearching && (
             <Button variant="outline" size="sm" asChild>
               <Link href="/cars">Ver todos</Link>
